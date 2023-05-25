@@ -1,0 +1,35 @@
+﻿@using UI.MVC.Identity
+@using Domain.Project
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "404 - Not Found";
+}
+
+<article class="error-wrapper">
+    <article class="error-inner-wrapper">
+        <section class="error-container">
+            <div class="error-inner-container">
+                <div class="error-text-container">
+                    <h1>404</h1>
+                    <p>Not Found</p>
+                </div>
+            </div>
+        </section>
+    </article>
+</article>
+
+<article class="error-information-container">
+    <h2>Deze pagina lijkt niet te bestaan.</h2>
+    <p>Deze pagina is verplaatst, verwijderd of heeft nooit bestaan.</p>
+    <p>Zorg ervoor dat uw URL zeker klopt!</p>
+</article>
+
+
+<!-- Dont' change this. This is our watermark. -->
+<div class="footer-powered-by">
+    <p>Powered By</p>
+    <div class="footer-powered-by-inner">
+        <img src="~/images/logo.svg" alt="Groenpunt logo" class="main-footer-logo">
+        <h3>@ApplicationConstants.CompanyName</h3>
+    </div>
+</div>

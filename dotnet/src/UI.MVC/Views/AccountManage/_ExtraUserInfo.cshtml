@@ -1,0 +1,57 @@
+﻿@using UI.MVC.Identity
+@using Domain.User
+@using BL.Project
+
+@model UI.MVC.Models.Shared.ExtraUserInfoModel
+
+
+
+<!-- Optional registration information. Is different per project. -->
+        @{
+            var projectName = ApplicationConstants.GetProjectName(Context.GetRouteData());
+            var userPropertyNames = @Model.UserPropertyNames;
+        }
+        
+        @* Only display the extra information when: there is extra information AND we're not an Admin or ProjectManager. *@
+        @if (userPropertyNames != null && userPropertyNames.Any() && ApplicationConstants.BackEndUrlName.ToLower() != projectName.ToLower())
+        {
+            <div class="registration-input-container input-extra-information-container">
+                <h2 class="extra-info">Extra Informatie</h2>
+        
+                @foreach (var userPropertyName in userPropertyNames)
+                {
+                    var type = userPropertyName.UserPropertyType;
+                    var inputType = type == UserPropertyType.String ? "text" : type == UserPropertyType.Date ? "date" : "number";
+        
+                    <div class="input-main-wrapper">
+                        <div class="input-main-container input-main-container-description">
+        
+                            @if (!string.IsNullOrEmpty(userPropertyName.Description))
+                            {
+                                <div class="input-description">
+                                    <p class="input-description-question-mark">?</p>
+                                    <p class="input-description">@userPropertyName.Description</p>
+                                </div>
+                            }
+                            <div class="input-main-sub-container">
+                                
+                                @{
+                                    var userPropertyValue = Model.GetUserPropertyValue(userPropertyName);
+                                    string value = @Model.GetValueAsString(userPropertyValue);
+                                }
+
+                                @if (inputType == "date")
+                                {
+                                    <input name="ExtraStringValues" class="main-input input-type-@inputType" type="@inputType" value="@value" @(userPropertyName.IsRequired ? "required" : "")>
+                                }
+                                else
+                                {
+                                    <input name="ExtraStringValues" class="main-input input-type-@inputType" type="@inputType" value="@value" onkeyup="this.setAttribute('value', this.value);" @(userPropertyName.IsRequired ? "required" : "")>
+                                }
+                                <label class="main-label @(userPropertyName.IsRequired ? "main-label-required" : "")"> @userPropertyName.UserPropertyLabel</label>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }

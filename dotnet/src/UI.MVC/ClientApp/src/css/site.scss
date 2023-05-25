@@ -1,0 +1,159 @@
+// Imports.
+@import 'main/footer', 'main/header', 'main/navigation', 'main/breadcrumbs';
+@import 'util/buttons', 'util/form', 'util/links', 'util/popup', 'util/filter', 'util/listView', 'util/pageHeading', 'util/icons', 'util/imagePreview', 'util/pagination';
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+// Variables.
+// NOTE: Using CSS variables instead of SCSS variables allows easy modification with javascript (since SCSS is server-side rendered while JS en CSS aren't).
+// NOTE: This will make it easy to modify the styling which is a requirement.
+:root {
+
+  --light-green: #90A955; //  90A955 00a8e8 F8C537  ef3907  a68a64  eaac8b  deff0a  c05299  000000 c9ada1 A4DDED
+  --normal-green: #7A8E49; //  7A8E49 0096c7 ff8500  d00000  936639  e56b6f  0aff99  973aa8  3f3f3f a0a083 73C2FB
+  --dark-green: #6A783B; //  6A783B 0077b6 ff6000  9d0208  6f1d1b  b56576  0aefff  6411ad  3f3f3f 798478 54a0ff
+  --darkest-green: #283618; //  283618 003459 ff4800  6a040f  582f0e  6d597a  147df5  47126b  000000 4d6a6d 2e86de
+
+  --lightest-grey: #f8f8f8;
+  --lighter-grey: #efefef;
+  --light-grey: #a9a9a9;
+  --normal-grey: grey;
+  --dark-grey: #747d8c;
+  --darker-grey: #495057;
+  --darkest-grey: #2f3542;
+
+
+  --orange: #BC6C25;
+  --dark-orange: #AB580F;
+  --white: #FFFFFF;
+  --black: #000000;
+
+  --main-font-sans-serif: 'Montserrat', sans-serif;
+  --main-font-serif: 'Merriweather', serif;
+
+  --navigation-width: 300px;
+}
+
+
+// Global Styling.
+* {
+  margin: 0;
+  padding: 0;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+  scroll-behavior: smooth;
+  font-family: var(--main-font-sans-serif);
+}
+
+
+// Default page layout.
+body {
+  display: grid;
+  grid-template-areas: 
+          "header header header header"
+          "aside  main   main   main"
+          "aside footer footer footer";
+  grid-template-rows: auto minmax(95vh, auto) auto;
+  grid-template-columns: var(--navigation-width) auto auto auto;
+}
+
+// When the user is not allowed to see the backend navigation it isn't shown but there would still be a gap where the navigation should be -> remove the aside from the grid area.
+.body-no-backend-navigation {
+  grid-template-areas: 
+        "header header header header"
+        "main  main   main   main"
+        "footer footer footer footer";
+}
+
+main {
+  grid-area: main;
+  margin-top: 55px;
+}
+
+header {
+  grid-area: header;
+}
+
+footer {
+  grid-area: footer;
+}
+
+aside {
+  grid-area: aside;
+  z-index: 100;
+  transition: width 300ms ease;
+}
+
+// Default styles.
+.container, .navbar {
+  max-width: 1500px;
+  width: 90%;
+}
+
+.container {
+  padding-bottom: 2rem;
+  padding-top: 25px;
+}
+
+.content-width {
+  max-width: 1500px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+
+h1, h2, h3, h4, h5, h6, p, ul {
+  margin-bottom: 0;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.marked {
+  background-color: cornflowerblue !important;
+}
+
+.save-button {
+  display: none;
+}
+
+// Scroll-bar
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--light-green)
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--normal-green);
+}
+
+
+// Media Queries
+@media only screen and (max-width: 1600px) {
+  // Same width (1600px as in navigation.scss): Make the backend navigation aside smaller (only the icons will be visible).
+  body {
+    grid-template-columns: 70px auto auto auto;
+  }
+}
+
+
+
+
+
+
+
+
+
+

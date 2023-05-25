@@ -1,0 +1,138 @@
+﻿@using UI.MVC.Models.Shared
+@using UI.MVC.Identity
+@using BL.Project
+@using BL.DocReview
+@using Domain.DocReview
+@using Domain.Project
+@using UI.MVC.Models.Shared.PopUp
+@using UI.MVC.Models.TimeLine
+
+@model UI.MVC.Models.TimeLine.TimeLinePhaseModel
+
+@inject IProjectManager _projectManager;
+@inject IDocReviewManager _docReviewManager;
+@inject ITimeLineManager _timeLineManager;
+
+@{
+    Layout = "_BackEndNavigation";
+
+    var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+    var project = _projectManager.GetProjectByExternalName(projectName);
+
+    var allDocReviews = _docReviewManager.GetDocReviewsByProject(project.ProjectId);
+    var timeLine = _timeLineManager.GetTimeLineByProject(project, true);
+}
+
+
+<article class="timeline-page-wrapper container">
+
+    <!-- BreadCrumbs navigation. -->
+    @{
+        var breadCrumbs = new BreadcrumbsModel()
+        {
+            BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+            {
+                new Tuple<string, string, string, string, string>("fa-solid fa-house", @project.ExternalName, "ProjectManage", "Index", @project.ExternalName).ToValueTuple(),
+                new Tuple<string, string, string, string, string>("fa-solid fa-timeline", "Timeline", "TimeLine", "Index", @project.ExternalName).ToValueTuple(),
+            },
+            ActiveItemIndex = 2
+        };
+    }
+    <partial name="_Breadcrumbs" model="@breadCrumbs"/>
+
+    <!-- Page Title. -->
+    <partial name="_PageTitle" model="@(new PageTitleModel() {Title = "Create Timeline Phase", Description = "Timeline phases are used to describe the project's progress. In addition a doc-review can be linked to a phase to explain the phase in more detail."})"/>
+
+    <!-- Timeline phases. -->
+    <article class="timeline-phases-wrapper">
+
+        <!-- Single timeline phase -->
+        <section class="timeline-phase-container timeline-phase-create-container">
+
+            @using (Html.BeginForm("Index", "TimeLine", FormMethod.Post))
+            {
+                <section class="project-list-item project-list-item-property">
+                    <div class="project-list-select-container">
+                        <input asp-for="Name" placeholder="Phase title">
+                        <div class="project-list-select-description-container">
+                            <p>The title of the timeline phase.</p>
+                        </div>
+                    </div>
+                    <textarea placeholder="Optional Description" asp-for="Description"></textarea>
+                    <div class="project-list-select-container">
+                        <select class="form-select select-is-required" asp-for="DocReviewId" asp-items="@(new SelectList(allDocReviews, nameof(DocReview.DocReviewId), nameof(DocReview.Name)))">
+                            <option value="-1">Select Doc-review</option>
+                        </select>
+                        <div class="project-list-select-description-container">
+                            <p>It is possible to link a doc-review to a phase to explain the phase in more detail. NOTE: This is optional!</p>
+                        </div>
+                    </div>
+                    <div class="project-list-select-container">
+                        <input type="date" asp-for="BeginDate">
+                        <div class="project-list-select-description-container">
+                            <p>The begin date of the timeline phase.</p>
+                        </div>
+                    </div>
+
+                    <div class="button-save-container">
+                        <button class="btn btn-success" type="submit">Create</button>
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                    </div>
+
+                </section>
+            }
+
+        </section>
+
+        <!-- Page Title. -->
+        <partial name="_PageTitle" model="@(new PageTitleModel() {Title = "Edit Timeline Phases", Description = "Edit or delete existing phases."})"/>
+
+        <div class="status-messages-container"></div>
+
+        <!-- The already existing timeline phases. -->
+        <article class="timeline-phases-edits-wrapper">
+            @{
+                var t = timeLine?.TimeLinePhases ?? new List<TimeLinePhase>();
+                var phaseModels = t.Select(p => new TimeLinePhaseModel
+                {
+                    TimeLinePhaseId = p.TimeLinePhaseId,
+                    Name = p.Name,
+                    Description = p.Description,
+                    BeginDate = p.BeginDate.ToDateTime(TimeOnly.Parse("00:00AM")),
+                    DocReviewId = p.DocReviewId
+                }).ToList();
+            }
+
+            @foreach (var phase in phaseModels)
+            {
+                <partial name="_TimeLinePhase" model="@phase"/>
+            }
+        </article>
+
+        <section class="no-phases-yet">
+            @if (!phaseModels.Any())
+            {
+                <p class="alert alert-warning">There are no phases yet. Create the first!</p>
+            }
+        </section>
+
+
+    </article>
+
+</article>
+
+@{
+    var deleteModel = new PopUpModel
+    {
+        PopUpContainerClass = "article-popup-delete-phase",
+        PopUpTitle = "Delete Timeline Phase?",
+        PopUpBody = " <p class='alert alert-warning'>Are you sure you want to delete this phase? This action is irreversible.</p>" +
+                    "<p class='alert alert-warning'><b>Note,</b> This will NOT delete the doc-review (if one is assigned).</p>",
+        ButtonPrimaryClass = "btn-confirm-delete-phase",
+        ButtonPrimaryText = "Delete",
+        ButtonPrimaryBootstrapType = "btn-danger"
+    };
+}
+<partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@deleteModel"/>
+
+<script src="~/dist/timeline.entry.js" defer></script>

@@ -1,0 +1,72 @@
+﻿// A small header containing the page title, and possibly some actions (create x, ..).
+.project-page-header-container {
+  background-color: var(--white);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 55px;
+  margin-bottom: 1rem;
+  z-index: 100;
+  border-bottom: 1px solid var(--light-grey);
+  padding:  0.5rem;
+  box-shadow: 0px 10px 10px -15px rgba(0,0,0,0.75);
+  .page-title-wrapper {
+    position: relative;
+    padding-right: 2rem;
+    .description {
+      top: 50%;
+      transform: translateY(-50%);
+      p {
+         min-height: 40px;
+      }
+    }
+  }
+  h2 {
+    font-size: 1.5rem;
+    //color: var(--white);
+  }
+}
+
+.page-title-margin-top {
+  margin-top: 3rem;
+}
+
+// subpage heading.
+.page-subtitle-container {
+  h3 {
+    color: var(--darker-grey);
+    font-size: 1.4rem;
+  }
+  margin-bottom: 1rem;
+}
+
+
+
+// =============
+// Media Queries
+// =============
+
+
+@media only screen and (max-width: 900px) {
+  .project-page-header-container {
+    &.project-page-header-container-medium-vertical {
+      flex-direction: column; 
+      row-gap: 1rem;
+      align-items: flex-start;
+    }
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .project-page-header-container {
+    &.project-page-header-container-small-vertical {
+      flex-direction: column;
+      row-gap: 1rem;
+      align-items: flex-start;
+    }
+  }
+}
+
+

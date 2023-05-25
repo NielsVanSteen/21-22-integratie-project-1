@@ -1,0 +1,39 @@
+{
+  "name": "docreview",
+  "type": "module",
+  "description": "ASP.NET Core DocReview Project ",
+  "repository": "https://gitlab.com/kdg-ti/integratieproject-1/2021-2022/groep-11/dotnet/-/tree/main/tracerbullet/Docreview",
+  "license": "MIT",
+  "version": "4.0.0",
+  "dependencies": {
+    "@microsoft/signalr": "^6.0.4",
+    "@popperjs/core": "^2.11.2",
+    "autosize": "^5.0.1",
+    "bootstrap": "^5.1.3",
+    "chart.js": "^3.7.1",
+    "jquery": "^3.6.0",
+    "jquery-validation": "^1.19.3",
+    "jquery-validation-unobtrusive": "^3.2.12",
+    "path-browserify": "^1.0.1",
+    "scss-loader": "^0.0.1",
+    "style-loader": "^3.3.1"
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^6.1.1",
+    "@fortawesome/fontawesome-svg-core": "^6.1.1",
+    "@fortawesome/free-brands-svg-icons": "^6.1.1",
+    "@fortawesome/free-regular-svg-icons": "^6.1.1",
+    "@fortawesome/free-solid-svg-icons": "^6.1.1",
+    "ckeditor4": "^4.18.0",
+    "css-loader": "^6.7.1",
+    "mini-css-extract-plugin": "^2.6.0",
+    "sass": "^1.49.9",
+    "sass-loader": "^12.6.0",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2"
+  },
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --watch"
+  }
+}

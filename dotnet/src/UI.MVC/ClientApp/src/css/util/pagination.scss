@@ -1,0 +1,29 @@
+﻿.page-item.active .page-link {
+  background-color: var(--normal-green);
+  border-color: var(--normal-green);
+}
+
+.page-link {
+  color: var(--dark-green);
+}
+
+.pagination-container {
+  p {
+    color: var(--darkest-green);
+  }
+}
+
+// At the top of the pagination items, let's the user change the page size.
+.pagination-show-entries-amount-container {
+  column-gap: .5rem;
+  margin-bottom: 1rem;
+
+  input {
+    font-size: .8rem;
+    width: 50px;
+    border: 1px solid var(--light-grey);
+    border-radius: 0.25rem;
+    padding: 0 0.25rem;
+  }
+
+}

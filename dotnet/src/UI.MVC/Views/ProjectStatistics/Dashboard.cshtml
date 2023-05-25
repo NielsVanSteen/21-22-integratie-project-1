@@ -1,0 +1,182 @@
+﻿@using UI.MVC.Models.Shared
+@using BL.Project
+@using UI.MVC.Identity
+
+@inject IProjectManager _projectManager;
+
+@{
+    Layout = "_BackEndNavigation";
+
+    var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+    var project = _projectManager.GetProjectByExternalName(projectName);
+}
+
+<!-- Project statistics -->
+<article class="project-statistics-wrapper container">
+
+    <!-- Breadcrumbs. -->
+    @{
+        var breadCrumbs = new BreadcrumbsModel()
+        {
+            BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+            {
+                new Tuple<string, string, string, string, string>("fa-solid fa-house", @project.ExternalName, "ProjectManage", "Index", @project.ExternalName).ToValueTuple(),
+                new Tuple<string, string, string, string, string>("fa-solid fa-chart-column", "Statistics", "ProjectStatistics", "Dashboard", @project.ExternalName).ToValueTuple(),
+            },
+            ActiveItemIndex = 2
+        };
+    }
+    <partial name="_Breadcrumbs" model="@breadCrumbs"/>
+
+    @{
+        var pageTitleModel = new PageTitleModel()
+        {
+            Title = "Project Statistics",
+            Description = "  Hover over any point on the statistic to show an in-detail version!"
+        };
+    }
+    <partial name="_PageTitle" model="@pageTitleModel"/>
+
+    <article class="statistics-filter-container">
+
+        <div class="statistics-filter-item-container">
+            <label class="form-check-label" for="statisticsDetail">x-axis points</label>
+            <input type="number" min="1" max="100" step="1" value="10" class="form-control" id="statisticsDetail">
+        </div>
+
+        <div class="statistics-filter-item-container">
+            <label class="form-check-label" for="selectChartType">Chart type</label>
+            <select class="form-select" id="selectChartType">
+                <option value="line" selected>Line</option>
+                <option value="bar">Bar</option>
+            </select>
+        </div>
+
+        <div class="statistics-filter-item-container">
+            <label class="form-check-label" for="beginDate">Begin Date</label>
+            <div class="filter-item-inner">
+                <input type="date" id="beginDate" class="form-control">
+                <input class="form-check-input filter-input check-box-comment-status" type="checkbox" value="checkBeginDate" name="checkBeginDate" id="checkBeginDate">
+                 <p class="check-box-description">Check the checkbox to set a begin date!</p>
+            </div>
+        </div>
+
+        <div class="statistics-filter-item-container">
+            <label class="form-check-label" for="endDate">End Date</label>
+            <div class="filter-item-inner">
+                <input type="date" id="endDate" class="form-control">
+                <input class="form-check-input filter-input check-box-comment-status" type="checkbox" value="checkEndDate" name="checkEndDate" id="checkEndDate">
+                <p class="check-box-description">Check the checkbox to set an end date!</p>
+            </div>
+        </div>
+        
+        <button class="btn btn-success" id="btnReloadStatistics">Reload</button>
+
+    </article>
+
+    <div class="page-subtitle-container">
+        <h3>User Statistics</h3>
+    </div>
+
+    <!-- Project Statistics overview  -->
+    <section class="project-statistics-overview-container">
+
+        <!-- A single project statistics item -->
+        <section class="project-statistics-item" id="totalUsersOverview" data-statistic-type="0" data-active-statistic="user">
+            <div class="statistics-numbers-container">
+                <h3></h3>
+                <p></p>
+            </div>
+            <div class="statistics-name">
+                <p>Users</p>
+            </div>
+            <div class="small-graph">
+                <canvas id="totalUsersChart"></canvas>
+            </div>
+        </section>
+
+        <!-- A single project statistics item -->
+        <section class="project-statistics-item" id="totalManagersOverview" data-statistic-type="0" data-active-statistic="manager">
+            <div class="statistics-numbers-container">
+                <h3></h3>
+                <p></p>
+            </div>
+            <div class="statistics-name">
+                <p>Managers</p>
+            </div>
+            <div class="small-graph">
+                <canvas id="totalManagersChart"></canvas>
+            </div>
+        </section>
+
+    </section>
+
+
+    <div class="page-subtitle-container">
+        <h3>Project Comment Statistics</h3>
+    </div>
+
+    <!-- Project Statistics comments overview  -->
+    <section class="project-statistics-overview-container project-statistics-comment-container">
+
+        <!-- A single project statistics item -->
+        <section class="project-statistics-item" id="totalCommentsOverview" data-statistic-type="1" data-active-statistic="All">
+            <div class="statistics-numbers-container">
+                <h3></h3>
+                <p></p>
+            </div>
+            <div class="statistics-name">
+                <p>Total Comments</p>
+            </div>
+            <div class="small-graph">
+                <canvas id="totalCommentsChart"></canvas>
+            </div>
+        </section>
+
+    </section>
+
+    <div class="page-subtitle-container">
+        <h3>Project Emoji Statistics</h3>
+    </div>
+
+    <!-- Project Statistics comments overview  -->
+    <section class="project-statistics-overview-container project-statistics-emoji-container">
+        <!-- A single project statistics item -->
+        <section class="project-statistics-item" id="totalEmojiOverview" data-statistic-type="2" data-active-statistic="All">
+            <div class="statistics-numbers-container">
+                <h3></h3>
+                <p></p>
+            </div>
+            <div class="statistics-name">
+                <p></p>
+            </div>
+            <div class="small-graph">
+                <canvas id="totalEmojiChart"></canvas>
+            </div>
+        </section>
+    </section>
+
+    <div class="page-subtitle-container">
+        <h3>Doc-review Statistics</h3>
+    </div>
+
+    <!-- Project Statistics comments overview  -->
+    <section class="project-statistics-overview-container project-statistics-doc-review-container">
+        <!-- A single project statistics item -->
+        <section class="project-statistics-item" id="totalDocReviewsOverview" data-statistic-type="3" data-active-statistic="All">
+            <div class="statistics-numbers-container">
+                <h3></h3>
+                <p></p>
+            </div>
+            <div class="statistics-name">
+                <p>Total Doc-reviews</p>
+            </div>
+            <div class="small-graph">
+                <canvas id="totalDocReviewsChart"></canvas>
+            </div>
+        </section>
+    </section>
+
+</article>
+
+<script src="~/dist/dashboard.entry.js" defer></script>

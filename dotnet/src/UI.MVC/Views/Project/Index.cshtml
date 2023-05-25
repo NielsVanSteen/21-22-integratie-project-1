@@ -1,0 +1,182 @@
+﻿@using UI.MVC.Extensions
+@using BL.Project
+@using BL.DocReview
+@using UI.MVC.CloudStorage
+@using UI.MVC.Models.Shared
+@model UI.MVC.Models.Project.ProjectModel
+
+@inject ITimeLineManager _timeLineManager;
+@inject IDocReviewManager _docReviewManager;
+
+@{
+    Layout = "_Layout";
+    var project = Model.Project;
+    ViewBag.Title = project.ExternalName;
+
+    var docReviews = Model.DocReviews.ToList();
+    var timeline = _timeLineManager.GetTimeLineByProject(project, true);
+}
+
+<main>
+
+    <!-- This article contains everything shown on the landing page. (the phases not included.) -->
+    <article class="landing-page-wrapper">
+
+        <article class="project-landing-page-container container">
+
+            <section class="landing-page-item">
+                <div class="landing-page-item-inner">
+
+                    <div class="landing-page-title-container">
+                        <h2>@Model.Project.ProjectTitle</h2>
+                        <h3>@Model.Project.ExternalName</h3>
+                    </div>
+
+                    <div class="landing-page-description-container">
+                        <p>
+                            @Model.Project.Introduction
+                        </p>
+                    </div>
+
+                    @if (timeline.TimeLinePhases.Any())
+                    {
+                        <div class="landing-page-explore-container">
+                            <a class="navigation-main-a navigation-main-a-background explore-landing-page">Ontdek Alles!</a>
+                        </div>
+                    }
+
+                </div>
+            </section>
+
+            <section class="landing-page-item">
+                <div class="landing-page-item-inner">
+                    <figure class="landing-page-logo-figure">
+                        <img src="@Model.Project.GetProjectLogoFullLink(SquareImageSize.SM)" alt="Logo">
+                    </figure>
+                </div>
+            </section>
+
+        </article>
+    </article>
+
+    @if (timeline.TimeLinePhases.Any())
+    {
+        <!-- Timeline phase. -->
+        <article class="timeline-wrapper" id="timelineContainer">
+
+            <article class="timeline-inner-wrapper">
+
+
+                <!-- The timeline navigation. -->
+                <nav class="timeline-navigation">
+
+                    <div class="active-circle"></div>
+
+                    <article class="timeline-navigation-wrapper">
+
+                        @foreach (var phase in timeline.TimeLinePhases)
+                        {
+                            <section class="timeline-navigation-item-container">
+                                <button class="btn-icon btn-timeline-navigation-item">
+                                    <h3>@phase.BeginDate.ToDateTime(TimeOnly.MinValue).GetDateWithAbbreviatedMonth()</h3>
+                                    <h2>@phase.Name</h2>
+                                </button>
+
+                            </section>
+                        }
+
+                    </article>
+                </nav>
+
+                <!-- Container element containing all the timeline items. -->
+                <article class="timeline-list-wrapper">
+
+                    @foreach (var phase in timeline.TimeLinePhases)
+                    {
+                        <!-- Single timeline item. -->
+                        <article class="timeline-phase-wrapper">
+                            @{
+                                var doc = _timeLineManager.GetTimeLinePhase(phase.TimeLinePhaseId, false, true).DocReview;
+                                var docReview = _docReviewManager.GetDocReview(doc?.DocReviewId ?? 0, false, true);
+                                var isVisible = docReview?.IsDocReviewVisibleForNormalUsers() ?? false;
+                            }
+
+                            @if (docReview != null && isVisible)
+                            {
+                                <img src="@docReview.GetBannerImageLink(LandscapeImageSize.MD)" alt="Banner image">
+                            }
+                            else
+                            {
+                                <img src="@project.GetProjectBannerImageFullLink(LandscapeImageSize.LG)" alt="Banner image">
+                            }
+
+                            <section class="timeline-phase-item-container">
+                                <section class="timeline-phase-inner">
+                                    <h3>@phase.BeginDate.ToDateTime(TimeOnly.MinValue).GetDateWithAbbreviatedMonth()</h3>
+                                    <h2>@phase.Name</h2>
+                                    <div class="phase-description-container">
+                                        <p>
+                                            @phase.Description
+                                        </p>
+                                    </div>
+                                    @if (docReview != null && isVisible)
+                                    {
+                                        <div class="explore-phase-container">
+                                            <a class="default-link" asp-controller="Project" asp-action="DocReview" asp-route-id="@docReview.DocReviewId">Ontdek meer</a>
+                                        </div>
+                                    }
+                                </section>
+                            </section>
+                        </article>
+                    }
+
+                </article>
+            </article>
+
+        </article>
+    }
+
+    @if (docReviews.Any())
+    {
+        <!-- List of doc-reviews. -->
+        <article class="user-page-doc-review-wrapper">
+
+            <article class="container mt-5">
+
+                @{
+                    var titleModel = new PageTitleModel
+                    {
+                        Title = "Alle Doc-reviews",
+                        Description = $"Alle doc-reviews van {project.ExternalName}."
+                    };
+                }
+
+                <partial name="_PageTitle" model="@titleModel"/>
+
+                <article class="project-doc-reviews-edit-list-wrapper">
+                    @foreach (var docReview in docReviews)
+                    {
+                        <section class="list-item-wrapper">
+                            <figure class="list-item-banner-image-figure">
+                                <img src="@(docReview.GetBannerImageLink(LandscapeImageSize.SM))" alt="Project Banner Image">
+                            </figure>
+
+                            <section class="list-item-information-container">
+                                <ul>
+                                    <li>@docReview.Name</li>
+                                    <li class="list-actions">
+                                        <a asp-action="DocReview" asp-controller="Project" asp-route-id="@docReview.DocReviewId" class="default-link">Details</a>
+                                    </li>
+                                </ul>
+                                <p class="list-item-description"> @docReview.Description </p>
+                            </section>
+                        </section>
+                    }
+                </article>
+
+            </article>
+        </article>
+    }
+
+</main>
+<script src="~/dist/userProjectPage.entry.js"></script>

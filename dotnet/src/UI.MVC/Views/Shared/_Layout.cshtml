@@ -1,0 +1,110 @@
+﻿@using UI.MVC.Identity
+@using Microsoft.AspNetCore.Authorization
+@using BL.Project
+@using UI.MVC.CloudStorage
+@using UI.MVC.Extensions
+@using UI.MVC.Models.Shared.PopUp
+
+@inject IAuthorizationService _authorizationService
+@inject IProjectManager _projectService;
+
+<!DOCTYPE html>
+<html lang="en">
+
+@{
+    var projectName = ApplicationConstants.GetProjectName(Context.GetRouteData());
+    var project = _projectService.GetProjectByExternalName(projectName);
+    var controller = (ViewContext.RouteData.Values["Controller"] ?? "").ToString()?.ToLower();
+}
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - @projectName</title>
+
+    @if (project != null)
+    {
+        <link rel="icon" type="image/x-icon" href="@project.GetProjectLogoFullLink(SquareImageSize.SM)">
+    }
+    else
+    {
+        <link rel="icon" type="image/x-icon" href="~/images/logo.svg">
+    }
+    <link rel="stylesheet" href="~/dist/site.css">
+    <script src="~/dist/cssLoader.entry.js"></script>
+    <script src="~/dist/site.entry.js" defer></script>
+</head>
+
+@{
+    // Checks whether the user is a moderator or not. -> if so: display the backend navigation. -> if not: don't show the navigation + add a class to the body so the grid-area won't include the aside.
+    bool isModerator = (await _authorizationService.AuthorizeAsync(User, ApplicationConstants.IsModerator)).Succeeded;
+}
+
+<body class="@(isModerator && controller?.ToLower() != "project" ? "" : "body-no-backend-navigation")">
+
+@if ((project != null || ApplicationConstants.GetProjectName(ViewContext.RouteData) == ApplicationConstants.BackEndUrlName) && controller != "error")
+{
+    <header class="main-header">
+        <nav class="navbar">
+            <div class="navbar-title-container">
+                @if (project != null)
+                {
+                    <img src="@(project.GetProjectLogoFullLink(SquareImageSize.MD))" alt="Logo" class="navbar-logo">
+                }
+                <a class="navbar-brand" asp-area="" asp-controller="@(project == null ? "ProjectModeration" : "Project")" asp-action="Index">@projectName</a>
+            </div>
+            <div>
+                <partial name="~/Views/Account/_LoginPartial.cshtml"/>
+            </div>
+        </nav>
+    </header>
+}
+
+@RenderBody()
+
+
+@section Scripts
+{
+    <script src="~/dist/bootstrap_js.entry.js" defer></script>
+}
+
+@{
+    var cookiePopUpModel = new PopUpModel
+    {
+        PopUpContainerClass = "article-popup-cookie",
+        PopUpTitle = "Cookie",
+        PopUpBody = @"
+        <div class=""row"">
+            <div class=""col-sm-12 col-md-6 col-lg-6 mt-3"">
+                <p>
+                    Om je de best mogelijke ervaring te bieden, gebruiken zowel wij als derde partijen technologieën zoals cookies om toegang te krijgen tot apparaatinformatie en/of deze op te slaan. Door in te stemmen met deze technologieën, stel je ons en derde partijen in de mogelijkheid persoonlijke gegevens zoals browsegedrag of unieke ID's op deze website te verwerken. Indien je geen toestemming geeft of deze intrekt, kan dit bepaalde eigenschappen en functies nadelig beïnvloeden.
+                    Klik hieronder om toestemming te geven voor het bovenstaande.
+                </p>
+            </div>
+            <div class=""col-sm-12 col-md-4 col-lg-4 mt-3 ms-md-3 ms-lg-3 "">
+                <p>We gebruiken jouw gegevens voor:</p>
+                <ul>
+                    <li>
+                        Strikt noodzakelijke cookies
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        Functionele cookies
+                    </li>
+                </ul>
+            </div>
+        </div>",
+        ButtonPrimaryClass = "btn-accepteer-cookie",
+        ButtonPrimaryText = "Accepteer",
+        ButtonPrimaryBootstrapType = "btn-success",
+        IsConfirmPopup = false,
+        HasClosedButton = false
+    };
+}
+
+<partial name="_PopUpWindow" model="@cookiePopUpModel"/>
+<script src="~/dist/cookiePopup.entry.js" defer></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

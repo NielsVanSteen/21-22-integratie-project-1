@@ -1,0 +1,262 @@
+﻿// The wrapper containing the list with all the moderators.
+.moderators-overview-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 3rem;
+}
+
+// The table heading.
+.moderator-list-heading {
+  width: 100%;
+  background-color: var(--light-green);
+  color: var(--white);
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 200px 100px 65px;
+  padding: 0 1rem;
+  
+  // Only on the view manager page the heading includes an 'activity' column.
+  .moderator-list-heading-activity {
+    grid-column: 3/5;
+  }
+  p {
+    padding: .5rem 0;
+  }
+}
+
+// A single moderator record/item.
+.moderator-list-item-container {
+  padding: .5rem 1rem;
+  display: grid;
+  grid-template-columns: 1fr 200px 100px 65px;
+  border-bottom: 1px solid var(--light-grey);
+
+  div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-family: var(--main-font-sans-serif);
+  }
+
+  // The profile picture and name.
+  .moderator-profile-picture {
+    height: 35px;
+    width: 35px;
+    position: relative;
+    border-radius: 50%;
+    background-color: var(--light-green);
+    margin: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
+
+    figcaption {
+      position: absolute;
+      top: 50%;
+      left: calc(100% + .5rem);
+      white-space: nowrap;
+      transform: translateY(-50%);
+    }
+  }
+
+  // The role.
+  .moderator-role {
+    p {
+      color: var(--white);
+      padding: .15rem .3rem;
+      border-radius: .5rem;
+      font-size: .75rem;
+    }
+
+    .admin {
+      background-color: var(--bs-primary);
+    }
+
+    .project-manager {
+      background-color: var(--bs-secondary);
+    }
+  }
+  
+  // Only on the project manager detail page per project their is a 'details' button which shows the activity.
+  .moderator-activity{
+    grid-column: 3/5;
+  }
+
+  // The assigned projects.
+  .moderator-assigned-projects {
+    position: relative;
+    z-index: 100;
+    p {
+      color: var(--normal-grey);
+    }
+    
+    ul {
+      top: 60%;
+      position: absolute;
+      padding: .5rem .5rem .5rem 1rem;
+      background-color: var(--normal-grey);
+      border-radius: .5rem;
+      display: none;
+      z-index: 200000;
+
+      &:hover {
+        display: block;
+      }
+
+      li {
+        padding: 0;
+        font-size: .85rem;
+        color: var(--white);
+
+        a {
+          color: var(--white);
+
+          &:hover {
+            cursor: pointer;
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+    
+    i, svg {
+      color: var(--darker-grey);
+      padding: .5rem;
+      cursor: pointer;
+
+      &:hover ~ ul {
+        display: block;
+      }
+    }
+  }
+
+  // The actions.
+  .moderator-actions {
+    display: flex;
+    flex-direction: row;
+    column-gap: .5rem;
+    
+    i, svg {
+      background-color: var(--dark-grey);
+      padding: .5rem;
+      border-radius: .5rem;
+      color: var(--white);
+      font-size: .9rem;
+      cursor: pointer;
+
+      &.fa-gear {
+        background-color: var(--dark-grey);
+      }
+
+      &.fa-trash-can {
+        background-color: var(--bs-danger);
+      }
+    }
+  }
+}
+
+
+// =============
+// Media Queries
+// =============
+
+@media only screen and (max-width: 900px) {
+  // Don't show the heading.
+  .moderator-list-heading {
+    display: none;
+  }
+
+  .moderator-list-item-container {
+    margin: 1rem 0;
+    padding: .5rem 1rem;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 50px;
+
+    .moderator-profile-picture {
+      grid-column: 1/3;
+      width: 45px;
+      height: 45px;
+
+      figcaption {
+        top: .5rem;
+      }
+    }
+
+    .moderator-role {
+      position: absolute;
+      top: 1.75rem;
+      left: calc(45px + 1.5rem);
+
+      p {
+        font-size: .65rem;
+      }
+    }
+
+    .moderator-assigned-projects {
+      display: none;
+    }
+
+    .moderator-actions {
+      grid-column: 2/3;
+      grid-row: 1/2;
+    }
+  }
+
+  // Marked email role shouldn't jump.
+  .moderators-marked-email-overview {
+    .moderator-role {
+      top: 50%;
+      transform: translateY(-50%);
+      left: auto;
+      right: 75px;
+    }
+    .moderator-email {
+      font-size: .7rem;
+    }
+  }
+}
+
+// Smaller action icons.
+@media only screen and (max-width: 500px) {
+  .moderator-list-item-container { 
+    padding: .5rem 0;
+    .moderator-actions {
+      grid-column: 2/3;
+      grid-row: 1/2;
+
+      i, svg {
+        padding: .4rem;
+        border-radius: .3rem;
+        margin-top: 0.7rem;
+        font-size: .75rem;
+      }
+    }
+  }
+
+  // Marked email role shouldn't jump.
+  .moderators-marked-email-overview {
+    .moderator-email {
+      font-size: .8rem;
+      white-space: normal;
+      max-width: 75px;
+      width: 75px;
+      display: inline-block;
+      word-break: break-word;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+

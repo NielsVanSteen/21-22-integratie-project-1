@@ -1,0 +1,95 @@
+﻿@using UI.MVC.Identity
+@using Microsoft.AspNetCore.Authorization
+@using UI.MVC.Extensions
+@using Domain.Project
+@using UI.MVC.CloudStorage
+@model System.Collections.Generic.IEnumerable<Domain.Project.Project>
+
+@inject IAuthorizationService _authorizationService;
+
+@{
+    Layout = "_BackEndNavigation";
+}
+
+<article class="project-moderation-wrapper container">
+    
+    <!-- Container of the projects list. -->
+    <article class="projects-list">
+        
+        <!-- Page Title. -->
+        <article class="project-page-header-container">
+            <h2>Projects</h2>
+            @* Only admins can create projects. and thus only admins will be able to see this button.*@
+            @if ((await _authorizationService.AuthorizeAsync(User, Model, ApplicationConstants.IsAdmin)).Succeeded)
+            {
+                <a class="default-link" asp-controller="ProjectModeration" asp-action="CreateProject">Create Project</a>
+            }
+        </article>
+
+        <div class="projects-list-inner" id="projectListContainer">
+            @foreach (var project in @Model ?? Enumerable.Empty<Project>())
+            {
+                <!-- Single project. -->
+                <section class="list-item-wrapper">
+                    <figure class="list-item-banner-image-figure">
+                        <img src="@(project.GetProjectBannerImageFullLink(LandscapeImageSize.MD))" alt="Project Banner Image">
+                    </figure>
+
+                    <section class="list-item-information-container">
+                        <ul>
+                            <li>
+                                <img src="@(project.GetProjectLogoFullLink(SquareImageSize.SM))" alt="Project Logo">
+                            </li>
+                            <li>@project.ExternalName</li>
+                            <li>@project.InternalName</li>
+                            <li>
+                                <a asp-controller="ProjectManage" asp-action="Index" asp-route-project="@project.ExternalName.ToLower()" class="default-link">Details</a>
+                            </li>
+                        </ul>
+                        <p class="list-item-description"> @project.Introduction </p>
+                    </section>
+                </section>
+            }
+        </div>
+
+    </article>
+
+    <!--- Filters -->
+    <article class="filter-container">
+        <div class="filter-inner-container">
+            <h2>Filter Project</h2>
+
+            <!-- Filter on name. -->
+            <section class="filter-category-container">
+                <h3>Filter Name</h3>
+                <div class="input-main-wrapper">
+                    <div class="input-main-container">
+                        <input class="main-input" type="text" onkeyup="this.setAttribute('value', this.value);" id="filterName">
+                        <label class="main-label">Name</label>
+                        <div class="description">
+                            <p>Searches the internal, external name & the title.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sort. -->
+            <section class="filter-category-container">
+                <h3>Sort</h3>
+                <select class="form-select" aria-label="Default select example" id="sortOrder">
+                    <option selected value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+            </section>
+
+            <!-- Apply filter. -->
+            <div class="button-apply-filter-container">
+                <button class="btn btn-success btn-apply-filter" id="buttonApplyFilter">Apply Filters</button>
+            </div>
+        </div>
+    </article>
+
+</article>
+
+<!-- Javascript. -->
+<script src="~/dist/projectModeration.entry.js" defer></script>

@@ -1,0 +1,444 @@
+﻿// =======================
+// Project history section
+// =======================
+
+.project-history-wrapper {
+
+  position: relative;
+  width: 100%;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  max-width: min(1500px, calc(90vw - 70px));
+  margin-bottom: 8rem;
+
+  .project-history-inner-wrapper {
+    width: auto;
+    min-width: 100%;
+    display: inline-block;
+  }
+
+  // The timeline.
+  hr {
+    width: calc(100% - 40px);
+    opacity: 1;
+    height: 5px;
+    position: relative;
+    margin: 0 20px 100px 20px;
+    background-color: var(--normal-grey);
+
+    // Before and after elements make up the dot at the start and the arrow at the end.
+    &::before, &::after {
+      content: '';
+      position: absolute;
+      display: block;
+      width: 35px;
+      height: 35px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    &::before {
+      border-radius: 50%;
+      background-color: var(--light-green);
+    }
+
+    &::after {
+      background-color: transparent;
+      border-right: 7px solid var(--light-green);
+      border-top: 7px solid var(--light-green);
+      transform: rotate(45deg);
+      transform-origin: center;
+      top: calc(50% - 35px / 2);
+      right: 0;
+    }
+  }
+}
+
+// The container element for all the project history items.
+.project-history-items-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 0 40px;
+  margin-top: 180px;
+
+  // A single project history item.
+  .project-history-item {
+    margin: 0 100px;
+    position: relative;
+
+    // The text of the project history item.
+    .project-history-item-text {
+      position: absolute;
+      width: max-content;
+      max-width: 200px;
+      transform: rotate(-45deg);
+      transform-origin: left;
+      bottom: 100%;
+      margin-left: 20px;
+      z-index: 5;
+
+      p {
+        text-wrap: none;
+      }
+
+      a {
+        color: var(--black);
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    // The green date box.
+    .project-history-date {
+      background-color: var(--normal-green);
+      position: absolute;
+      top: calc(100% + 2rem);
+      width: max-content;
+      color: var(--white);
+      padding: .5rem;
+      text-align: center;
+      z-index: 5;
+
+      // green dot on the timeline.
+      &::after {
+        position: absolute;
+        display: block;
+        content: '';
+        background-color: var(--light-green);
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        top: -42px;
+        margin-left: 9px;
+      }
+
+      // The rotated square giving the date box a chat box vibe.
+      &::before {
+        position: absolute;
+        display: block;
+        content: '';
+        background-color: var(--normal-green);
+        top: -6px;
+        left: calc(50% - 6px);
+        width: 12px;
+        height: 12px;
+        transform: rotate(45deg);
+      }
+    }
+  }
+}
+
+
+// =======================
+// Generic History section
+// =======================
+
+.generic-history-wrapper {
+  margin-bottom: 50px;
+}
+
+.generic-history-container {
+  display: flex;
+  flex-direction: column;
+}
+
+// Single item wrapper. (spans the entire width on small & large screens).
+.generic-history-item-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+
+  &:first-child {
+    padding-top: 2rem;
+  }
+
+  &:last-child {
+    padding-bottom: 2rem;
+  }
+
+  // The vertical timeline.
+  &::after {
+    content: '';
+    position: absolute;
+    display: block;
+    background-color: var(--normal-grey);
+    height: 100%;
+    width: 6px;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  // Single item containers (spans only left OR right on big screens).
+  .generic-history-item-container {
+    position: relative;
+    margin: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 5;
+
+    // The actual 'chat box'.
+    > div {
+      background-color: var(--lighter-grey);
+      width: 450px;
+      position: relative;
+      padding: .5rem 1rem;
+      border-radius: 1rem;
+
+      // Rotated square that makes gives the element a 'chat box' vibe.
+      &::after, &::before {
+        content: '';
+        position: absolute;
+        display: block;
+        width: 20px;
+        height: 20px;
+        top: 50%;
+        transform: translateY(-50%) rotate(45deg);
+        background-color: var(--lighter-grey);
+      }
+
+      // The circle on the timeline.
+      &::before {
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        background-color: var(--light-green);
+      }
+    }
+  }
+
+  // History item that has opposite css for even and odd childs.
+  &:nth-child(odd) .generic-history-item-container {
+    grid-column: 1/2;
+    align-items: flex-end;
+    margin-right: 2rem;
+
+    > div {
+      // Rotated square that makes gives the element a 'chat box' vibe.
+      &::after {
+        right: calc(-10px);
+      }
+
+      // The circle on the timeline.
+      &::before {
+        right: calc(-2rem - 15px);
+        z-index: 7;
+      }
+    }
+  }
+
+  &:nth-child(even) .generic-history-item-container {
+    grid-column: 2/3;
+    margin-left: 2rem;
+
+    > div {
+      // Rotated square that makes gives the element a 'chat box' vibe.
+      &::after {
+        left: -10px;
+      }
+
+      // The circle on the timeline.
+      &::before {
+        left: calc(-2rem - 15px);
+        z-index: 7;
+      }
+    }
+  }
+}
+
+// Styling of the actual content of the history item.
+.generic-history-item-container > div {
+  display: flex;
+  flex-direction: column;
+
+  // Title.
+  .generic-history-item-title-container {
+    font-size: 1.3rem;
+    color: var(--darker-grey);
+  }
+
+  // The date and time.
+  .generic-history-item-date {
+    color: var(--normal-green);
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 1.1rem;
+
+    .date-time {
+      font-size: .9rem;
+      position: relative;
+      padding-left: 1.4rem;
+      font-weight: bold;
+
+      &::before {
+        display: block;
+        content: '';
+        position: absolute;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        left: .5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: var(--normal-grey);
+      }
+    }
+  }
+
+  // The detail link.
+  .generic-history-item-detail {
+    position: absolute;
+    right: .5rem;
+    bottom: .5rem;
+  }
+
+  .generic-history-item-editor {
+    padding-top: 1rem;
+  }
+}
+
+
+// =============
+// Media queries
+// =============
+
+
+// Move timeline from the middle to the left and only place the items on the right side.
+@media only screen and (max-width: 1250px) {
+  .generic-history-item-wrapper {
+    grid-template-columns: 1fr;
+
+    // The vertical timeline.
+    &::after {
+      left: 0;
+    }
+
+    // History item that has opposite css for even and odd childs.
+    &:nth-child(odd) .generic-history-item-container {
+      grid-column: 1/2;
+      align-items: flex-start;
+      margin-left: 2rem;
+
+      > div {
+        // Rotated square that makes gives the element a 'chat box' vibe.
+        &::after {
+          left: calc(-10px);
+        }
+
+        // The circle on the timeline.
+        &::before {
+          left: calc(-2rem - 15px);
+        }
+      }
+    }
+
+    &:nth-child(even) .generic-history-item-container {
+      grid-column: 1/2;
+      margin-left: 2rem;
+
+    }
+  }
+}
+
+// Make the timeline items smaller.
+@media only screen and (max-width: 650px) {
+  
+  .generic-history-item-wrapper {
+    .generic-history-item-container {
+      > div {
+        width: 230px;
+      }
+    }
+  }
+  
+  
+  // Styling of the actual content of the history item.
+  .generic-history-item-container > div {
+    display: flex;
+    flex-direction: column;
+
+    // Title.
+    .generic-history-item-title-container {
+      h3 {
+        font-size: 1.15rem;
+      }
+    }
+    // The detail link.
+    .generic-history-item-detail {
+      position: relative;
+      padding-left: .5rem;
+      padding-top: 1rem;
+    }
+    
+    // The date and time.
+  .generic-history-item-date {
+    font-size: 0.9rem;
+
+    .date-time {
+      font-size: .8rem;
+      padding-left: 1rem;
+
+      &::before {
+        width: 5px;
+        height: 5px;
+        left: .3rem;
+      }
+    }
+  }
+
+    .generic-history-item-editor {
+      padding-top: 0;
+      margin-top: -0.5rem;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+// Move timeline from the middle to the left and only place the items on the right side.
+@media only screen and (max-width: 400px) {
+  .generic-history-item-wrapper {
+     &:nth-child(even) .generic-history-item-container {
+     > div {
+        &::before {
+          left: calc(-1.5rem - 10px);
+          width: 20px;
+          height: 20px;
+        }
+       
+      }
+     }
+    &:nth-child(odd) .generic-history-item-container {
+      margin-left: 1.5rem;
+      > div {
+        &::before {
+          left: calc(-1.5rem - 10px);
+           width: 20px;
+          height: 20px;
+        }
+      }
+    }
+    &:nth-child(even) .generic-history-item-container {
+      margin-left: 1.5rem;
+    }
+  }
+}
+
+
+
+

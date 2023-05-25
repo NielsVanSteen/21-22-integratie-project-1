@@ -1,0 +1,154 @@
+﻿@using UI.MVC.Extensions
+@using Domain.Comment
+@using Domain.User
+@using Microsoft.AspNetCore.Identity
+@using UI.MVC.CloudStorage
+@using UI.MVC.Models.Shared.PopUp
+@model Domain.DocReview.DocReview
+@inject UserManager<User> _userManager
+
+@{
+    ViewBag.Title = @Model.Name;
+    Layout = "_Layout";
+    var user = await _userManager.GetUserAsync(User);
+}
+
+<main>
+    
+    <input type="checkbox" id="toggleCommentsSurvey" class="d-none" @(ViewBag.UserCommentFilter.CloseComments ? "" : "checked")>
+
+    <article class="doc-review-detail-wrapper" id="docreviewContent">
+
+        <!-- Docreview banner image. -->
+        <div class="doc-review-banner-image-container">
+            <img src="@Model.GetBannerImageLink(LandscapeImageSize.LG)" alt="Banner image" class="doc-review-banner-image">
+        </div>
+
+        <!-- Actual doc-review text (including description, written by, ...). -->
+        <article class="doc-review-content-wrapper">
+            <article class="container doc-review-entire-content-wrapper">
+
+                <!-- doc-review title and author. -->
+                <section class="doc-review-content-heading">
+                    <h2>@Model.Name</h2>
+                    <div class="written-by-container">
+                        <p>Geschreven door</p>
+                        <p>@Model.WrittenBy.GetFullName()</p>
+                    </div>
+                </section>
+
+                <!-- doc-review description. -->
+                <section class="doc-review-description-container cke-editor-formatted-content">
+                    <div class="doc-review-text-title">
+                        <h2>Beschrijving</h2>
+                    </div>
+                    <p>@Model.Description</p>
+                </section>
+
+                <!-- Actual doc-review text -->
+                <section class="doc-review-actual-text-container cke-editor-formatted-content">
+                    <div class="doc-review-text-title">
+                        <h2>Inhoud</h2>
+                    </div>
+                    @Html.Raw(@Model.GetContentAsHtmlString())
+                </section>
+            </article>
+        </article>
+    </article>
+
+    <!-- Doc-review comments. & survey container. -->
+    <article class="doc-review-toggle-wrapper">
+        <div class="toggle-visibility-container">
+            <label for="toggleCommentsSurvey">
+                <i class="fa-solid fa-grip-lines-vertical text-secondary"></i>
+            </label>
+        </div>
+
+        <article class="doc-review-toggle-inner-wrapper">
+
+            <!-- The navigation to toggle between comments and surveys. -->
+            <nav class="doc-review-toggle-navigation">
+                <ul>
+                    <li>
+                        <button class="btn-toggle-comments-survey active" data-toggle-type="comments">Reacties</button>
+                    </li>
+                    <li>
+                        <button class="btn-toggle-comments-survey" data-toggle-type="surveys">Enquêtes</button>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- The container of the actual survey and comments content. -->
+            <article class="doc-review-toggle-content-wrapper">
+                <section class="doc-review-toggle doc-review-toggle-comments active">
+
+                    <!--- Filter -->
+                    <div class="user-page-comments-filter-container">
+                        <form asp-action="DocReview" asp-controller="Project" method="POST" id="formFilter">
+                            <partial name="_UserFilter" model="@ViewBag.UserCommentFilter"/>
+                        </form>
+                    </div>
+
+
+                    <partial name="_UserCommentSection.cshtml" model="@Model"/>
+                </section>
+                <section class="doc-review-toggle doc-review-toggle-surveys">
+                    <partial name="_Survey.cshtml" model="@Model"/>
+                </section>
+            </article>
+
+        </article>
+    </article>
+
+
+    @{
+        var createSurveyModel = new PopUpModel
+        {
+            PopUpContainerClass = "article-popup-create-survey",
+            PopUpTitle = "Create survey",
+            PopUpBody = @"
+            <div class='create-survey-container'>
+				<input type='text' name='title' id='title' placeholder='Title' class='form-control'>
+				<input type='text' name='description' id='description' placeholder='Description' class='form-control'>
+                <select name='multipleChoiceAnswer' id='multipleChoiceAnswer' class='form-select'>
+                    <option value='1'>Multiple Choice</option>
+                    <option value='2'>Multiple Answer</option>
+                </select>	
+                <div class='button-container'>			   
+			        <button id='add-option' class='btn btn-success btn-sm'>Add Option</button>
+                </div>
+			    <div id='options-div' class='survey-options-wrapper'>
+    
+				    <div class='option' data-option-id='0'>
+                        <h3>Option 1</h3>
+						<input type='text' name='option-text' id='option-text' placeholder='Option text' class='form-control'>
+						<input type='text' name='option-description' id='option-description' placeholder='Description' class='form-control'>
+
+					    <button class='btn-icon btns-delete' data-option-id='0'>
+						    <i class='fa-solid fa-trash-can'></i>
+					    </button>
+				    </div>
+
+                    <div class='option' data-option-id='1'>
+                        <h3>Option 2</h3>
+						<input type='text' name='option-text' id='option-text' placeholder='Option text' class='form-control'>
+						<input type='text' name='option-description' id='option-description' placeholder='Description' class='form-control'>
+
+					    <button class='btn-icon btns-delete' data-option-id='1'>
+						    <i class='fa-solid fa-trash-can'></i>
+					    </button>
+				    </div>
+
+			    </div>
+		    </div>",
+            ButtonPrimaryClass = "btn-confirm-create-survey",
+            ButtonPrimaryText = "Create",
+            ButtonPrimaryBootstrapType = "btn-success"
+        };
+    }
+</main>
+
+<partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@createSurveyModel"/>
+
+<script src="~/dist/projectDocReview.entry.js"></script>
+<script src="~/dist/docReview.entry.js"></script>

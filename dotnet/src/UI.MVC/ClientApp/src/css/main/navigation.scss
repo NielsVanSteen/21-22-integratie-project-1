@@ -1,0 +1,403 @@
+﻿.navbar {
+  padding-bottom: 0;
+  padding-top: 0;
+  margin: 0 auto;
+
+  .navbar-title-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    /* Project title in the navigation.*/
+    .navbar-brand {
+      text-transform: uppercase;
+      font-family: var(--main-font-sans-serif);
+      color: var(--normal-green);
+      font-weight: 500;
+    }
+
+    /* Project logo next to the title.*/
+    .navbar-logo {
+      height: 2rem;
+      width: 2rem;
+    }
+  }
+}
+
+/* The login/register or user account in the navigation. */
+.navbar-right {
+  margin-left: auto;
+}
+
+.navigation-main-ul {
+  list-style-type: none;
+  display: flex;
+  flex-direction: row;
+  column-gap: .75rem;
+}
+
+
+/*login and registration button in the navigation.*/
+.navigation-main-a {
+  color: var(--normal-green);
+  font-weight: 500;
+  padding: 0.4em;
+  font-size: 1.3em;
+  z-index: 100;
+  text-decoration: none;
+  transition: color 500ms ease 100ms;
+  position: relative;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: none;
+    color: var(--white);
+    transition: color 300ms ease 300ms;
+
+    &::after {
+      width: 100%;
+      height: 100%;
+      //transform: translateX(-50%);
+      transition: width 300ms ease 0ms, height 300ms ease 300ms;
+    }
+  }
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0; // 50%
+    bottom: 0;
+    width: 0%;
+    transition: width 300ms ease 300ms, height 300ms ease 0ms;
+    height: 4px;
+    //transform: translateX(-50%);
+    background-color: var(--dark-green);
+    z-index: -1;
+    border-radius: 8px;
+  }
+}
+
+.navigation-main-a-background {
+  position: relative;
+  color: var(--white);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    display: block;
+    background-color: var(--light-green);
+    border-radius: 8px;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    top: 0;
+    left: 0;
+  }
+  
+}
+
+// Entire container for displaying the user's icon + name in the navigation.
+.navigation-profile-container {
+  position: relative;
+
+  &:hover .navigation-profile-dropdown-container {
+    //height: fit-content;
+    //opacity: 1;
+    max-height: 200px;
+
+    ul {
+      height: 100%;
+      opacity: 1;
+      transition: opacity 300ms ease;
+    }
+  }
+
+  // The user's icon + name.
+  .navigation-profile-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    background-color: var(--dark-green);
+    padding: .3rem .8rem;
+    column-gap: 0.75rem;
+    border-radius: .3rem;
+  }
+
+  img {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    border: 1px solid white;
+  }
+
+  .profile-icon-name {
+    color: var(--white);
+    font-size: 1.2rem;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  // The dropdown with options the user can choose from when logged in.
+  .navigation-profile-dropdown-container {
+    position: absolute;
+    width: 100%;
+    height: fit-content;
+    max-height: 0;
+    //opacity: 0;
+    transition: max-height 300ms ease;
+    border-radius: .3rem;
+    background-color: var(--normal-green);
+
+    ul {
+      height: 0;
+      opacity: 0;
+      list-style-type: none;
+      position: relative;
+      padding: .3rem 1.5rem;
+      overflow: hidden;
+      transition: height 300ms ease;
+      //height: 100%;
+
+      li {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        padding: .15rem 0;
+        
+        form {
+          padding: .3rem 0;
+        }
+
+        button {
+          background-color: transparent;
+          border: none;
+        }
+
+        button, a {
+          text-align: left;
+          text-decoration: none;
+          color: var(--white);
+          position: relative;
+          font-size: 1rem;
+
+          &::after {
+            position: absolute;
+            content: '';
+            display: block;
+            width: 0;
+            transition: width 300ms ease;
+            height: 2px;
+            background-color: var(--white);
+          }
+
+          &:hover {
+            &::after {
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+// ===============================================================
+// Backend Navigation. (only visible for admins & project managers
+// ===============================================================
+.backend-navigation {
+  height: 100%;
+  position: relative;
+  z-index: 10000;
+  background-color: var(--lighter-grey);
+
+  .backend-inner-wrapper {
+    position: sticky;
+    box-shadow: 0px 0px 6px -3px #000000;
+    top: 50px;
+    padding-top: 10px;
+    height: calc(100vh - 50px);
+
+    .backend-inner-container {
+      height: calc(100vh - 80px);
+      position: relative;
+      overflow-y: scroll;
+      //direction: rtl; // Right-to-left direction = place scroll bar on left side. -> child element must have the inverse direction (ltr).
+      width: var(--navigation-width); // Same as aside width in site.scss
+    }
+  }
+}
+
+// A Single section of the backend navigation (Profile/General/Project)
+.backend-navigation-section {
+  padding-bottom: 3rem;
+  //direction: ltr; // parent element has direction rtl (right-to-left) (so the scrollbar is on the left). so this element will change it back to normal.
+
+  h2 {
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    color: var(--darker-grey);
+    padding-left: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  // The actual navigation list.
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+    // A Single navigation link.
+    li {
+      padding: .5rem 0;
+      display: flex;
+      flex-direction: row;
+      position: relative;
+      align-items: center;
+
+      &.backend-navigation-active {
+        background-color: var(--light-green);
+
+        i, svg {
+          color: var(--white);
+        }
+
+        a {
+          color: var(--white);
+        }
+      }
+
+      // Additional description.
+      .backend-navigation-description-container {
+        position: absolute;
+        display: none;
+        top: 100%;
+        z-index: 10;
+
+        p {
+          background-color: var(--darker-grey);
+          color: var(--white);
+          border-radius: .5rem;
+          padding: .5rem;
+          font-size: .75rem;
+          max-width: var(--navigation-width);
+          position: relative;
+
+          &::after {
+            content: '';
+            position: absolute;
+            display: block;
+            width: 14px;
+            height: 14px;
+            background-color: var(--darker-grey);
+            top: -7px;
+            left: 2rem;
+            transform: rotate(45deg);
+          }
+        }
+      }
+
+      // Navigation link icon
+      svg, i {
+        width: 60px;
+        font-size: 2rem;
+        color: var(--dark-green);
+        cursor: pointer;
+
+        &:hover ~ .backend-navigation-description-container {
+          display: block;
+        }
+      }
+
+      // Navigation link
+      a {
+        color: var(--darker-grey);
+        text-transform: capitalize;
+        position: relative;
+
+        &::after {
+          content: '';
+          display: block;
+          position: absolute;
+          width: 0;
+          height: 2px;
+          left: 0;
+          background-color: var(--dark-green);
+          transition: 300ms ease width;
+        }
+
+        //display: none;
+        &:hover {
+          &::after {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+// Media Queries
+@media only screen and (max-width: 1600px) {
+  // Make the Navigation smaller (only the icons will be visible.
+  .backend-navigation {
+    .backend-inner-wrapper {
+      overflow: hidden;
+      width: 70px;
+      transition: width 300ms ease;
+      background-color: var(--lighter-grey);
+    }
+
+    &:hover .backend-inner-wrapper {
+      width: var(--navigation-width);
+    }
+
+    &:hover .backend-navigation-section h2 {
+      font-size: 1.2rem;
+      visibility: visible;
+    }
+  }
+
+  .backend-navigation-section {
+    h2 {
+      font-size: 0;
+      transition: font-size 300ms ease, visibility 100ms ease;
+      visibility: hidden;
+    }
+
+    // Disable the extra information on hover.
+    ul li svg:hover ~ .backend-navigation-description-container {
+      display: none;
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  // Hide the project name title in the header. (only the logo icon will be visible).
+  .navbar .navbar-title-container .navbar-brand {
+    display: none;
+  }
+}
+
+
+@media only screen and (max-width: 400px) {
+  .navigation-profile-info a {
+    font-size: 0.75rem;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+

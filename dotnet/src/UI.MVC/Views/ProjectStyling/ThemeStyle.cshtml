@@ -1,0 +1,60 @@
+﻿@model UI.MVC.Models.ProjectStyling.StyleModel
+
+<!-- Page title.. -->
+<div class="@(@Model.IsGlobalStyle ? "" : "page-title-margin-top")">
+    <partial name="_PageTitle" model="@Model.PageTitleModel"/>
+</div>
+
+<!-- Container element containing all the list items. -->
+<article class="project-styles-list-container mt-4">
+
+    @if (!@Model.IsGlobalStyle)
+    {
+        <section class="project-styles-item-container" data-theme-style-id="0">
+            <section class="color-name-container color-name-container-input">
+                <input type="text" class="input-display-name">
+                 <input type="text" class="input-generic-name">
+            </section>
+            <section class="project-styles-item-color-container">
+                <div class="middle-circle"></div>
+
+                <div class="description-info description-info-4">
+                    <p>Create your own color palette by clicking the quadrants! </p>
+                </div>
+
+                <button class="project-styles-color-item project-styles-color-item-button color-item-1" data-index="0" onclick="document.querySelector('.color-1').click()">
+                    <input type="color" class="input-color-style color-1 d-none">
+                </button>
+                <button class="project-styles-color-item project-styles-color-item-button color-item-2" data-index="1" onclick="document.querySelector('.color-2').click()">
+                    <input type="color" class="input-color-style color-2 d-none">
+                </button>
+                <button class="project-styles-color-item project-styles-color-item-button color-item-3" data-index="2" onclick="document.querySelector('.color-3').click()">
+                    <input type="color" class="input-color-style color-3 d-none">
+                </button>
+                <button class="project-styles-color-item project-styles-color-item-button color-item-4" data-index="3" onclick="document.querySelector('.color-4').click()">
+                    <input type="color" class="input-color-style color-4 d-none">
+                </button>
+            </section>
+        </section>
+    }
+
+    @foreach (var style in @Model.Styles)
+    {
+        <button class="btn-icon @(!Model.IsGlobalStyle ? "" : "btn-color-style-selector")" data-theme-style-id="@style.ThemeStylesId">
+            <section class="project-styles-item-container @(style.ThemeStylesId == @Model.ActiveStyleId && Model.IsGlobalStyle ? "active-style-item" : "")" data-theme-style-id="@style.ThemeStylesId">
+                <section class="color-name-container">
+                    <h3>@style.DisplayName</h3>
+                    <p>@style.GenericName</p>
+                </section>
+                <section class="project-styles-item-color-container">
+                    <div class="middle-circle"></div>
+                    <div class="project-styles-color-item" style="background-color: #@style.ColorLight;"></div>
+                    <div class="project-styles-color-item" style="background-color: #@style.ColorMedium;"></div>
+                    <div class="project-styles-color-item" style="background-color: #@style.ColorDark;"></div>
+                    <div class="project-styles-color-item" style="background-color: #@style.ColorDarkest;"></div>
+                </section>
+            </section>
+        </button>
+    }
+
+</article>

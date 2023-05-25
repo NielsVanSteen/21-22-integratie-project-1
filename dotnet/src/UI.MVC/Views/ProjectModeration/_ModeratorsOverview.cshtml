@@ -1,0 +1,107 @@
+﻿@model System.Collections.Generic.IEnumerable<Domain.User.User>
+
+@using UI.MVC.CloudStorage
+@using UI.MVC.Extensions
+@using UI.MVC.Models.Shared.PopUp
+@using Microsoft.AspNetCore.Identity
+@using Domain.User
+
+@inject UserManager<User> _userManager;
+
+@if (Model.Any())
+{
+    var curUser = await _userManager.GetUserAsync(User);
+
+    @foreach (Domain.User.User user in @Model)
+    {
+        var isAdmin = !user.RegisteredForProjects.Any();
+        <!-- A Single moderator list item. -->
+        <section class="moderator-list-item-container" data-moderator-id="@user.Id">
+
+            <!-- Profile picture and name -->
+            <div>
+                <figure class="moderator-profile-picture">
+                    <img src="@user.GetUserProfilePictureImageLink(SquareImageSize.SM)" alt="PF">
+                    <figcaption>@user.Firstname @user.Lastname</figcaption>
+                </figure>
+            </div>
+
+            <!-- The role. -->
+            <div class="moderator-role">
+                @if (isAdmin)
+                {
+                    <p class="admin">Admin</p>
+                }
+                else
+                {
+                    <p class="project-manager">Project Manager</p>
+                }
+            </div>
+
+            <div class="moderator-assigned-projects">
+                @if (isAdmin)
+                {
+                    <p>All</p>
+                }
+                else
+                {
+                    <i class="fa-solid fa-ellipsis"></i>
+                    <ul>
+                        @if (user.RegisteredForProjects != null)
+                        {
+                            foreach (var project in user.RegisteredForProjects)
+                            {
+                                <li>
+                                    <a asp-action="Index" asp-controller="ProjectManage" asp-route-project="@project.ExternalName.ToLower()">@project.ExternalName</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                }
+            </div>
+
+            <div class="moderator-actions">
+                @if (Domain.User.User.RootUserId != user.Id)
+                {
+                    if (user.Id != curUser.Id)
+                    {
+                        // Only project-managers can be edited.
+                        @if (user.RegisteredForProjects != null && user.RegisteredForProjects.Any())
+                        {
+                            <a class="btn-icon" asp-action="EditModerator" asp-controller="ProjectModeration" asp-route-id="@user.Id">
+                                <i class="fa-solid fa-gear"></i>
+                            </a>
+                        }
+                        <button type="button" data-moderator-id="@user.Id" class="btn-icon btn-delete-moderator" onclick="event.preventDefault()">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    }
+                }
+                else
+                {
+                    <span class="badge bg-danger">Root User</span>
+                }
+            </div>
+
+        </section>
+    }
+    <div class="error-messages-container">
+        <div class="error-messages-container-list"></div>
+    </div>
+}
+
+@{
+    var deleteModel = new PopUpModel
+    {
+        PopUpContainerClass = "article-popup-delete-moderator",
+        PopUpTitle = "Delete Moderator?",
+        PopUpBody = " <p class='alert alert-warning'>Are you sure you want to delete this Moderator? This action is irreversible.</p>" +
+                    "<p class='alert alert-warning'><b>Note,</b> This will delete the entire history of the moderator!</p>",
+        ButtonPrimaryClass = "btn-confirm-delete-moderator",
+        ButtonPrimaryText = "Delete",
+        ButtonPrimaryBootstrapType = "btn-danger"
+    };
+}
+<partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@deleteModel"/>
+
+<script src="~/dist/moderatorsOverview.entry.js" defer></script>

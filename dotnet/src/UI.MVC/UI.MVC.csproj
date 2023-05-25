@@ -1,0 +1,100 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>disable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <IsPackable>false</IsPackable>
+        <MpaRoot>ClientApp\</MpaRoot>
+        <WWWRoot>wwwroot\</WWWRoot>
+        <DefaultItemExcludes>$(DefaultItemExcludes);$(MpaRoot)node_modules\**</DefaultItemExcludes>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BL\BL.csproj" />
+        <ProjectReference Include="..\Domain\Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspose.PDF" Version="22.5.0" />
+        <PackageReference Include="Google.Cloud.Storage.V1" Version="3.7.0" />
+        <PackageReference Include="Microsoft.AspNet.SignalR" Version="2.4.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="6.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="6.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="6.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.0" />
+<!--        Never Upgrade RuntimeCompilation NuGet package to 6.0.4 because then dotnet will be unable to locate the routing data-->
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="6.0.0" />
+        <PackageReference Include="sautinsoft.pdffocus" Version="8.4.5.18" />
+        <PackageReference Include="SendGrid" Version="9.25.3" />
+        <PackageReference Include="ServiceStack.Text" Version="6.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Don't publish the MPA source files, but do show them in the project files list -->
+        <Content Remove="$(MpaRoot)**" />
+        <None Remove="$(MpaRoot)**" />
+        <None Include="$(MpaRoot)**" Exclude="$(MpaRoot)node_modules\**" />
+    </ItemGroup>
+
+    <Target Name="NpmInstall" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(MpaRoot)node_modules') ">
+        <!-- Ensure Node.js is installed -->
+        <Exec Command="node --version" ContinueOnError="true">
+            <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+        </Exec>
+        <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+        <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+        <Exec WorkingDirectory="$(MpaRoot)" Command="npm install" />
+    </Target>
+
+    <Target Name="NpmRunBuild" BeforeTargets="Build" DependsOnTargets="NpmInstall">
+        <Exec WorkingDirectory="$(MpaRoot)" Command="npm run build" />
+    </Target>
+
+    <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+        <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+        <Exec WorkingDirectory="$(MpaRoot)" Command="npm install" />
+        <Exec WorkingDirectory="$(MpaRoot)" Command="npm run build" />
+
+        <!-- Include the newly-built files in the publish output -->
+        <ItemGroup>
+            <DistFiles Include="$(WWWRoot)dist\**" />
+            <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+                <RelativePath>%(DistFiles.Identity)</RelativePath>
+                <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+                <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            </ResolvedFileToPublish>
+        </ItemGroup>
+    </Target>
+
+    <Target Name="NpmClean" BeforeTargets="Clean">
+        <RemoveDir Directories="$(WWWRoot)dist" />
+        <RemoveDir Directories="$(MpaRoot)node_modules" />
+    </Target>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="SpecFlowWebApi.Specs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\User\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\ProjectManager\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Home\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Home\Privacy.cshtml" />
+    </ItemGroup>
+
+</Project>

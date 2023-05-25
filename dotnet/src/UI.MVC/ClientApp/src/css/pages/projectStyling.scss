@@ -1,0 +1,198 @@
+﻿// Container element containing all the color styles.
+.project-styles-list-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: 2.5rem;
+  row-gap: 2.5rem;
+
+  // Single color item container.
+  .project-styles-item-container {
+    position: relative;
+    cursor: pointer;
+    transition: transform 300ms ease;
+
+    &.active-style-item {
+      transform: scale(1.1);
+
+      .color-name-container {
+        background-color: var(--dark-grey);
+        box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.75);
+      }
+
+      .project-styles-item-color-container {
+        box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.75);
+      }
+
+      &::after {
+        content: 'Selected';
+        display: block;
+        position: absolute;
+        background-color: var(--dark-grey);
+        color: var(--white);
+        z-index: 10;
+        top: 0;
+        left: 0;
+        padding: .2rem;
+        font-size: .8rem;
+        border-radius: .3rem;
+      }
+    }
+
+    // Container element containing the name of the color scheme.
+    .color-name-container {
+      position: absolute;
+      z-index: 5;
+      padding: .3rem;
+      border-radius: .5rem;
+      color: var(--white);
+      background-color: var(--light-grey);
+      min-width: 100%;
+      bottom: -1rem;
+      text-align: center;
+      right: 0;
+      transition: background-color 300ms ease, box-shadow 300ms ease;
+
+      h3 {
+        font-size: 1rem;
+      }
+
+      p {
+        font-size: .75rem;
+      }
+    }
+
+    // Container containing the 4 colors for style.
+    .project-styles-item-color-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      transition: box-shadow 300ms ease;
+
+      .description-info {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 90%;
+        display: none;
+        background-color: var(--darker-grey);
+        border-radius: .3rem;
+        padding: .3rem;
+        color: var(--white);
+        font-size: .8rem;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        &:hover {
+          display: block;
+        }
+      }
+
+      .middle-circle {
+        box-shadow: inset 0 0 4px 2px rgba(0, 0, 0, 0.75);
+        position: absolute;
+        z-index: 1;
+        display: block;
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        background-color: var(--white);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        &:hover ~ .description-info {
+          display: block;
+        }
+
+      }
+
+      // The div for a single color.
+      .project-styles-color-item {
+        height: 100px;
+        margin: 0;
+        width: 100px;
+        display: inline-block;
+      }
+    }
+  }
+}
+
+.project-styling-wrapper {
+  .status-message-container {
+    margin-top: 30px;
+  }
+}
+
+.save-container {
+  margin-top: 35px;
+}
+
+
+// ==================================
+// The create your own style selector
+// ==================================
+.project-styles-list-container {
+  .project-styles-item-container {
+    .color-name-container-input {
+      display: flex;
+      bottom: -1.5rem;
+      align-items: center;
+      justify-content: center;
+      row-gap: .2rem;
+      flex-direction: column;
+      margin-top: 50px !important;
+
+      input[type=text] {
+        width: 100px;
+        border: 1px solid var(--dark-grey);
+        background-color: transparent;
+        font-size: 0.8rem;
+      }
+    }
+
+  }
+}
+
+
+.project-styles-color-item-button {
+  background-color: var(--lighter-grey);
+  border: 1px solid var(--darker-grey);
+  box-sizing: content-box;
+
+  &.color-item-1,
+  &.color-item-2 {
+    border-top: none;
+  }
+  &.color-item-2,
+  &.color-item-4 {
+    border-right: none;
+  }
+  &.color-item-1,
+  &.color-item-3 {
+    border-left: none;
+  }
+  &.color-item-3,
+  &.color-item-4 {
+    border-bottom: none;
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

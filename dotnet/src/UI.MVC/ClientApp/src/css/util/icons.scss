@@ -1,0 +1,22 @@
+﻿// ==========================
+// Font awesome default icons
+// ==========================
+i, svg {
+  color: white;
+  font-size: .9rem;
+  padding: .3rem;
+  border-radius: .3rem;
+  &:hover {
+    cursor: pointer;
+  }
+}
+.fa-trash-can {
+  background-color: var(--bs-danger);
+}
+.fa-plus, .fa-image {
+  background-color: var(--light-green);
+}
+
+.fa-circle-check {
+  background-color: var(--normal-green);
+}

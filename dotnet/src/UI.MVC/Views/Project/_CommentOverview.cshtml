@@ -1,0 +1,136 @@
+﻿@using BL.Comment
+@using BL.DocReview
+@using Domain.User
+@using Microsoft.AspNetCore.Identity
+@using UI.MVC.CloudStorage
+@using UI.MVC.Extensions
+@using UI.MVC.Identity
+@model Domain.Comment.ReactionGroup
+@inject ICommentManager _commentService;
+@inject IEmojiManager _emojiManager;
+@inject UserManager<User> _userManager;
+
+@{
+    // variables that we need to print an entire comment.
+    var user = await _userManager.GetUserAsync(User);
+    var quote = Model.GetQuote();
+    var editedBy = "";
+    if (Model.EditedByModerator())
+    {
+        editedBy = "(Gewijzigd door Mod)";
+    }
+    
+    // Fill a list with all the tags a project can have.
+    //Print all the data of the comment.
+    <section class="single-comment comment-container comment-user-page-container" data-comment-id="@Model.CommentId">
+        <!-- Profile picture. -->
+        <div class="comment-row comment-row-user-page">
+            <figure>
+                <img src="@Model.User.GetUserProfilePictureImageLink(SquareImageSize.MD)" alt="PF">
+            </figure>
+
+            <!-- Name and date. -->
+            <div class="comment-writer-date-wrapper">
+                <h2>@_userManager.GetFullName(@Model.User)</h2>
+                @if (Model.User.IsModerator())
+                {
+                    <span class="badge bg-secondary">Moderator</span>
+                }
+                <p class="comment-date">@Model.GetFirstHistory().EditedOn.GetPostedOn(FormatExtensions.Language.Dutch)</p>
+            </div>
+        </div>
+
+        <!-- Shows the public tags if there are any -->
+        @if (@Model.CommentTags.Count != 0)
+        {
+            if (Model.HasPublicTag())
+            {
+                <section class="comment-tags-wrapper comment-hover-wrapper">
+                    <div class="icon-container">
+                        <i class="fa-solid fa-tags"></i>
+                    </div>
+                    <div class="comment-tags-container comment-hover-active-container">
+                        <ul class="comment-tags" data-comment-id="@Model.CommentId">
+                            @foreach (var tag in Model.CommentTags)
+                            {
+                                if (tag.ProjectTag.IsPublic)
+                                {
+                                    // Print the tag and remove it from the projectTags list.
+                                    <li class="tag" data-comment-id="@Model.CommentId" data-tag-id="@tag.ProjectTagId">
+                                        <p>@tag.ProjectTag.Name </p>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </section>
+            }
+        }
+
+        <!-- Shows the comment actions. -->
+        <section class="comment-tags-wrapper comment-actions-user-page-wrapper comment-hover-wrapper">
+            <div class="icon-container">
+                <i class="fa-solid fa-gear"></i>
+            </div>
+            <div class="comment-tags-container comment-hover-active-container">
+                @if (user != null && user.Id == @Model.UserId)
+                {
+                    <button class="edit-button btn-icon btn-edit" data-comment-id="@Model.CommentId"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button class="save-button btn-icon btn-save" data-comment-id="@Model.CommentId"><i class="fa-solid fa-circle-check"></i></button>
+                    <button class="remove-button btn-icon" data-comment-id="@Model.CommentId"><i class="fa-solid fa-trash-can"></i></button>
+                }
+                else
+                {
+                    <button class="report-button btn btn-danger btn-sm" data-comment-id="@Model.CommentId">Melden</button>
+                }
+            </div>
+        </section>
+
+        <!-- Shows the quote if there is one -->
+        @if (!string.IsNullOrEmpty(quote) && Model.PlacedOnReactionGroupId == null)
+        {
+            <section class="comment-quote-container">
+                <p>
+                    Commented on
+                    <button class="mark-button btn-icon" data-html="@Model.GetQuoteHtml()">
+                        <span>'@Model.GetQuote(16)'</span>
+                    </button>
+                </p>
+            </section>
+        }
+
+        <!-- Shows the comment text -->
+        <section class="comment-text-container" data-comment-id="@Model.CommentId">
+            @if (Model.PlacedOnReactionGroupId != null)
+            {
+                <span>@Model.GetQuote(16)</span>
+            }
+            <p class="comment-text" data-comment-id="@Model.CommentId">@Model.CommentText</p>
+            <p class="edited-by">@editedBy</p>
+        </section>
+
+        @{
+            var map = _commentService.GetEmojisOfComment(@Model.CommentId, user).ToList();
+        }
+        <!-- Shows the emojis if the comment has them -->
+        <div>
+            <section class="comment-emoji-wrapper">
+                <ul class="emojis-list" data-comment-id="@Model.CommentId">
+                    <li class="li-more-emoji">
+                        <button class="more-emoji-button btn-icon" data-comment-id="@Model.CommentId">
+                            <i class="fa-solid fa-face-smile-beam"></i>
+                        </button>
+                    </li>
+                    @foreach (var kv in map)
+                    {
+                        <li class="shown-emoji @(kv.HasUserLikeThatEmoji ? "marked-emoji" : "") " data-comment-id="@Model.CommentId" data-emoji-code="@kv.EmojiCode">
+                            @kv.Count.FormatNumber() <button class="add-emoji-button btn-icon" data-comment-id="@Model.CommentId" data-emoji-id="@kv.EmojiId">@Html.Raw("&#" + kv.EmojiCode + ";")</button>
+                        </li>
+                    }
+                </ul>
+            </section>
+        </div>
+        <!-- Option buttons: edit, remove, report -->
+
+    </section>
+}

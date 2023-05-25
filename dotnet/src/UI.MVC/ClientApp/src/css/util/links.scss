@@ -1,0 +1,25 @@
+.basic-link {
+  text-decoration: none;
+  color: var(--black);
+}
+
+a {
+  text-decoration: none;
+}
+
+.default-link {
+  color: var(--white);
+  background-color: var(--normal-green);
+  font-size: .85rem;
+  padding: .4rem 1rem;
+  border-radius: .3rem;
+  transition: background-color 300ms ease;
+  &:hover {
+    color: var(--white);
+    background-color: var(--light-green);
+  }
+}
+
+.fa-pen-to-square {
+  background-color: var(--normal-green);
+}

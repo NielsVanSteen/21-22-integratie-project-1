@@ -1,0 +1,135 @@
+﻿// ============
+// Main wrapper
+// ============
+.project-moderation-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 350px;  
+  grid-column-gap: 2rem;
+  height: 100%;
+}
+
+
+
+
+
+
+// =======================================
+// Wrapper displaying the list of projects
+// =======================================
+
+// The container displaying all the projects.
+.projects-list {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+  // Container div of the create project button.
+  .create-project-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  .projects-list-inner {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+  }
+}
+
+
+// ==============
+// Create Project
+// ==============
+.create-project-images {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+
+
+
+
+// =============
+// Media queries
+// =============
+
+// Place the filter above the projects.
+@media only screen and (max-width: 1800px) {
+  .project-moderation-wrapper {
+    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  .filter-container {
+    position: static;
+    margin-bottom: 2rem;
+  }
+}
+
+// Remove the project banner image on smaller devices.
+@media only screen and (max-width: 1150px) {
+  .list-item-wrapper {
+    
+    // Project banner image.
+    .list-item-banner-image-figure {
+      width: 0;
+      height: 0;
+      display: none;
+    }
+    .list-item-information-container  {
+      p {
+        margin-left: 0;
+        padding-left: 1rem;
+      } 
+    }
+  }
+}
+
+// Media Query creating a project -> images will be displayed underneath each other.
+@media only screen and (max-width: 1050px) {
+  .create-project-images {
+    flex-direction: column;
+    justify-content: space-between;
+    .description-wrapper {
+      max-width: 300px;
+    }
+    .input-file-upload-landscape {
+      .description-wrapper {
+        max-width: calc(300px / 9 * 16);
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  // Button to create a project is now full width.
+  .projects-list {
+    .create-project-container {
+      display: block;
+      button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// ===================
+// Create Project Page
+// ===================
+.create-project-wrapper {
+  h2 {
+    color: var(--darker-grey); 
+  }
+}
+
+
+
+
+
+
+
+
+
+
+

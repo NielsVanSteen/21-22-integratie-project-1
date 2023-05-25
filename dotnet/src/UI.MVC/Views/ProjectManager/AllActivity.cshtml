@@ -1,0 +1,92 @@
+﻿@using Domain.User
+@using Microsoft.AspNetCore.Identity
+@using BL.Comment
+@using BL.DocReview
+@using BL.Project
+@using UI.MVC.Extensions
+@using UI.MVC.Identity
+@using UI.MVC.Models.Shared
+
+@inject UserManager<User> _userManager;
+@inject ICommentHistoryManager _commentHistoryManager;
+@inject IDocReviewHistoryManager _docReviewHistoryManager;
+@inject IProjectHistoryManager _projectHistoryManager;
+@inject IProjectManager _projectService;
+
+
+@{
+    Layout = "_BackEndNavigation";
+    
+    var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+    var project = _projectService.GetProjectByExternalName(projectName);
+}
+
+<article class="project-wide-activity-wrapper container">
+    
+    <!-- Breadcrumbs. -->
+    @{
+        var breadCrumbs = new BreadcrumbsModel()
+        {
+            BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+            {
+                new Tuple<string, string, string, string, string>("fa-solid fa-house", @project.ExternalName, "ProjectManage", "Index", @project.ExternalName).ToValueTuple(),
+                new Tuple<string, string, string, string, string>("fa-solid fa-list-check", "Activity", "ProjectManager", "Index", @project.ExternalName).ToValueTuple(),
+                new Tuple<string, string, string, string, string>("fa-solid fa-earth-europe", "All Activity", "ProjectManager", "AllActivity", @project.ExternalName).ToValueTuple()
+            },
+            ActiveItemIndex = 3
+        };
+    }
+    <partial name="_Breadcrumbs" model="@breadCrumbs"/>
+
+    <!-- Page Title ProjectHistory -->
+    <article class="project-page-header-container project-page-header-container-small-vertical">
+        <div class="page-title-wrapper">
+            <h2>Project Activity</h2>
+            <div class="description">
+                <p>The history of the current project.</p>
+            </div>
+        </div>
+    </article>
+
+    <!-- Project histories. -->
+    @{
+        var projectHistories = _projectHistoryManager.GetProjectHistoriesBydProject(project, true, true);
+    }
+    <partial name="_ProjectHistoryList" model="@projectHistories"/>
+
+
+    <!--Page title CommentHistory. -->
+    <article class="project-page-header-container project-page-header-container-small-vertical">
+        <div class="page-title-wrapper">
+            <h2>Comment Activity</h2>
+            <div class="description">
+                <p>All the activity on the comments.</p>
+            </div>
+        </div>
+    </article>
+
+    <!-- Comment histories. -->
+    @{
+        var commentHistories = _commentHistoryManager.GetCommentHistoriesBydProject(project, true, true);
+    }
+    <partial name="_CommentHistoryList" model="@commentHistories"/>
+
+
+    <!--Page title DocReviewHistory. -->
+    <article class="project-page-header-container project-page-header-container-small-vertical">
+        <div class="page-title-wrapper">
+            <h2>DocReview Activity</h2>
+            <div class="description">
+                <p>All the activity on the doc-reviews.</p>
+            </div>
+        </div>
+    </article>
+
+    <!-- Comment histories. -->
+    @{
+        var docReviewHistories = _docReviewHistoryManager.GetDocReviewHistoriesBydProject(project, true, true);
+    }
+    <partial name="_DocReviewHistoryList" model="@docReviewHistories"/>
+
+
+</article>

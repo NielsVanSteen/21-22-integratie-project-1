@@ -1,0 +1,64 @@
+### Creating a Rating.
+POST https://localhost:5001/api/users
+Content-Type: application/json
+
+{"firstName": "John", "lastName": "Doe", "email": "John.Doe@gmail.com"}
+
+### Creating a comment.
+POST https://localhost:5001/api/Comments/AddComment
+Content-Type: application/json
+
+{"CommentText":"Dit is een comment op comment 1","BeginChar":null,"EndChar":null,"CommentTags":null,"CommentHistory":null,"Reactions":[],"PlacedOnComment":{"CommentText":"Dit is weer een comment","BeginChar":null,"EndChar":null,"CommentTags":null,"CommentHistory":null,"Reactions":[],"PlacedOnComment":null,"CommentId":3,"User":{"Firstname":"sander","Lastname":"Verheyen","RegisteredForProjects":null,"UserPropertyValues":null,"Id":"1","UserName":null,"NormalizedUserName":null,"Email":"sander.verheyen@student.kdg.be","NormalizedEmail":null,"EmailConfirmed":false,"PasswordHash":"sander","SecurityStamp":"a6531c20-ca0a-48b0-993e-d101791f6373","ConcurrencyStamp":"67f72580-b497-43ef-b55a-a48715ea9ccf","PhoneNumber":null,"PhoneNumberConfirmed":false,"TwoFactorEnabled":false,"LockoutEnd":null,"LockoutEnabled":false,"AccessFailedCount":0},"DocReview":null},"CommentId":0,"User":{"Firstname":"niels","Lastname":"Van Steen","RegisteredForProjects":null,"UserPropertyValues":null,"Id":"2","UserName":null,"NormalizedUserName":null,"Email":"niels.vansteen@student.kdg.be","NormalizedEmail":null,"EmailConfirmed":false,"PasswordHash":"niels","SecurityStamp":"13e76071-24ec-4905-97e5-73231f575643","ConcurrencyStamp":"a9c8f9f9-2c15-43bb-91d3-d6b9970474b6","PhoneNumber":null,"PhoneNumberConfirmed":false,"TwoFactorEnabled":false,"LockoutEnd":null,"LockoutEnabled":false,"AccessFailedCount":0},"DocReview":{"DocReviewId":1,"AvailableEmoji":null,"Name":"doopcharter","Description":"doopcharter","BannerImagePath":"/image.jpg","DocReviewText":"some text","WrittenBy":{"Firstname":"sander","Lastname":"Verheyen","RegisteredForProjects":null,"UserPropertyValues":null,"Id":"1","UserName":null,"NormalizedUserName":null,"Email":"sander.verheyen@student.kdg.be","NormalizedEmail":null,"EmailConfirmed":false,"PasswordHash":"sander","SecurityStamp":"a6531c20-ca0a-48b0-993e-d101791f6373","ConcurrencyStamp":"67f72580-b497-43ef-b55a-a48715ea9ccf","PhoneNumber":null,"PhoneNumberConfirmed":false,"TwoFactorEnabled":false,"LockoutEnd":null,"LockoutEnabled":false,"AccessFailedCount":0},"Surveys":null,"TimeLinePhase":null,"DocReviewSettings":{"IsCommentingAllowed":true,"IsSubCommentingAllowed":true,"AreEmojiOnCommentsAllowed":true,"IsClosedForComments":false,"IsLogInRequired":false}}}
+
+### Testing authorized endpoint.
+GET https://localhost:5001/api/ProjectsModeration/GetProjectByFilter
+Cookie: .AspNetCore.Identity.Application=CfDJ8PSmidE9ptpChuPpRCbbxiEmbuX-q-tgd9Y6Rer8PNLNf3IkbGDAW_C4KeVwp2cogtQXY3AnQDYmPCwpEKLJwt5Pjuimrn4Y-_3d-rrUHklAGF0MPfmtARD1ok8vS9mkARkbnbRHxQhUY_VGNL-5ZDlGEMxHkI5ejQmUSFn_v90vTHirsqBCmcRk1xNJAKVnW7w-Nz2vSDLaBmrdvzx9o2VgPX3ACgb7Sn_68d2iLXfrCMHkRV5z7gjg-CgLlSgGuGtASwkEz9_kpMFob-jvMeO4d5BEzuiJG4xMoJqYBHf8RYFJDBxxphkbQoeJusIi677v9jj2OsgvvLh5wG7kS_a47-fOaGJLq1mhOoWbeHp1Y76O9FZ-RD8OB9BDV1zGi5J9oB-ga_S_m6-MpMXjONYXehFPTims7MuDYHjh8SfhMCTxpl3Z_mljppI2-zTwCqKD_MtZ-SQULQSBEqSbFQssLnCBLawq-nUcIjXLB2IH6XmaBMwANppAltVo9T6Bg_Xm3LRgqrckosF-ZazonQ_x0RtC_gVfcTNsXyZM8yKIbnq6Q_D9JMFrRLhdb0Rm86zRZyiw8qBa40dmB8poRZkYZKdJ1jqBQTl-AKqS_HvLH9K2qSC1yupzysjdxXzV5qXa7pj3IwFIO7b5ejtcmO4V7efDFKEVI_uDeo5hKSlkllHEDBgWnvmapiqJ7DxpcD5PmSQrJE5X7QOy2W5vo2lXWb52BYCYN_yPCaGMT3DNiOe_z7HwsxQ2LZBZ2uK0_A93e5Ia78ntIrWXYc1TyNG7GVDx87jfweWxHR4DK4pJNeN9AkPG0zfrlERq9oWG-VXf-WOyPuaGI0AbmK0UbnnUSomx8UhgKXXbftTCXg6_
+
+### Getting comments
+GET http://localhost:5000/api/Comments/GetCommentByDocReviewAndroid/1
+
+### Testing create user property name
+POST https://localhost:5001/api/groenpunt/Registrations/Create
+Cookie: .AspNetCore.Identity.Application=CfDJ8PSmidE9ptpChuPpRCbbxiEQW9bE5Mxc4gipVHb4NDvwua6xmbUUNdIMi4LKpL6jg2DZKjTMDGu9qwUPfyaPISYx1hPep0ncr_uwVaHluRqMg-z2Ot7Xs1cQGFoPpeIbVj--zYIjZey8CCeSBIR3wuQ-wl3gN5Z-KIKviJOnDjaY91RbFd2p5oloYRb1Y-EpG-OQT3wmPoSp9Jba-kr9x81tuE5YIcnJwG04DBZRJLD1EbWBW3NKg9Ld_3oSRw6JkY42WKFzOZekr7RRlh15hXbumu1_S3H1uZWbAA9wcARwGGUPTKHXobtM0PYAvC8pSggL7CGAqv3CK36Z4n1aAEBGSryUt873rTLnoaGb__NBOUv4h_xin8W30N3nJMuVfjfjdOH5x_jPMN9HSceJ8NzreOXuJDr8XNLat4gzZgX9YRWYa15bQLgESkkfNGeDhhFqD1BEJpo12QH2ujLJARsMDuFP3NRPGFdy6F4rDxrEmnLFIRfj12qnRRWmWjaXbUAzXDBh2b5Foy9ISifE-Hd3tKF2fcDHi9J33pcmjGyB6ZIUufUU1W_7vU4-CT-Put385QSXJ1d5po4qQCGpJOszcgmkpAvIHcxtaPyueBMmqP5RpoURcWoEp-AohX9rDpea7FEAuvnvrIGcZRJhvYFHNmKVMW6WdLdxDs-D8bwbsfYsIlFWJ09kbIi3bjxn0sYXBC5ZZ3KXvuPPmy75AzvLrPTF5mfGgIbqPL40JlIH2mwK8EzKNnpQvN32702__E-ad-UxtCp5o6mehcc1k1BnuShL2K04qeq_4ClXkECUwR3_CMF8uRFn3PfleFfkknJ_OpPtCYmtQLQagcf2xxIbtinEL07tImnGPoEuwUGZ
+Content-Type: application/json
+
+{"userPropertyLabel": "sdd", "description": "dsd","isRequired": true,"userPropertyType": 0,"projectExternalName": "groenpunt"}
+
+### Getting comments
+PUT http://localhost:5000/api/DocReviews/UpdateDocReviewClosed/2
+
+### Getting DocReview
+GET http://localhost:5000/api/admin/DocReviews/GetDocReviewsByProject/1
+
+### Update DocReview
+PUT http://localhost:5000/api/DocReviews/UpdateDocReviewClosed/1
+
+### Delete Tag
+DELETE https://localhost:5001/api/groenpunt/AnalyseComments/DeleteTag/1
+
+### Project statistics
+GET https://localhost:5001/api/groenpunt/ProjectStatistics/Overview/1
+
+### Publish DocReview
+POST https://localhost:5001/api/groenpunt/ProjectsManage/PublishDocReview/3
+//Cookie: .AspNetCore.Identity.Application=CfDJ8PypMhsquVFNhfxoK8GDow2w1lDRg71GFB7jLX1EHhbjPKLtkUHP7H6vYBZuhVLifSQUhDi55IolEFlF9ALEPNDsFz_OHKRgM9vgzwFZZbmmqYpdwD5l54pKLt5d9ghVad-vgrUL9nXKy4s6Igd_7qLPtELbuR6cTm24gH5wADd_s3RWy3IbMbzYflG-6_im9U8UuZ4Wkzhn41TD5ZXhxqnkgzQ5h3LO1NJZiz4l7uuFLQ_44oysFiZyvXEwcoPS1x11OXZ8BOs-M11QhZN5Yf1yrNNIc8r72BI7I9xdCo4VxJ-1500lLp6XMBo8Wscrl0U_bgyLM5bLA7u9P1mzRfIFYcoWOtQqKCUlOEeM46hxXiIcAFbfRc3hOC2zPoK8UpBXrOvbvSS3zyUmtI4tA0GRmYXiGKRXqSHFVx0flv5oP9RHdm-tUTAwPZLqSuE-V52vY8qPF2yaQlbkg6oTSrDkngDbpDaMoQB3e3SlEJeFnYSeRIWUH6fFvSj9TrQk9TjXNjGrGAreBAjXV0QhRDM3iixS0AeMt6DKW7ufzijxHJJpGQ6iJYhhzhTubXICtOA97C-CyUSWutNjp2ekO8g5sHEcae6-_Gw2r2bBfVxu2fvnZoV5I1l3Fz64MEcRAkqrnhPaXrdY82l_GBaTNIUNHXCsdz1zyzY99TbYpFOUqIQZC8zPDgzlF8IAe4aWbG4U0QYQd6tH6gS-AIxoclrLH98lI9GY5B_4jFY2BEuVwax0eom8kBAppSB7rgPE4aYOMQd-goozl83qXozj7tl09na07CGQaHaEKxtKGO0XazIabAQRINF783SOs9F7tkbSLK1hf27CyV5obnzdxoR8DJJbthu0IJpPjKuQvHXH7YsQK-ZgOE1TfQ6YrjtnOfQ32hOqgih3SHwAD0-S3qI
+
+### Create Comment
+POST https://localhost:5001/api/groenpunt/Comments/CreateComment
+
+### Publish docreview
+PUT http://localhost:5000/api/DocReviews/PublishDocReview/11
+
+
+### Get Docreview
+GET https://localhost:5001/api/groenpunt/DocReviews/3
+
+### Get android user
+GET https://localhost:5001/api/user/AndroidUser/Niels.van.steen@outlook.com
+
+
+### Export comments to json
+GET https://localhost:5001/api/groenpunt/AnalyseComments/ExportCommentsJson
+
+### Getting comments
+GET https://localhost:5001/api/admin/Comments/GetCommentByDocReviewAndroid/1

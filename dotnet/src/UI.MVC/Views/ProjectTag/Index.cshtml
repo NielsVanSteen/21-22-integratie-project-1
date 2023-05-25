@@ -1,0 +1,143 @@
+﻿@using UI.MVC.Models.Shared.PopUp
+@using UI.MVC.Models.Shared
+@using BL.Project
+@using UI.MVC.Identity
+@model System.Collections.Generic.IEnumerable<Domain.Project.ProjectTag>
+
+@inject IProjectManager _projectManager;
+
+@{
+    Layout = "_BackEndNavigation";
+
+    var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+    var project = _projectManager.GetProjectByExternalName(projectName);
+}
+
+<!-- The container, containing the list with all the tags. -->
+<article class="project-tags-list-container container">
+
+    <!-- Breadcrumbs. -->
+    @{
+        var breadCrumbs = new BreadcrumbsModel()
+        {
+            BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+            {
+                new Tuple<string, string, string, string, string>("fa-solid fa-house", @project.ExternalName, "ProjectManage", "Index", @project.ExternalName).ToValueTuple(),
+                new Tuple<string, string, string, string, string>("fa-solid fa-tags", "Tags", "ProjectTag", "Index", @project.ExternalName).ToValueTuple(),
+            },
+            ActiveItemIndex = 2
+        };
+    }
+    <partial name="_Breadcrumbs" model="@breadCrumbs"/>
+
+    <!-- Small header on the project-tag page displaying actions the user can take. -->
+    <article class="project-page-header-container">
+        <h2>Tags</h2>
+        <button class="btn btn-success btn-create-tag">Create Tag</button>
+    </article>
+
+    <div class="error-messages-container-list"></div>
+
+    @foreach (var tag in @Model)
+    {
+        <!-- A single project tag container. -->
+        <section class="project-list-item project-tag-item-list" data-tag-id="@tag.ProjectTagId">
+
+            @{
+                var textColor = tag.IsTextWhite ? "white" : "black";
+            }
+
+            <div class="project-list-title">
+                <p class="project-list-name" style="color: @textColor; background-color: @tag.Color;">
+                    <input type="text" value="@tag.Name" style="color: @textColor">
+                </p>
+            </div>
+
+            <div class="project-tag-color-picker">
+                <input type="color" class="form-control form-control-color" value="@tag.Color">
+            </div>
+
+            <!-- Container for the public/private select. -->
+            <div class="project-list-select-container">
+
+                <select class="form-select select-public">
+                    <!option value="public" @(tag.IsPublic ? "selected" : "")>Public</!option>
+                    <!option value="private" @(!tag.IsPublic ? "selected" : "")>Private</!option>
+                </select>
+            </div>
+
+            <!-- Container for the black/white text. -->
+            <div class="project-list-select-container">
+                <select class="form-select select-text-color">
+                    <!option value="white" @(tag.IsTextWhite ? "selected" : "")>White Text</!option>
+                    <!option value="black" @(!tag.IsTextWhite ? "selected" : "")>Black Text</!option>
+                </select>
+            </div>
+
+            <!-- Container for the actions the user can take. -->
+            <div class="project-list-options-container">
+                <div class="project-tag-edit-container">
+                    <button type="button" class="btn-icon save-edit-tag-icon" data-tag-id="@tag.ProjectTagId" onclick="event.preventDefault()">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                </div>
+                <div class="project-tag-delete-container">
+                    <button type="button" class="btn-icon delete-tag-icon" data-tag-id="@tag.ProjectTagId" onclick="event.preventDefault()">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+
+                </div>
+            </div>
+
+        </section>
+    }
+
+</article>
+
+
+@{
+    var deleteModel = new PopUpModel
+    {
+        PopUpContainerClass = "article-popup-delete-tag",
+        PopUpTitle = "Delete Tag?",
+        PopUpBody = " <p class='alert alert-warning'>Are you sure you want to delete this tag? This action is irreversible.</p>" +
+                    "<p class='alert alert-warning'><b>Note,</b> this will also delete this tag on all the comments it was assigned.</p>",
+        ButtonPrimaryClass = "btn-confirm-delete-tag",
+        ButtonPrimaryText = "Delete",
+        ButtonPrimaryBootstrapType = "btn-danger"
+    };
+    var createModel = new PopUpModel
+    {
+        PopUpContainerClass = "article-popup-create-tag",
+        PopUpTitle = "Create Tag",
+        PopUpBody = "<section class='project-list-item'>                                                                   " +
+                    "	<input type='text' class='form-control' id='createTagName'>                                        " +
+                    "	<input type='color' class='form-control form-control-color' id='createTagColor'>                   " +
+                    "	<div class='project-list-select-container'>                                                        " +
+                    "		<select class='form-select select-public' id='createTagPublic'>                                " +
+                    "			<option value='public' selected=''>Public</option>                                         " +
+                    "			<option value='private'>Private</option>                                                   " +
+                    "		</select>                                                                                      " +
+                    "		<div class='project-list-select-description-container'>                                        " +
+                    "			<p>Public tags are visible to normal users, while private tags aren't.</p>                 " +
+                    "		</div>                                                                                         " +
+                    "	</div>                                                                                             " +
+                    "	<div class='project-list-select-container'>                                                        " +
+                    "		<select class='form-select select-text-color' id='createTagTextColor'>                         " +
+                    "			<option value='white' selected>White Text</option>                                         " +
+                    "			<option value='black'>Black Text</option>                                                  " +
+                    "		</select>                                                                                      " +
+                    "		<div class='project-list-select-description-container'>                                        " +
+                    "			<p>White text works great for darker backgrounds and vice versa.</p>                       " +
+                    "		</div>                                                                                         " +
+                    "	</div>                                                                                             " +
+                    "</section>                                                                                            ",
+        ButtonPrimaryClass = "btn-confirm-create-tag",
+        ButtonPrimaryText = "Create",
+        ButtonPrimaryBootstrapType = "btn-success"
+    };
+}
+<partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@deleteModel"/>
+<partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@createModel"/>
+
+<script src="~/dist/projectTag.entry.js" defer></script>

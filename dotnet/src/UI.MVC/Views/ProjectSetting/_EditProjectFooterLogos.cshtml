@@ -1,0 +1,55 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+@using UI.MVC.CloudStorage
+@using UI.MVC.Extensions
+@using UI.MVC.Identity
+@using UI.MVC.Models.Shared
+@using BL.Project
+@model System.Collections.Generic.IEnumerable<Domain.Project.FooterLogo>
+
+@inject IProjectManager _projectManager;
+
+
+<partial name="~/Views/Shared/_PageTitle.cshtml" model="@(new PageTitleModel {Title = "Project Footer Logo's", Description = "Project footer logo's are shown in the footer of all pages. You can add, edit or delete them here."})"/>
+
+<article class="project-footer-wrapper">
+
+    <!-- Section to add a footer logo. -->
+    <section class="upload-footer-logo-container">
+        <div class="input-file-upload">
+            <label for="footerLogo" class="main-label">Footer Logo</label>
+            <input type="file" id="footerLogo" name="projectLogo">
+
+            <div class="description-wrapper">
+                <div class="description">
+                    <p>The main project logo, must be smaller than 5MB, allowed extensions are: png,jpg,jpeg,gif,svg. preferred size: 1:1</p>
+                </div>
+            </div>
+
+            <figure class="figure-file-upload-preview">
+                <i class="fa-solid fa-image" id="setProjectLogo" onclick="document.querySelector('#footerLogo').click()"></i>
+                <img src="" alt="" class="file-upload-preview" id="projectLogoImageDisplay">
+                <button type="button" class="btn btn-success" id="addFooterLogo">Add</button>
+            </figure>
+        </div>
+    </section>
+
+    <!-- Loop over all the existing footer logo's and add them. --> 
+    @{
+        var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+        var project = _projectManager.GetProjectByExternalName(projectName);
+    }
+    @foreach (var logo in @Model)
+    {
+        <!--Section view/delete footer logo's. -->
+        <section class="footer-logo-container" data-footer-logo-id="@logo.FooterLogoId">
+            <figure>
+                <img src="@logo.GetFooterLogoFullLink(project, SquareImageSize.MD)" alt="Logo">
+                <button class="btn btn-icon btn-delete-footer-logos" data-footer-logo-id="@logo.FooterLogoId">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </figure>
+        </section>
+    }
+</article>
+
+   <div class="error-messages-container"></div>

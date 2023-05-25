@@ -1,0 +1,36 @@
+﻿@using UI.MVC.Identity
+@model UI.MVC.Models.Shared.BreadcrumbsModel
+
+<ul id="breadcrumb">
+    @{
+        var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+        var isAdmin = projectName.ToLower() == ApplicationConstants.BackEndUrlName.ToLower();
+        var active = Model.ActiveItemIndex;
+    }
+    @if (isAdmin)
+    {
+        <li>
+            <a asp-action="Index" asp-controller="ProjectModeration" asp-route-project="@ApplicationConstants.BackEndUrlName" class="@(Model.ActiveItemIndex == 0 ? "active" : "")">
+                <i class="fa-solid fa-circle-nodes"></i>
+                Overview
+            </a>
+        </li>
+    }
+
+    @{
+        int i = 0;
+    }
+    @foreach (var tuple in @Model.BreadcrumbItems)
+    {
+        var isActive = i == active - 1;
+
+        <li>
+            <a asp-action="@tuple.Action" asp-controller="@tuple.Controller" asp-route-project="@tuple.ExternalProjectName" class="@(isActive ? "active" : "")">
+                <i class="@tuple.IconClass"></i>
+                @tuple.Name
+            </a>
+        </li>
+
+        i++;
+    }
+</ul>

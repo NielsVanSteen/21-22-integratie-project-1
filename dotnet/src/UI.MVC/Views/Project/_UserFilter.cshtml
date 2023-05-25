@@ -1,0 +1,41 @@
+﻿@using BL.DocReview
+@using BL.Project
+@using Domain.Util
+@using SortOrder = Domain.Util.SortOrder
+
+@inject IProjectManager _projectManager;
+@inject IProjectTagManager _projectTagManager;
+@inject IDocReviewManager _docReviewManager;
+
+@model Domain.Comment.UserCommentsFilter
+
+<input id="docReviewId" type="hidden" asp-for="@Model.DocReviewId" value="1">
+<input id="pageNumber" type="hidden" asp-for="@Model.PageNumber" value="@Model.PageNumber">
+<input id="pageSize" type="hidden" asp-for="@Model.PageSize" value="@Model.PageSize">
+
+
+<article class="filter-inner-container">
+    <div>
+        <h3>Filter Comments</h3>
+        <section>
+            <div>
+                <input class="form-check-input filter-input" id="ownComments" type="checkbox" asp-for="@Model.OwnComments">
+                <label class="form-check-label">Enkel Eigen Reacties</label>
+            </div>
+            <div class="d-flex justify-content-between row-">
+                <select class="form-select filter-input mt-3" aria-label="Default select example" id="sort"
+                        asp-for="@Model.SortOn" asp-items="Html.GetEnumSelectList<SortOnDutch>()" required>  
+                </select>
+                <select class="form-select filter-input mt-3" aria-label="Default select example" id="sortOrder"
+                        asp-for="@Model.SortOrder" asp-items="Html.GetEnumSelectList<SortOrderDutch>()" required>
+                </select>
+            </div>
+        </section>
+
+        <!-- Apply filter. -->
+        <div class="button-apply-filter-container mt-3">
+            <button class="btn btn-success btn-apply-filter" id="buttonApplyFilter">Filter</button>
+        </div>
+
+    </div>
+</article>

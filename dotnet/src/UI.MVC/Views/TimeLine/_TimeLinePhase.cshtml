@@ -1,0 +1,49 @@
+﻿@using Domain.DocReview
+@using UI.MVC.Identity
+@using BL.DocReview
+@using BL.Project
+@model UI.MVC.Models.TimeLine.TimeLinePhaseModel
+
+@inject IProjectManager _projectManager;
+@inject IDocReviewManager _docReviewManager;
+
+@{
+    var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+    var project = _projectManager.GetProjectByExternalName(projectName);
+    var allDocReviews = _docReviewManager.GetDocReviewsByProject(project.ProjectId).ToList();
+}
+
+<!-- Single timeline phase -->
+<section class="timeline-phase-container timeline-phase-edit-container" data-phase-id="@Model.TimeLinePhaseId">
+
+    <form asp-action="Edit" asp-controller="TimeLine" method="post">
+
+        <section class="project-list-item project-list-item-property">
+            <div class="project-list-select-container">
+                <input asp-for="Name" placeholder="Phase title">
+            </div>
+            <input type="hidden" asp-for="@Model.TimeLinePhaseId">
+            <textarea id="createPropertyDescription" placeholder="Optional Description" asp-for="Description"></textarea>
+            <div class="project-list-select-container">
+                <select class="form-select select-is-required" id="selectCreateIsRequired" asp-for="DocReviewId"
+                        asp-items="@(new SelectList(allDocReviews, nameof(DocReview.DocReviewId), nameof(DocReview.Name), @Model.DocReviewId))">
+                    <option value="-1">Select Doc-review</option>
+                </select>
+            </div>
+            <div class="project-list-select-container">
+                <input type="date" asp-for="BeginDate">
+            </div>
+        </section>
+
+        <!-- Options -->
+        <div class="timeline-phase-options-container">
+            <button class="btn-icon" type="submit">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button class="btn-icon btn-delete-phase" type="button" data-phase-id="@Model.TimeLinePhaseId">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
+        </div>
+
+    </form>
+</section>

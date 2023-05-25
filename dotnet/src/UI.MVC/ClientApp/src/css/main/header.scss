@@ -1,0 +1,10 @@
+﻿.main-header {
+  position: fixed;
+  z-index: 100000;
+  width: 100%;
+  background-color: var(--white);
+  padding: .5rem 0;
+  top: 0;
+  border-bottom: 1px solid var(--light-grey);
+  box-sizing: border-box;
+}

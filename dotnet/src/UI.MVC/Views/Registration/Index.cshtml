@@ -1,0 +1,201 @@
+﻿@using Domain.User
+@using UI.MVC.Identity
+@using UI.MVC.Models.Shared
+@using UI.MVC.Models.Shared.PopUp
+@using BL.Project
+@model System.Collections.Generic.IEnumerable<Domain.User.UserPropertyName>
+
+@inject IProjectManager _projectManager;
+
+@{
+    Layout = "_BackEndNavigation";
+    
+    var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+    var project = _projectManager.GetProjectByExternalName(projectName);
+}
+
+<article class="registration-information-wrapper container">
+
+    <!-- Basic registration information container -->
+    <section class="registration-information-container">
+
+        <!-- Breadcrumbs. -->
+        @{
+            var breadCrumbs = new BreadcrumbsModel()
+            {
+                BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+                {
+                    new Tuple<string, string, string, string, string>("fa-solid fa-house", @project.ExternalName, "ProjectManage", "Index", @project.ExternalName).ToValueTuple(),
+                    new Tuple<string, string, string, string, string>("fa-solid fa-address-card", "Registration Information", "Registration", "Index", @project.ExternalName).ToValueTuple(),
+                },
+                ActiveItemIndex = 2
+            };
+        }
+        <partial name="_Breadcrumbs" model="@breadCrumbs"/>
+
+        <!-- Basic registration information title -->
+        <article class="project-page-header-container">
+            <div class="registration-title-wrapper">
+                <h2>Basic Registration Information</h2>
+                <div class="description">
+                    <p>The basic registration information is required for a user when registering and <strong>Can't be changed.</strong></p>
+                </div>
+            </div>
+        </article>
+
+        <!-- Single input field: First name-->
+        <div class="input-main-wrapper input-main-wrapper-disabled">
+            <div class="input-main-container input-main-container-description">
+                <div class="input-description">
+                    <p class="input-description-question-mark">?</p>
+                    <p class="input-description">The user's first name</p>
+                </div>
+                <div class="input-main-sub-container">
+                    <input class="main-input input-type-text" type="text" disabled required>
+                    <label class="main-label main-label-required">First Name</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Single input field: Last name-->
+        <div class="input-main-wrapper input-main-wrapper-disabled">
+            <div class="input-main-container input-main-container-description">
+                <div class="input-description">
+                    <p class="input-description-question-mark">?</p>
+                    <p class="input-description">The user's Last Name</p>
+                </div>
+                <div class="input-main-sub-container">
+                    <input class="main-input input-type-text" type="text" disabled required>
+                    <label class="main-label main-label-required">Last Name</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Single input field: Email name-->
+        <div class="input-main-wrapper input-main-wrapper-disabled">
+            <div class="input-main-container input-main-container-description">
+                <div class="input-description">
+                    <p class="input-description-question-mark">?</p>
+                    <p class="input-description">The user's E-mail used to log in.</p>
+                </div>
+                <div class="input-main-sub-container">
+                    <input class="main-input input-type-text" type="text" disabled required>
+                    <label class="main-label main-label-required">Email</label>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Extra registration information container -->
+    <section class="registration-information-container registration-extra-information">
+
+
+        <!-- Extra registration information title -->
+        <article class="project-page-header-container project-page-header-container-medium-vertical registration-page-title">
+            <div class="registration-title-wrapper">
+                <h2>Extra Registration Information</h2>
+                <div class="description">
+                    <p>Extra registration information is adjustable, it can be added or deleted.</p>
+                </div>
+            </div>
+            <button class="btn btn-success btn-create-property">Create New Registration Field</button>
+        </article>
+
+        <div class="error-messages-container-list"></div>
+
+        @foreach (var userPropertyName in @Model)
+        {
+            <!-- A single project tag container. -->
+            <section class="project-list-item project-tag-item-list project-list-item-property list-item-property-color" data-property-id="@userPropertyName.UserPropertyNameId">
+
+                <div class="project-list-title">
+                    <input type="text" value="@userPropertyName.UserPropertyLabel">
+                </div>
+                <textarea id="registrationInformationDescription">@userPropertyName.Description</textarea>
+
+                <!-- Container for the public/private select. -->
+                <div class="project-list-select-container">
+                    <select class="form-select select-is-required">
+                        <!option value="required" @(userPropertyName.IsRequired ? "selected" : "")>Required</!option>
+                        <!option value="optional" @(!userPropertyName.IsRequired ? "selected" : "")>Optional</!option>
+                    </select>
+                </div>
+
+                <!-- Container for the black/white text. -->
+                <div class="project-list-select-container">
+                    <select class="form-select select-property-data-type">
+                        <!option value="0" @(userPropertyName.UserPropertyType == UserPropertyType.String ? "selected" : "")>Text</!option>
+                        <!option value="3" @(userPropertyName.UserPropertyType == UserPropertyType.Date ? "selected" : "")>Date</!option>
+                        <!option value="1" @(userPropertyName.UserPropertyType == UserPropertyType.Integer ? "selected" : "")>Whole Number</!option>
+                        <!option value="2" @(userPropertyName.UserPropertyType == UserPropertyType.Double ? "selected" : "")>Decimal Number</!option>
+                    </select>
+                </div>
+
+                <!-- Container for the actions the user can take. -->
+                <div class="project-list-options-container">
+                    <div class="project-tag-edit-container">
+                        <button type="button" class="btn-icon save-edit-property-icon-btn" data-property-id="@userPropertyName.UserPropertyNameId" onclick="event.preventDefault()">
+                            <i class="fa-solid fa-pen-to-square save-edit-property-icon"></i>
+                        </button>
+                    </div>
+                    <div class="project-tag-delete-container">
+                        <button type="button" class="btn-icon delete-property-icon" data-property-id="@userPropertyName.UserPropertyNameId" onclick="event.preventDefault()">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </section>
+        }
+
+    </section>
+
+</article>
+
+@{
+    var deleteModel = new PopUpModel
+    {
+        PopUpContainerClass = "article-popup-delete-property",
+        PopUpTitle = "Delete Registration Field?",
+        PopUpBody = "<p class='alert alert-warning'>Are you sure you want to delete this tag? This action is irreversible.</p>" +
+                    "<p class='alert alert-warning'>This will also delete all the data the users filled out for this field.</p>",
+        ButtonPrimaryClass = "btn-confirm-delete-property",
+        ButtonPrimaryText = "Delete",
+        ButtonPrimaryBootstrapType = "btn-danger"
+    };
+    var createModel = new PopUpModel
+    {
+        PopUpContainerClass = "article-popup-create-property",
+        PopUpTitle = "Create Registration Field",
+        PopUpBody = "<section class='project-list-item project-list-item-property'>                                                       " +
+                    "	<div class='project-list-title'><input type='text' id='createPropertyName' placeholder='Field Label'></div>       " +
+                    "	<textarea id='createPropertyDescription' placeholder='Optional Description'></textarea>                           " +
+                    "	<div class='project-list-select-container'>                                                                       " +
+                    "		<select class='form-select select-is-required' id='selectCreateIsRequired'>                                   " +
+                    "			<option value='required' selected>Required</option>                                                     " +
+                    "			<option value='optional'>Optional</option>                                                              " +
+                    "		</select>                                                                                                     " +
+                    "		<div class='project-list-select-description-container'>                                                       " +
+                    "			<p>A user can choose whether to fill out optional fields. But is required to fill out required fields.</p>" +
+                    "		</div>                                                                                                        " +
+                    "	</div>                                                                                                            " +
+                    "	<div class='project-list-select-container'>                                                                       " +
+                    "		<select class='form-select select-property-data-type' id='selectCreateDataType'>                              " +
+                    "			<option value='0' selected>Text</option>                                                                " +
+                    "			<option value='3'>Date</option>                                                                         " +
+                    "			<option value='1'>Whole Number</option>                                                                 " +
+                    "			<option value='2'>Decimal Number</option>                                                               " +
+                    "		</select>                                                                                                     " +
+                    "		<div class='project-list-select-description-container'> <p>What type of information should the user enter?</p></div>" +
+                    "	</div></section>                                                                                                  ",
+        ButtonPrimaryClass = "btn-confirm-create-property",
+        ButtonPrimaryText = "Create",
+        ButtonPrimaryBootstrapType = "btn-success"
+    };
+}
+<partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@deleteModel"/>
+<partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@createModel"/>
+
+
+<script src="~/dist/registrationInformationEdit.entry.js" defer></script>

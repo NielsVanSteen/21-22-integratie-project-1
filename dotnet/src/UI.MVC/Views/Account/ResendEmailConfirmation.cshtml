@@ -1,0 +1,48 @@
+﻿@using UI.MVC.Identity
+@using UI.MVC.Models.Shared
+@model UI.MVC.Models.AccountManage.ResendEmailConfirmationModel
+@{
+    Layout = "_BackEndNavigation";
+
+    ViewData["Title"] = "Resend email confirmation";
+
+    var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+
+    var pageTitle = new PageTitleModel()
+    {
+        Title = "Bevestigings e-mail opnieuw versturen?",
+        Description = "Heeft u geen bevestingsmail ontvangen? Geef uw e-mail hieronder in en wij sturen u er een nieuwe. Vergeet zeker ook niet in uw spam folder te kijken!"
+    };
+
+    var breadCrumbs = new BreadcrumbsModel()
+    {
+        BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+        {
+            new Tuple<string, string, string, string, string>("fa-solid fa-house", @projectName, "Project", "Index", @projectName).ToValueTuple(),
+            new Tuple<string, string, string, string, string>("fa-solid fa-envelope", "Bevestigings e-mail", "Account", "ResendEmailConfirmation", @projectName).ToValueTuple(),
+        },
+        ActiveItemIndex = 2
+    };
+}
+
+
+<article class="container">
+    <partial name="_Breadcrumbs" model="@breadCrumbs"/>
+
+    <partial name="_PageTitle" model="@pageTitle"/>
+
+    <div class="row mb-4">
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group my-3">
+                <label asp-for="@Model.Email"></label>
+                <input asp-for="@Model.Email" class="form-control"/>
+                <span asp-validation-for="@Model.Email" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-success">Opnieuw versturen</button>
+        </form>
+    </div>
+
+    <partial name="~/Views/Shared/_AccountConfirmation.cshtml" model="ViewBag.AccountConfirmation"/>
+
+</article>

@@ -1,0 +1,36 @@
+﻿@model UI.MVC.Models.Shared.PopUp.PopUpModel
+
+
+<article class="popup-background-wrapper @Model.PopUpContainerClass-background-wrapper">
+
+    <!-- Popup article asking to delete a record. -->
+    <article class="article-popup @Model.PopUpContainerClass">
+        <div class="article-popup-inner">
+            <section class="popup-header">
+                <h2>@Model.PopUpTitle</h2>
+                @if (@Model.HasClosedButton)
+                {
+                    <button type="button" class="btn-icon close-popup-icon" data-close-class=".@Model.PopUpContainerClass">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                }
+            </section>
+            <section class="popup-body">
+                @Html.Raw(@Model.PopUpBody)
+                <p class="popup-body-error-message-container"></p>
+            </section>
+            <section class="popup-footer">
+                @{
+                    var text = Model.IsConfirmPopup ? "Cancel" : Model.ButtonPrimaryText;
+                    var btnClass = Model.IsConfirmPopup ? "btn-secondary" : Model.ButtonPrimaryBootstrapType;
+                }
+                <button class="popup-button btn btn-accpt-cookie @btnClass btn-cancel-popup" onclick="event.preventDefault()" data-close-class=".@Model.PopUpContainerClass">@text</button>
+                @if (@Model.IsConfirmPopup)
+                {
+                    <button class="popup-button btn @Model.ButtonPrimaryBootstrapType @Model.ButtonPrimaryClass" type="button" onclick="event.preventDefault();">@Model.ButtonPrimaryText</button>
+                }
+            </section>
+        </div>
+    </article>
+
+</article>

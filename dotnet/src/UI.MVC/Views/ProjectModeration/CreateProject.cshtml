@@ -1,0 +1,130 @@
+﻿@using UI.MVC.Identity
+@using UI.MVC.Models.Shared
+@model UI.MVC.Models.ProjectModeration.CreateProjectModel
+
+@{
+    Layout = "_BackEndNavigation";
+}
+
+<form method="POST" asp-controller="ProjectModeration" asp-action="CreateProject" enctype="multipart/form-data">
+
+    <!-- Entire wrapper for all the registration information. -->
+    <article class="create-project-wrapper container">
+
+        <!-- Breadcrumbs. -->
+        @{
+            var breadCrumbs = new BreadcrumbsModel()
+            {
+                BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+                {
+                    new Tuple<string, string, string, string, string>("fa-solid fa-folder-plus", "Create Project", "ProjectModeration", "CreateProject", ApplicationConstants.BackEndUrlName).ToValueTuple(),
+                },
+                ActiveItemIndex = 1
+            };
+        }
+        <partial name="_Breadcrumbs" model="@breadCrumbs"/>
+
+        <h2>Create Project</h2>
+
+        <!-- Single input field: Project Title -->
+        <div class="input-main-wrapper">
+            <div class="input-main-container input-main-container-description">
+
+                <div class="input-description">
+                    <p class="input-description-question-mark">?</p>
+                    <p class="input-description">The project title visible to the normal users. This can ben changed later.</p>
+                </div>
+
+                <div class="input-main-sub-container">
+                    <input class="main-input input-type-text" type="text" value="@Model.ProjectTitle" asp-for="ProjectTitle" onkeyup="this.setAttribute('value', this.value);" required>
+
+                    <label class="main-label main-label-required">Project Title</label>
+                </div>
+            </div>
+            <span asp-validation-for="@Model.ProjectTitle" class="text-danger"></span>
+        </div>
+
+        <!-- Single input field: External name -->
+        <div class="input-main-wrapper">
+            <div class="input-main-container input-main-container-description">
+
+                <div class="input-description">
+                    <p class="input-description-question-mark">?</p>
+                    <p class="input-description">The external name is a unique project identifier, this name is part of the URL, and <strong>can't</strong> be changed.</p>
+                </div>
+
+                <div class="input-main-sub-container">
+                    <input class="main-input input-type-text" type="text" value="@Model.ExternalName" asp-for="ExternalName" onkeyup="this.setAttribute('value', this.value);" required>
+
+                    <label class="main-label main-label-required">External name</label>
+                </div>
+            </div>
+            <span asp-validation-for="@Model.ExternalName" class="text-danger"></span>
+        </div>
+
+        <!-- Single input field: External name -->
+        <div class="input-main-wrapper">
+            <div class="input-main-container input-main-container-description">
+
+                <div class="input-description">
+                    <p class="input-description-question-mark">?</p>
+                    <p class="input-description">The internal name must also be unique across all the projects and <strong>can't</strong> be changed. Internal name won't be visible to end users!</p>
+                </div>
+
+                <div class="input-main-sub-container">
+                    <input class="main-input input-type-text" type="text" value="@Model.InternalName" asp-for="InternalName" onkeyup="this.setAttribute('value', this.value);" required>
+
+                    <label class="main-label main-label-required">Internal name</label>
+                </div>
+            </div>
+            <span asp-validation-for="@Model.InternalName" class="text-danger"></span>
+        </div>
+
+        <section class="create-project-images">
+
+            <!-- Single input field: Project logo -->
+            <div class="input-file-upload">
+                <label for="projectLogo" class="main-label-required">Project Logo</label>
+                <input type="file" id="projectLogo" name="projectLogo" asp-for="ProjectLogo">
+
+                <div class="description-wrapper">
+                    <div class="description">
+                        <p>The main project logo, must be smaller than 5MB, allowed extensions are: png,jpg,jpeg,gif,svg. preferred size: 1:1</p>
+                    </div>
+                </div>
+
+                <figure class="figure-file-upload-preview">
+                    <i class="fa-solid fa-image" id="setProjectLogo" onclick="document.querySelector('#projectLogo').click()"></i>
+                    <img src="" alt="" class="file-upload-preview" id="projectLogoImageDisplay">
+                </figure>
+                <span asp-validation-for="@Model.ProjectLogo" class="text-danger"></span>
+            </div>
+
+            <!-- Single input field: Project banner image -->
+            <div class="input-file-upload input-file-upload-landscape">
+                <label for="projectBannerImage" class="main-label-required">Project Banner Image</label>
+                <input type="file" id="projectBannerImage" name="projectBannerImage" asp-for="ProjectBannerImage">
+
+                <div class="description-wrapper">
+                    <div class="description">
+                        <p>The project banner image must be smaller than 12MB, allowed extensions are: png,jpg,jpeg,gif,svg. Preferred size 16:9, \> 1920px</p>
+                    </div>
+                </div>
+
+                <figure class="figure-file-upload-preview file-upload-landscape">
+                    <i class="fa-solid fa-image" id="setProjectBannerImage" onclick="document.querySelector('#projectBannerImage').click()"></i>
+                    <img src="" alt="" class="file-upload-preview" id="projectBannerImageDisplay">
+                </figure>
+                <span asp-validation-for="@Model.ProjectBannerImage" class="text-danger"></span>
+            </div>
+
+        </section>
+        <input type="submit" value="Create Project" class="btn btn-success">
+
+    </article>
+
+</form>
+
+<!-- Javascript. -->
+<script src="~/dist/createProject.entry.js" defer></script>
+<script src="~/dist/bootstrap_js.entry.js" defer></script>

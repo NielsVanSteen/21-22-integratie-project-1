@@ -1,0 +1,85 @@
+﻿@using Domain.User
+@using Microsoft.AspNetCore.Identity
+@using UI.MVC.Extensions
+@using BL.DocReview
+@using Microsoft.AspNetCore.Server.Kestrel.Core
+@model Domain.DocReview.DocReview
+@inject UserManager<User> UserManager
+@inject ISurveyManager SurveyManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+    bool anySurvey = false;
+}
+
+<!-- Showing the surveys. -->
+<article class="survey-section survey-section-wrapper" id="surveySection">
+    
+    @foreach (var survey in @Model.Surveys)
+    {
+        // If the user already responded to the survey, skip it.
+        if (SurveyManager.GetUserRespondedToSurvey(survey, user))
+        {
+            continue;
+        }
+        {anySurvey=true;}
+        <section class="survey-statistics-item-container project-statistics-item survey" data-survey-id="@survey.SurveyId">
+            <div class="title-container">
+                <div class="title-inner">
+                    <h3>@survey.Title</h3>
+                    <div class="description-container">
+                        <p class="survey-description">
+                            @survey.Description
+                        </p>
+                    </div>
+                </div>
+                <p>Multiple choice</p>
+            </div>
+
+            <button class="btn-icon btn-show-highlighted-text mark-button" data-html="@survey.GetQuoteHTML()">
+                <i class="fa-solid fa-align-left"></i>
+                <div class="highlighted-text-container">
+                    <p>@survey.GetQuote(128)</p>
+                </div>
+            </button>
+
+            <div class="statistics-chart-container">
+                @foreach (var option in survey.SurveyOptions)
+                {
+                    <div class="survey-option form-check">
+                        <input class="survey-option-input form-check-input" type="@survey.getInputType()" name="@("option" + survey.SurveyId)" id="@("option" + option.SurveyOptionId)" data-option-id="@option.SurveyOptionId"/>
+                        <label class="form-check-label label-hover-survey" for="@("option" + option.SurveyOptionId)">@option.Option</label>
+                        <div class="survey-option-description">
+                            @option.Description
+                        </div>
+                    </div>
+                }
+                <button class="btn-survey-answer btn btn-success" id="submit-survey" data-survey-id="@survey.SurveyId">verstuur</button>
+            </div>
+
+            <div class="survey-answer-response mt-3" data-survey-id=@survey.SurveyId></div>
+        </section>
+    }
+    @if (!anySurvey)
+        {
+            <div class="alert alert-info">
+                <p>
+                     Geen surveys beschikbaar.
+                </p>
+            </div>
+        }
+</article>
+
+<!-- Creating a survey -->
+<article>
+    @if (await UserManager.IsModerator(User))
+    {
+        <section class="new-survey mt-3">
+            <h3>Create Survey</h3>
+            <button id="btn-select-text-survey" class="btn btn-success btn-sm mb-2">Select Text</button><br/>
+            <div class="survey-response"></div>
+            <p id="selected-text-survey"></p>
+            <button id="btn-create-survey" data-doc-review-id="@Model.DocReviewId" class="btn btn-success btn-sm mt-2">Create survey</button>
+        </section>
+    }
+</article>

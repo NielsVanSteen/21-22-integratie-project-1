@@ -1,0 +1,86 @@
+﻿@using UI.MVC.Identity
+@using Microsoft.AspNetCore.Authorization
+@using Domain.Project
+@using Domain.User
+@using Microsoft.AspNetCore.Identity
+@using UI.MVC.Models.Shared
+
+@model UI.MVC.Models.ProjectModeration.ViewModeratorsModel
+
+@inject IAuthorizationService _authorizationService;
+@inject UserManager<User> _userManager;
+@{
+    Layout = "_BackEndNavigation";
+}
+
+<article class="article-moderators-wrapper container">
+    
+    <!-- Breadcrumbs. -->
+    @{
+        var breadCrumbs = new BreadcrumbsModel()
+        {
+            BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+            {
+                new Tuple<string, string, string, string, string>("fa-solid fa-users", "Moderators", "ProjectModeration", "ViewModerators", ApplicationConstants.BackEndUrlName).ToValueTuple(),
+            },
+            ActiveItemIndex = 1
+        };
+    }
+    <partial name="_Breadcrumbs" model="@breadCrumbs"/>
+
+    <!-- Page Title -->
+    <article class="project-page-header-container project-page-header-container-small-vertical">
+        <div class="page-title-wrapper">
+            <h2>Moderators</h2>
+            <div class="description">
+                <p>Moderator is the term used to describe a user with either an admin or a project-manager role.</p>
+            </div>
+        </div>
+    </article>
+
+    <!-- Container list showing all the moderators. -->
+    <article class="moderators-overview-container">
+
+        <!-- The heading (Not shown on mobile. -->
+        <section class="moderator-list-heading">
+            <p>Name</p>
+            <p>Role</p>
+            <p>Projects</p>
+            <p>Action</p>
+        </section>
+
+        <!-- List with all the users. -->
+        <partial name="~/Views/ProjectModeration/_ModeratorsOverview.cshtml" model="@Model.Users"/>
+
+    </article>
+
+
+    <!-- Second page title. -->
+    <article class="project-page-header-container project-page-header-container-small-vertical">
+        <div class="page-title-wrapper">
+            <h2>Marked Emails</h2>
+            <div class="description">
+                <p>Marked Emails are e-mail addresses that will receive a certain role once an account is created with that particular email.</p>
+            </div>
+        </div>
+        <a class="default-link" asp-action="CreateModerator" asp-controller="ProjectModeration">Create</a>
+    </article>
+
+    <!-- Overview with all the marked emails. -->
+    <article class="moderators-marked-email-overview">
+
+        <!-- The heading (Not shown on mobile. -->
+        <section class="moderator-list-heading">
+            <p>E-mail</p>
+            <p>Role</p>
+            <p>Projects</p>
+            <p>Action</p>
+        </section>
+
+        <!-- List with all the MarkedEmails. -->
+        <partial name="~/Views/ProjectModeration/_MarkedEmailsOVerview.cshtml" model="@Model.MarkedEmails"/>
+
+    </article>
+
+
+</article>

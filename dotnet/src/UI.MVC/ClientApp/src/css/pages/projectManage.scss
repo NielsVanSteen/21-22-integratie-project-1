@@ -1,0 +1,86 @@
+﻿
+// =========================================
+// The upper part of the project manage view
+// =========================================
+.project-title-container {
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-column-gap: 1rem;
+
+  .project-logo-figure {
+    width: 4rem;
+    height: 4rem;
+    grid-row: 1/4;
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+
+    i, svg {
+      position: absolute;
+      top: -0.5rem;
+      left: -0.5rem;
+    }
+
+    input[type=file] {
+      display: none;
+    }
+  }
+
+  h2 {
+    grid-column: 2/3;
+    grid-row: 1/2;
+    color: var(--darker-grey);
+    text-transform: uppercase;
+    margin-top: .25rem;
+  }
+
+  p {
+    grid-row: 2/3;
+    grid-column: 2/3;
+    margin-top: -0.5rem;
+    color: var(--dark-green);
+  }
+}
+
+.project-manage-wrapper {
+  .image-preview-container {
+    margin-top: 4rem;
+  }
+}
+
+.button-container {
+  margin: 0 0 2rem 0;
+}
+
+// ===================================
+// The list displaying the doc-reviews
+// ===================================
+.project-doc-reviews-edit-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
+
+
+
+.project-manage-wrapper {
+  .input-file-upload figure img {
+    display: block;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+

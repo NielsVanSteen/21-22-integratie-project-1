@@ -1,0 +1,57 @@
+﻿@model UI.MVC.Models.Account.RegisterModel
+
+@{
+    Layout = "_Layout";
+    
+    ViewData["Title"] = "Register";
+}
+
+<!-- Entire registration wrapper. -->
+<article class="registration-wrapper">
+
+    <img src="~/images/128768.jpg" alt="" class="login-project-banner-image">
+
+    <!-- Registration wrapper for the actual form.  -->
+    <article class="registration-form-wrapper">
+
+        <section class="registration-form-container">
+
+            <!-- Registration form title. -->
+            <div class="registration-form-title">
+                <div class="registration-form-title-inner">
+                    <h1>Groenpunt</h1>
+                    <h2>Registreer</h2>
+                </div>
+            </div>
+
+            <!-- Wrapper for all the alert messages. -->
+            <div class="registration-alert-message-wrapper">
+                @* bootstrap alert-box possibly displaying a message. *@
+                <partial name="~/Views/Shared/_AccountConfirmation.cshtml" model="ViewBag.AccountConfirmation"/>
+            </div>
+
+            <!-- successfully authenticated message -->
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Uw @ViewBag.ProviderDisplayName account is geassocieerd!</strong>
+                U heeft succesvol aangemeld met uw <strong>@ViewBag.ProviderDisplayName</strong> account.
+                Nog een paar stappen voordat uw registratie is afgerond!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <!-- Wrapper for the actual registration form with inputs. -->
+            <div class="registration-inputs-wrapper">
+                <form asp-controller="Account" asp-action="CallBackExternalProvider" method="post" enctype="multipart/form-data">
+                    <partial name="_RegisterInformationPartial" model="@Model"/>
+                    <button type="submit" class="btn btn-register btn-success">Registreer</button>
+                </form>
+            </div>
+
+
+        </section>
+
+    </article>
+
+</article>
+
+<!-- Bootstrap javascript. -->
+<script src="~/dist/bootstrap_js.entry.js" defer></script>

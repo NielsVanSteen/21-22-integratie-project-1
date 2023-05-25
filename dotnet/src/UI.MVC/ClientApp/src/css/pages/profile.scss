@@ -1,0 +1,318 @@
+﻿// Profile page [part visible on all profile pages].
+.article-profile-landing-page {
+  background-color: var(--darkest-green);
+  height: 80vh;
+  position: relative;
+  width: 100%;
+  margin-top: -80px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    color: var(--white);
+    row-gap: .5rem;
+
+    h1, p {
+      font-family: var(--main-font-sans-serif);
+    }
+  }
+}
+
+.profile-information-wrapper {
+  background-color: var(--lighter-grey);
+
+  > div {
+    display: flex;
+    flex-direction: row;
+    column-gap: 3rem;
+    justify-content: space-between;
+  }
+
+  // Both the sections.
+  .profile-information-container {
+    background-color: var(--white);
+    margin-top: -100px;
+    position: relative;
+    z-index: 10;
+    border-top-right-radius: 1rem;
+    border-top-left-radius: 1rem;
+    box-shadow: 0px 0px 6px -3px #000000;
+  }
+
+  // Only the content section.
+  .profile-information-edit-container {
+    flex-grow: 1;
+    z-index: 20;
+  }
+
+  // Navigation section container.
+  .profile-information-navigation-container {
+    height: 350px;
+    width: 350px;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .profile-information-picture-container {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+      background-color: var(--light-green);
+      margin-top: -100px;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+      .image-upload-container {
+        position: absolute;
+        top: -25px;
+        left: 0;
+        width: 100%;
+        background-color: var(--normal-grey);
+        text-align: center;
+        color: var(--white);
+        opacity: 0;
+        transition: opacity 300ms ease, top 300ms ease;
+        font-size: 1.25rem;
+        padding: .3rem 0;
+        i, svg {
+          cursor: pointer;
+        }
+      }
+      &:hover .image-upload-container {
+        opacity: 1;
+        top: 0;
+      }
+    }
+
+    h2 {
+      text-transform: capitalize;
+      color: var(--dark-green);
+    }
+
+    nav {
+      border-top: 1px solid var(--lightest-grey);
+      width: 100%;
+      margin-top: 2rem;
+
+      ul {
+        list-style-type: none;
+        padding-left: 0;
+
+        li {
+          border-bottom: 1px solid var(--lightest-grey);
+          padding: 0;
+
+          a {
+            margin: 0;
+            cursor: pointer;
+            display: block;
+            color: var(--dark-green);
+            text-align: center;
+            position: relative;
+            padding: .5rem 1rem;
+            transition: color 300ms ease;
+            
+            button {
+              color: inherit;
+            }
+
+            &.active {
+              color: white;
+              background-color: var(--normal-green);
+            }
+
+            &::after {
+              position: absolute;
+              content: '';
+              display: block;
+              background-color: var(--light-green);
+              width: 0;
+              height: 100%;
+              top: 0;
+              left: 50%;
+              transform: translateX(-50%);
+              z-index: -1;
+              transition: width 300ms ease;
+            }
+
+            &:hover {
+              color: var(--white);
+
+              &::after {
+                width: 100%;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+// ================================
+//  Profile page - SubPage Profile.
+// ================================
+
+.profile-subpage-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--lightest-grey);
+  padding: 1rem;
+
+  h2 {
+    color: var(--darker-grey);
+    font-size: 1.5rem;
+  }
+}
+
+.profile-inner {
+  padding: 0 2rem 4rem 2rem;
+
+  > hr {
+    margin-top: 4rem;
+    background-color: var(--light-grey);
+  }
+
+  // Section containing a piece of the profile inputs.
+  .profile-information-inner-container {
+    h2 {
+      color: var(--dark-green);
+      font-size: 1.25rem;
+      padding: 1rem 0 2rem 0;
+      margin-top: 0;
+    }
+
+    .input-main-wrapper {
+      margin-left: 1rem;
+    }
+  }
+  
+}
+
+.profile-confirm-message-container {
+  padding-top: 2rem;
+}
+
+
+
+
+
+// ==========================================
+// Popup window to change the profile picture
+// ==========================================
+
+.pupup-change-profile-picture-body-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 2rem;
+  .item:first-child {
+    display: grid;
+    grid-template-columns: 1fr 2rem 2rem;
+    grid-template-rows: 1.5rem auto;
+    grid-row-gap: 1rem;
+    
+    h3 {
+      font-size: 1.2rem;
+    }
+    
+    // The container containing the file upload icon, and the delete profile picture item.
+    div {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      align-items: center;
+      input {
+        display: none;
+      }
+    }
+  }
+  section {
+    grid-column: 1/4;
+    // The warning text in popup.
+    p {
+      width: 100%;
+      display: block;
+    }
+  }
+  figure {
+    width: 100%;
+    border: 1px solid var(--normal-grey);
+    img {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  }
+}
+
+
+@media only screen and (max-width: 1000px) {
+  .pupup-change-profile-picture-body-inner {
+    grid-template-columns: 1fr;
+    grid-column-gap: 2rem;
+  }
+}
+
+
+
+
+
+
+
+
+// =============
+// Media Queries
+// =============
+
+@media only screen and (max-width: 1300px) {
+
+
+  .profile-information-wrapper {
+    // Make the profile section and navigation alignment vertical.
+    > div {
+      flex-direction: column-reverse;
+    }
+
+    // Profile navigation full width.
+    .profile-information-navigation-container {
+      width: 100%;
+    }
+
+    // Margin-top was -100px -> since the sections are now underneath each other they would overlap.
+    .profile-information-edit-container {
+      margin-top: 2rem;
+    }
+
+  }
+
+}
+
+
+@media only screen and (max-width: 600px) {
+  // Make the paddings/margins smaller for mobile devices.
+  .profile-inner {
+    padding: 0 1rem 3rem 1rem;
+
+    > hr {
+      margin-top: 3rem;
+    }
+
+    .profile-information-inner-container {
+
+      .input-main-wrapper {
+        margin-left: .5rem;
+      }
+    }
+  }
+}

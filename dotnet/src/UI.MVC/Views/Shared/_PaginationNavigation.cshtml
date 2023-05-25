@@ -1,0 +1,99 @@
+﻿@model UI.MVC.Models.Shared.PaginationNavigationModel
+
+@{
+    var usedNumbers = new List<int>();
+}
+
+<nav class="d-flex justify-content-between align-items-center pagination-container mt-3">
+
+    <div class="pagination-entries-container">
+        <p>Showing @((Model.CurrentPage - 1) * Model.PageSize + 1) to @Math.Min(Model.CurrentPage * Model.PageSize, Model.TotalItems) out of @Model.TotalItems entries</p>
+    </div>
+
+    <!-- Pagination links container -->
+    <ul class="pagination">
+
+        <!-- The previous navigation item. -->
+        <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+            <button class="page-link btn-page-change" data-page="prev" href="#" tabindex="-1">&laquo;</button>
+        </li>
+
+        <!-- When the current page is greater than 2, show the first page and 3 dots. -->
+        @if (Model.CurrentPage > 2)
+        {
+            usedNumbers.Add(1);
+
+            <li class="page-item">
+                <button class="page-link btn-page-change" data-page="1">1</button>
+            </li>
+
+            @if (Model.CurrentPage > 3)
+            {
+                <li class="page-item disabled">
+                    <button class="page-link" href="#" tabindex="-1">...</button>
+                </li>
+            }
+        }
+
+        <!-- If the current page is larger than 1 -> show page item -1. -->
+        @if (@Model.CurrentPage > 1)
+        {
+            usedNumbers.Add(Model.CurrentPage - 1);
+
+            <li class="page-item">
+                <button class="page-link btn-page-change" data-page="@(Model.CurrentPage - 1)">@(Model.CurrentPage - 1)</button>
+            </li>
+        }
+
+        <!-- Show the current page item. -->
+        <li class="page-item active">
+            @{
+                usedNumbers.Add(Model.CurrentPage);
+            }
+            <button class="page-link btn-page-change" data-page="@Model.CurrentPage">
+                @Model.CurrentPage <span class="sr-only"></span>
+            </button>
+        </li>
+
+        <!-- If the current page is smaller than the total number of pages -> show page item +1. -->
+        @if (@Model.CurrentPage < Model.TotalPages)
+        {
+            usedNumbers.Add(Model.CurrentPage + 1);
+            <li class="page-item">
+                <button class="page-link btn-page-change" data-page="@(Model.CurrentPage + 1)">@(Model.CurrentPage + 1)</button>
+            </li>
+        }
+
+        <!-- When the current page == 1 and there at least 3 page -> show current page item + 2 -->
+        @if (@Model.CurrentPage == 1 && Model.TotalPages >= 3)
+        {
+            usedNumbers.Add(Model.CurrentPage + 2);
+            <li class="page-item">
+                <button class="page-link btn-page-change" data-page="@(Model.CurrentPage + 2)">@(Model.CurrentPage + 2)</button>
+            </li>
+        }
+
+        <!-- When the current page is not one of the 2 last pages. -->
+        @if (Model.CurrentPage < Model.TotalPages - 1 && !usedNumbers.Contains(Model.TotalPages))
+        {
+            usedNumbers.Add(Model.TotalPages);
+            @if (Model.CurrentPage < Model.TotalPages - 2)
+            {
+                @if (!(Model.CurrentPage == 1 && Model.TotalPages == 4))
+                {
+                    <li class="page-item disabled">
+                        <button class="page-link" href="#" tabindex="-1">...</button>
+                    </li>
+                }
+            }
+            <li class="page-item">
+                <button class="page-link btn-page-change" data-page="@Model.TotalPages">@Model.TotalPages</button>
+            </li>
+        }
+
+        <!-- The next pagination item. -->
+        <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+            <button class="page-link btn-page-change" data-page="next">&raquo;</button>
+        </li>
+    </ul>
+</nav>

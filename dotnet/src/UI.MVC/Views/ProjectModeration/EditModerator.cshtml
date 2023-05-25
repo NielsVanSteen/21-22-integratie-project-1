@@ -1,0 +1,64 @@
+﻿@using UI.MVC.Identity
+@using Domain.User
+@using System.Text.RegularExpressions
+@using BL.User
+@using Microsoft.AspNetCore.Identity
+@using UI.MVC.Extensions
+@using UI.MVC.Models.Shared
+@model UI.MVC.Models.ProjectModeration.EditModeratorModel
+
+@inject IUserManager _userService;
+@inject UserManager<User> _userManager;
+
+@{
+    Layout = "_BackEndNavigation";
+
+   
+        var id = @Context.Request.RouteValues["id"] as string;
+        var user = _userService.GetUser(id);
+        var name = user != null ? user.GetFullName() : "";
+}
+
+<form asp-action="EditModerator" asp-controller="ProjectModeration" method="POST" enctype="multipart/form-data">
+
+    <article class="create-moderator-wrapper container">
+
+        <!-- Breadcrumbs. -->
+        @{
+            var breadCrumbs = new BreadcrumbsModel()
+            {
+                BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+                {
+                    new Tuple<string, string, string, string, string>("fa-solid fa-users", "Moderators", "ProjectModeration", "ViewModerators", ApplicationConstants.BackEndUrlName).ToValueTuple(),
+                    new Tuple<string, string, string, string, string>("fa-solid fa-user-pen", "Edit " + @name, "ProjectModeration", "EditModerator", ApplicationConstants.BackEndUrlName).ToValueTuple(),
+                },
+                ActiveItemIndex = 2
+            };
+        }
+        <partial name="_Breadcrumbs" model="@breadCrumbs"/>
+
+        <!-- Page Title -->
+        <article class="project-page-header-container">
+            <div class="page-title-wrapper">
+                <h2>Edit @name</h2>
+                <div class="description">
+                    <p>Edit a @Regex.Replace(UserRole.ProjectManager.ToString(), "([a-z])([A-Z])", "$1 $2").</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- Possible error/success messages. -->
+        <div class="error-messages-container-list"></div>
+
+        <!-- Partial view that allows the editing of the assinged projects.-->
+        <partial name="_AssignedProjects" model="@Model.Projects"/>
+
+        <partial name="~/Views/Shared/_AccountConfirmation.cshtml" model="ViewBag.AccountConfirmation"/>
+
+        <div class="create-button-container">
+            <input type="submit" value="Save" class="btn btn-success">
+        </div>
+
+    </article>
+
+</form>

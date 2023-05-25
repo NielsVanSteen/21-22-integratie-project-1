@@ -1,0 +1,110 @@
+﻿@using UI.MVC.Extensions
+@using Domain.Project
+@using UI.MVC.CloudStorage
+@using UI.MVC.Models.Shared
+@model UI.MVC.Models.ProjectManage.EditProjectModel
+
+@{
+    Layout = "_BackEndNavigation";
+
+    Project project = ViewBag.Project;
+}
+
+<form asp-action="Index" asp-controller="ProjectManage" method="POST" enctype="multipart/form-data">
+
+    <article class="project-manage-wrapper container">
+
+        @{
+            var breadCrumbs = new BreadcrumbsModel()
+            {
+                BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+                {
+                    new Tuple<string, string, string, string, string>("fa-solid fa-house", @project.ExternalName, "ProjectManage", "Index", @project.ExternalName).ToValueTuple(),
+                },
+                ActiveItemIndex = 1
+            };
+        }
+        <partial name="_Breadcrumbs" model="@breadCrumbs"/>
+
+        <!-- Project header information -->
+        <div class="project-title-container">
+            <figure class="project-logo-figure">
+                <img src="@project.GetProjectLogoFullLink(SquareImageSize.SM)" alt="">
+            </figure>
+            <h2>@project.ExternalName</h2>
+            <p class="internal-name">@project.InternalName</p>
+        </div>
+
+        <!-- project introduction. -->
+        <section class="project-title-introduction-container">
+            <div class="secondary-form-input-container">
+                <input class="project-title-input" asp-for="ProjectTitle" required>
+                <label asp-for="ProjectTitle"></label>
+                <span asp-validation-for="@Model.ProjectTitle" class="text-danger"></span>
+            </div>
+            <div class="secondary-form-input-container">
+                <textarea class="txt-project-introduction" asp-for="Introduction" required></textarea>
+                <label asp-for="Introduction"></label>
+                <span asp-validation-for="@Model.Introduction" class="text-danger"></span>
+            </div>
+
+            <section class="create-project-images">
+
+                <!-- Single input field: Project logo -->
+                <div class="input-file-upload">
+                    <label for="projectLogo" class="main-label">Project Logo</label>
+                    <input type="file" id="projectLogo" name="projectLogo" asp-for="ProjectLogo">
+
+                    <div class="description-wrapper">
+                        <div class="description">
+                            <p>The main project logo, must be smaller than 5MB, allowed extensions are: png,jpg,jpeg,gif,svg. preferred size: 1:1</p>
+                        </div>
+                    </div>
+
+                    <figure class="figure-file-upload-preview">
+                        <i class="fa-solid fa-image" id="setProjectLogo" onclick="document.querySelector('#projectLogo').click()"></i>
+                        <img src="@project.GetProjectLogoFullLink(SquareImageSize.SM)" alt="" class="file-upload-preview" id="projectLogoImageDisplay">
+                    </figure>
+                    <span asp-validation-for="@Model.ProjectLogo" class="text-danger"></span>
+                </div>
+
+                <!-- Single input field: Project banner image -->
+                <div class="input-file-upload input-file-upload-landscape">
+                    <label for="projectBannerImage" class="main-label">Project Banner Image</label>
+                    <input type="file" id="projectBannerImage" name="projectBannerImage" asp-for="ProjectBannerImage">
+
+                    <div class="description-wrapper">
+                        <div class="description">
+                            <p>The project banner image must be smaller than 12MB, allowed extensions are: png,jpg,jpeg,gif,svg. Preferred size 16:9, greater than 1920px</p>
+                        </div>
+                    </div>
+
+                    <figure class="figure-file-upload-preview file-upload-landscape">
+                        <i class="fa-solid fa-image" id="setProjectBannerImage" onclick="document.querySelector('#projectBannerImage').click()"></i>
+                        <img src="@project.GetProjectBannerImageFullLink(LandscapeImageSize.MD)" alt="" class="file-upload-preview" id="projectBannerImageDisplay">
+                    </figure>
+                    <span asp-validation-for="@Model.ProjectBannerImage" class="text-danger"></span>
+                </div>
+
+            </section>
+
+            <div class="button-container">
+                <button class="btn btn-success" type="submit">Save Edits</button>
+            </div>
+        </section>
+
+
+        <!-- doc-reviews-list with edit settings. -->
+        <article class="project-doc-reviews-edit-list-wrapper">
+            <article class="project-page-header-container">
+                <h2>All Doc-reviews</h2>
+                <a class="default-link" asp-controller="DocReview" asp-action="Write">Create Doc-review</a>
+            </article>
+            <partial name="_DocReviewList" model="@ViewBag.DocReviews"/>
+        </article>
+
+    </article>
+</form>
+
+
+<script src="~/dist/projectManage.entry.js"></script>

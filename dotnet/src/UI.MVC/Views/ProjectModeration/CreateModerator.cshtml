@@ -1,0 +1,82 @@
+﻿@model UI.MVC.Models.ProjectModeration.CreateModeratorModel
+
+@using UI.MVC.Identity
+@using UI.MVC.Models.Shared
+@{
+    Layout = "_BackEndNavigation";
+}
+
+<form asp-action="CreateModerator" asp-controller="ProjectModeration" method="POST" enctype="multipart/form-data">
+
+    <article class="create-moderator-wrapper container">
+
+        <!-- Breadcrumbs. -->
+        @{
+            var breadCrumbs = new BreadcrumbsModel()
+            {
+                BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+                {
+                    new Tuple<string, string, string, string, string>("fa-solid fa-users", "Moderators", "ProjectModeration", "ViewModerators", ApplicationConstants.BackEndUrlName).ToValueTuple(),
+                    new Tuple<string, string, string, string, string>("fa-solid fa-user-plus", "Create", "ProjectModeration", "CreateModerator", ApplicationConstants.BackEndUrlName).ToValueTuple(),
+                },
+                ActiveItemIndex = 2
+            };
+        }
+        <partial name="_Breadcrumbs" model="@breadCrumbs"/>
+
+        <!-- Page Title -->
+        <article class="project-page-header-container">
+            <div class="page-title-wrapper">
+                <h2>Create Moderator</h2>
+                <div class="description">
+                    <p>Assign a Admin role or a Manager role (with projects) to an email. Once someone signs up with that E-mail they'll receive the role.</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- Info box. -->
+        <div class="alert alert-primary" role="alert">
+            Select an email, a role and if the role is a project-manager select the projects the manager is assigned to, and voila create the marked email.<br/>
+            Then when a user signs up with that e-mail (on the @ApplicationConstants.BackEndUrlName login page) they'll be granted the role.
+        </div>
+
+        <!-- Possible error/success messages. -->
+        <div class="error-messages-container-list"></div>
+
+        <!-- The email address input -->
+        <div class="input-main-wrapper">
+            <div class="input-main-container input-main-container-description">
+                <div class="input-description">
+                    <p class="input-description-question-mark">?</p>
+                    <p class="input-description">The email address used to sign up as an admin or project-manager</p>
+                </div>
+                <div class="input-main-sub-container">
+                    <input asp-for="Email" class="main-input" onkeyup="this.setAttribute('value', this.value);" required>
+                    <label class="main-label main-label-required" asp-for="Email" type="email"></label>
+                </div>
+            </div>
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <!-- The role. -->
+        <div class="project-list-select-container">
+            <select class="form-select" id="selectRole" asp-for="UserRole">
+                <!option value="1" selected>Project-Manager</!option>
+                <!option value="2">Admin</!option>
+            </select>
+            <div class='project-list-select-description-container'>
+                <p>A project manager is assigned to one or more projects. An admin is a global user, with all privileges.</p>
+            </div>
+        </div>
+        <span asp-validation-for="UserRole" class="text-danger"></span>
+
+        <!-- Partial view that allows the editing of the assinged projects.-->
+        <partial name="_AssignedProjects" model="@Model.Projects"/>
+
+        <div class="create-button-container">
+            <input type="submit" value="Create" class="btn btn-success">
+        </div>
+
+    </article>
+
+</form>

@@ -1,0 +1,124 @@
+﻿@using Domain.DocReview
+@using UI.MVC.CloudStorage
+@using UI.MVC.Extensions
+@using UI.MVC.Models.Shared.PopUp
+@model System.Collections.Generic.IEnumerable<Domain.DocReview.DocReview>
+
+<div class="status-messages-container">
+
+</div>
+
+@foreach (var docReview in @Model ?? Enumerable.Empty<DocReview>())
+{
+    var curStatus = docReview.GetLatestStatus().DocReviewStatus;
+
+    <!-- Single project. -->
+    <section class="list-item-wrapper" data-doc-review-id="@docReview.DocReviewId">
+        <figure class="list-item-banner-image-figure">
+            <img src="@(docReview.GetBannerImageLink(LandscapeImageSize.MD))" alt="Project Banner Image">
+        </figure>
+
+        <section class="list-item-information-container">
+            <ul>
+                <li>@docReview.Name</li>
+                <li class="list-actions">
+                    <div class="btn-link-hover-container">
+                        <button class="btn-link btn-link-hover" type="button">
+                            <a asp-action="DocReview" asp-controller="Project" asp-route-id="@docReview.DocReviewId">
+                                <i class="fa-solid fa-circle-info bg-secondary"></i>
+                            </a>
+                        </button>
+                        <p>View Doc-review</p>
+                    </div>
+                    @if (curStatus == DocReviewStatus.Created)
+                    {
+                        <div class="btn-link-hover-container" data-type="Publish@(docReview.DocReviewId)">
+                            <button class="btn-link btn-link-hover btn-publish-doc-review" type="button"
+                                    id="btnPublishDocReview" data-doc-review-id="@docReview.DocReviewId">
+                                <i class="fa-solid fa-upload bg-secondary"></i>
+                            </button>
+                            <p>Publish Doc-review</p>
+                        </div>
+                    }
+                    @if (curStatus == DocReviewStatus.Published)
+                    {
+                        <div class="btn-link-hover-container" data-type="Close@(docReview.DocReviewId)">
+                            <button class="btn-link btn-link-hover btn-close-comments-doc-review" type="button"
+                                    id="btnCloseForComments" data-doc-review-id="@docReview.DocReviewId">
+                                <i class="fa-solid fa-comment-slash bg-secondary"></i>
+                            </button>
+                            <p>Close for comments</p>
+                        </div>
+                    }
+                    @if (new List<DocReviewStatus> {DocReviewStatus.Published, DocReviewStatus.Closed}.Contains(curStatus))
+                    {
+                        <div class="btn-link-hover-container" data-type="Archive@(docReview.DocReviewId)">
+                            <button class="btn-link btn-link-hover btn-archive-doc-review" type="button"
+                                    id="btnArchiveDocReview" data-doc-review-id="@docReview.DocReviewId" data-is-archived="false">
+                                <i class="fa-solid fa-box-archive bg-danger"></i>
+                            </button>
+                            <p>Archive Doc-review</p>
+                        </div>
+                    }
+
+                    <div class="btn-link-hover-container" data-type="Delete@(docReview.DocReviewId)">
+                        <button class="btn-link btn-link-hover btn-delete-doc-review" type="button"
+                                id="btnDeleteDocReview" data-doc-review-id="@docReview.DocReviewId">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                        <p>Delete Doc-review</p>
+                    </div>
+
+                </li>
+            </ul>
+            <div class="list-item-description"> @docReview.Description </div>
+        </section>
+    </section>
+}
+
+@{
+    var deleteModel = new PopUpModel
+    {
+        PopUpContainerClass = "article-popup-delete-doc-review",
+        PopUpTitle = "Delete Doc-review?",
+        PopUpBody = " <p class='alert alert-warning'>Are you sure you want to delete this doc-review? This action is irreversible.</p>",
+        ButtonPrimaryClass = "btn-confirm-delete-doc-review",
+        ButtonPrimaryText = "Delete",
+        ButtonPrimaryBootstrapType = "btn-danger"
+    };
+
+    var archiveModel = new PopUpModel
+    {
+        PopUpContainerClass = "article-popup-archive-doc-review",
+        PopUpTitle = "Archive Doc-review?",
+        PopUpBody = " <p class='alert alert-warning'>Are you sure you want to Archive this doc-review?</p>",
+        ButtonPrimaryClass = "btn-confirm-archive-doc-review",
+        ButtonPrimaryText = "Archive",
+        ButtonPrimaryBootstrapType = "btn-danger"
+    };
+
+    var closeForCommentsModel = new PopUpModel
+    {
+        PopUpContainerClass = "article-popup-close-comments-doc-review",
+        PopUpTitle = "Close Doc-review for comments?",
+        PopUpBody = " <p class='alert alert-warning'>Are you sure you want to close this doc-review for comments? This action is irreversible!</p>",
+        ButtonPrimaryClass = "btn-confirm-close-comments-doc-review",
+        ButtonPrimaryText = "Close For Comments",
+        ButtonPrimaryBootstrapType = "btn-danger"
+    };
+
+    var publishModel = new PopUpModel
+    {
+        PopUpContainerClass = "article-popup-publish-doc-review",
+        PopUpTitle = "Publish Doc-review?",
+        PopUpBody = " <p class='alert alert-warning'>Are you sure you want to Publish this doc-review?</p>",
+        ButtonPrimaryClass = "btn-confirm-publish-doc-review",
+        ButtonPrimaryText = "Publish",
+        ButtonPrimaryBootstrapType = "btn-success"
+    };
+}
+
+<partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@deleteModel"/>
+<partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@archiveModel"/>
+<partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@closeForCommentsModel"/>
+<partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@publishModel"/>

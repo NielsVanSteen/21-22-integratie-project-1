@@ -1,0 +1,95 @@
+@using Domain.User
+@using Microsoft.AspNetCore.Identity
+@using BL.Comment
+@using BL.DocReview
+@using BL.Project
+@using UI.MVC.Extensions
+@using UI.MVC.Identity
+@using UI.MVC.Models.Shared
+
+@inject UserManager<User> _userManager;
+@inject ICommentHistoryManager _commentHistoryManager;
+@inject IDocReviewHistoryManager _docReviewHistoryManager;
+@inject IProjectHistoryManager _projectHistoryManager;
+@inject IProjectManager _projectService;
+
+@model Domain.User.User;
+
+@{
+    Layout = "_BackEndNavigation";
+
+    var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+    var project = _projectService.GetProjectByExternalName(projectName);
+    var user = await _userManager.GetUserAsync(User);
+}
+
+<article class="project-activity-wrapper container">
+    
+     <!-- Breadcrumbs. -->
+    @{
+        var breadCrumbs = new BreadcrumbsModel()
+        {
+            BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+            {
+                new Tuple<string, string, string, string, string>("fa-solid fa-house", @project.ExternalName, "ProjectManage", "Index", @project.ExternalName).ToValueTuple(),
+                new Tuple<string, string, string, string, string>("fa-solid fa-list-check", "Activity", "ProjectManager", "Index", @project.ExternalName).ToValueTuple(),
+                new Tuple<string, string, string, string, string>("fa-solid fa-user", user.GetFullName(), "ProjectManager", "Index", @project.ExternalName).ToValueTuple()
+            },
+            ActiveItemIndex = 3
+        };
+    }
+    <partial name="_Breadcrumbs" model="@breadCrumbs"/>
+    
+
+    <!-- Page Title activity -->
+    <article class="project-page-header-container project-page-header-container-small-vertical">
+        <div class="page-title-wrapper">
+            <h2>@Model.GetFullName()'s Activity</h2>
+            <div class="description">
+                <p>The activity of @Model.GetFullName().</p>
+            </div>
+        </div>
+    </article>
+
+    <!-- Comment histories. -->
+    <div class="page-subtitle-container">
+        <h3>Comment activity</h3>
+    </div>
+
+    @{
+        var commentHistories = _commentHistoryManager.GetCommentHistoriesByUserAndProject(@Model, project, true, true);
+    }
+    <partial name="_CommentHistoryList" model="@commentHistories"/>
+
+
+    <!-- Doc-review histories. -->
+    <div class="page-subtitle-container">
+        <h3>Doc-review activity</h3>
+    </div>
+
+    @{
+        var docReviewHistories = _docReviewHistoryManager.GetDocReviewHistoriesByUserAndProject(@Model, project, true, true);
+    }
+    <partial name="_DocReviewHistoryList" model="@docReviewHistories"/>
+
+
+
+</article>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

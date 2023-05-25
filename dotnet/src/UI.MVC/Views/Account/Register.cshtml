@@ -1,0 +1,85 @@
+﻿@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Identity
+@using Domain.User
+@using UI.MVC.Identity
+@using BL.Project
+@using UI.MVC.CloudStorage
+@using UI.MVC.Extensions
+
+@model UI.MVC.Models.Account.RegisterModel
+
+@inject SignInManager<User> _signInManager
+@inject IProjectManager _projectService;
+
+@{
+    Layout = "_Layout";
+
+    var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+    var project = _projectService.GetProjectByExternalName(projectName);
+}
+
+<!-- Entire registration wrapper. -->
+<article class="registration-wrapper">
+
+    @if (project != null)
+    {
+        <img src="@project.GetProjectBannerImageFullLink(LandscapeImageSize.LG)" alt="@project.ExternalName" class="login-project-banner-image">
+    }
+    
+    <!-- Registration wrapper for the actual form.  -->
+    <article class="registration-form-wrapper">
+
+        <section class="registration-form-container">
+
+            <!-- Registration form title. -->
+            <div class="registration-form-title">
+                <div class="registration-form-title-inner">
+                    <h1>Groenpunt</h1>
+                    <h2>Registreer</h2>
+                </div>
+            </div>
+
+            <!-- Wrapper for all the alert messages. -->
+            <div class="registration-alert-message-wrapper">
+                @* bootstrap alert-box possibly displaying a message. *@
+                <partial name="~/Views/Shared/_AccountConfirmation.cshtml" model="ViewBag.AccountConfirmation"/>
+            </div>
+
+            <!-- Wrapper for the actual registration form with inputs. -->
+            <div class="registration-inputs-wrapper">
+                <form asp-controller="Account" asp-action="Register" method="post" enctype="multipart/form-data">
+
+                    @* Partial view with all the registration fields. *@
+                    <partial name="_RegisterInformationPartial" model="@Model"/>
+
+                    <button type="submit" class="btn btn-success btn-register">Registreer</button>
+                </form>
+            </div>
+
+            <!-- Wrapper for the external provider buttons. -->
+            <div class="registration-external-providers-wrapper">
+                @{
+                    IList<AuthenticationScheme> externalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+                    if ((externalLogins?.Count ?? 0) != 0)
+                    {
+                        <form class="form-horizontal" id="external-account" asp-controller="Account" asp-action="AuthenticateExternalProvider" method="post" enctype="multipart/form-data">
+                            @foreach (var provider in externalLogins)
+                            {
+                                <button type="submit" class="btn-external-provider btn-external-provider-@provider.DisplayName.ToLower()" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                            }
+                        </form>
+                    }
+                }
+            </div>
+
+        </section>
+
+    </article>
+
+</article>
+
+@section Scripts
+{
+    <script src="~/dist/bootstrap_js.entry.js" defer></script>
+}

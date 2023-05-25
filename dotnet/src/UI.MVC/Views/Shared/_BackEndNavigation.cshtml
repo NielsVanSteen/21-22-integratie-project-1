@@ -1,0 +1,177 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using UI.MVC.Identity
+@using BL.Project
+
+@inject IAuthorizationService _authorizationService
+@inject IProjectManager _projectManager;
+
+@{
+    Layout = "_Layout";
+
+    // Checks whether the user is a moderator or not. -> if so: display the backend navigation. -> if not: don't show the navigation + add a class to the body so the grid-area won't include the aside.
+    bool isModerator = (await _authorizationService.AuthorizeAsync(User, ApplicationConstants.IsModerator)).Succeeded;
+    bool isManager = (await _authorizationService.AuthorizeAsync(User, ApplicationConstants.IsProjectManager)).Succeeded;
+    bool isAdmin = (await _authorizationService.AuthorizeAsync(User, ApplicationConstants.IsAdmin)).Succeeded;
+
+    // Is the user on a specific project, or on an 'admin' page. -> if the user is on an 'admin' page the navigation can't show project specific hyperlinks.
+    bool isOnSpecificProject = ApplicationConstants.GetProjectName(ViewContext.RouteData).ToLower() != ApplicationConstants.BackEndUrlName.ToLower();
+
+    // Get the name of the controller and the action method. This is used to give the correct hyperlink the 'active' status.
+    string controller = (ViewContext.RouteData.Values["Controller"] ?? "").ToString();
+    string action = (ViewContext.RouteData.Values["Action"] ?? "").ToString();
+
+    var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+    var project = _projectManager.GetProjectByExternalName(projectName, false, true);
+
+}
+
+@*Check the user against the IsModerator Policy. -> if the user is a moderator: show the backend navigation.*@
+@if (isModerator)
+{
+    <aside class="backend-navigation">
+        <div class="backend-inner-wrapper">
+            <div class="backend-inner-container">
+                <section class="backend-navigation-section">
+                    <h2>General</h2>
+                    <ul>
+                        @if (isOnSpecificProject)
+                        {
+                            <li class="@(controller == "ProjectManage" ? "backend-navigation-active" : "")">
+                                <i class="fa-solid fa-house"></i>
+                                <a asp-controller="ProjectManage" asp-action="Index">Home</a>
+                                <div class="backend-navigation-description-container">
+                                    <p>The project information home page for admins & project-managers.</p>
+                                </div>
+                            </li>
+                            <li class="@(controller == "Project" ? "backend-navigation-active" : "")">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <a asp-controller="Project" asp-action="Index">View User Page</a>
+                                <div class="backend-navigation-description-container">
+                                    <p>The project Home page the way normal users view it.</p>
+                                </div>
+                            </li>
+                        }
+                        <li class="@(controller == "ProjectModeration" && (action == "CreateProject" || action == "Index") ? "backend-navigation-active" : "")">
+                            <i class="fa-solid fa-circle-nodes"></i>
+                            <a asp-controller="ProjectModeration" asp-action="Index" asp-route-project="@ApplicationConstants.BackEndUrlName">Projects Overview</a>
+                            <div class="backend-navigation-description-container">
+                                <p>Overview of all the different projects.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+
+                @if (isOnSpecificProject)
+                {
+                    <section class="backend-navigation-section">
+                        <h2>Project</h2>
+                        <ul>
+                            <li class="@(controller == "DocReview" ? "backend-navigation-active" : "")">
+                                <i class="fa-solid fa-file"></i>
+                                <a asp-controller="DocReview" asp-action="Write">Write DocReview</a>
+                                <div class="backend-navigation-description-container">
+                                    <p>Write a DocReview</p>
+                                </div>
+                            </li>
+                            <li class="@(controller == "ProjectSetting" ? "backend-navigation-active" : "")">
+                                <i class="fa-solid fa-gear"></i>
+                                <a asp-controller="ProjectSetting" asp-action="Index">Settings</a>
+                                <div class="backend-navigation-description-container">
+                                    <p>Settings, Accessibility & Privacy statement, Project styling</p>
+                                </div>
+                            </li>
+                            <li class="@(controller == "ProjectStyling" ? "backend-navigation-active" : "")">
+                                <i class="fa-solid fa-palette"></i>
+                                <a asp-controller="ProjectStyling" asp-action="Index">Styling</a>
+                                <div class="backend-navigation-description-container">
+                                    <p>Edit the project theme & styling</p>
+                                </div>
+                            </li>
+                            <li class="@(controller == "TimeLine" ? "backend-navigation-active" : "")">
+                                <i class="fa-solid fa-timeline"></i>
+                                <a asp-controller="TimeLine" asp-action="Index">Timeline</a>
+                                <div class="backend-navigation-description-container">
+                                    <p>Edit Timeline & Manage the phases.</p>
+                                </div>
+                            </li>
+                            <li class="@(controller == "ProjectTag" ? "backend-navigation-active" : "")">
+                                <i class="fa-solid fa-tags"></i>
+                                <a asp-controller="ProjectTag" asp-action="Index">Tags</a>
+                                <div class="backend-navigation-description-container">
+                                    <p>Create, Edit & Delete Project tags..</p>
+                                </div>
+                            </li>
+                            <li class="@(controller == "AnalyseComment" ? "backend-navigation-active" : "")">
+                                <i class="fa-solid fa-comments"></i>
+                                <a asp-controller="AnalyseComment" asp-action="Index">Analyze Comments</a>
+                                <div class="backend-navigation-description-container">
+                                    <p>Moderate, Analyse & Export Comments.</p>
+                                </div>
+                            </li>
+                            <li class="@(controller == "Survey" ? "backend-navigation-active" : "")">
+                                <i class="fa-solid fa-square-poll-vertical"></i>
+                                <a asp-controller="Survey" asp-action="Index">Survey Results</a>
+                                <div class="backend-navigation-description-container">
+                                    <p>View the survey results</p>
+                                </div>
+                            </li>
+                            <li class="@(controller == "ProjectStatistics" ? "backend-navigation-active" : "")">
+                                <i class="fa-solid fa-chart-column"></i>
+                                <a asp-controller="ProjectStatistics" asp-action="Dashboard">Project Statistics</a>
+                                <div class="backend-navigation-description-container">
+                                    <p>Project statistics, charts, survey results, ...</p>
+                                </div>
+                            </li>
+                            <li class="@(controller == "ProjectManager" ? "backend-navigation-active" : "")">
+                                <i class="fa-solid fa-list-check"></i>
+                                <a asp-controller="ProjectManager" asp-action="Index">Project Activity</a>
+                                <div class="backend-navigation-description-container">
+                                    <p>View the activity on the project. (</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </section>
+                }
+                @if ((isOnSpecificProject && isManager) || isAdmin)
+                {
+                    <section class="backend-navigation-section">
+                        <h2>Profile</h2>
+                        <ul>
+                            @if (isAdmin)
+                            {
+                                var activeList = new[] {"ViewModerators", "CreateModerator", "EditModerator"};
+
+                                <li class="@(controller == "ProjectModeration" && activeList.Contains(action) ? "backend-navigation-active" : "")">
+                                    <!--<i class="fa-solid fa-user-plus"></i>-->
+                                    <i class="fa-solid fa-users"></i>
+                                    <a asp-controller="ProjectModeration" asp-action="ViewModerators" asp-route-project="@ApplicationConstants.BackEndUrlName">Manage Moderators</a>
+                                    <div class="backend-navigation-description-container">
+                                        <p>View all the admins, managers and Create/Edit them.</p>
+                                    </div>
+                                </li>
+                            }
+                            @if (isOnSpecificProject)
+                            {
+                                <li class="@(controller == "Registration" ? "backend-navigation-active" : "")">
+                                    <i class="fa-solid fa-address-card"></i>
+                                    <a asp-controller="Registration" asp-action="Index">Registration Information</a>
+                                    <div class="backend-navigation-description-container">
+                                        <p>Edit the registration information a User has to enter</p>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </section>
+                }
+            </div>
+        </div>
+    </aside>
+}
+
+<main>
+    @RenderBody()
+</main>
+
+<footer>
+    <partial name="_ProjectFooter" model="@project"/>
+</footer>

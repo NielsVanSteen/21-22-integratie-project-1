@@ -1,0 +1,56 @@
+﻿@model System.Collections.Generic.IEnumerable<Domain.Project.Project>
+
+@using UI.MVC.Identity
+@using Domain.Project
+@using UI.MVC.CloudStorage
+@using UI.MVC.Extensions
+
+
+<!-- The projects the user is assigned to. -->
+<article class="assigned-project-wrapper">
+
+    <!-- Choose projects. -->
+    <section class="assigned-projects-choose-project">
+
+        <div class="input-main-wrapper project-search-container">
+            <div class="input-main-container">
+                <input class="main-input" id="inputProjectName" onkeyup="this.setAttribute('value', this.value);">
+                <label class="main-label">Project Name</label>
+            </div>
+            <button class="btn btn-success" type="button" onclick="event.preventDefault()" id="btnSearchProject">Search</button>
+        </div>
+
+        <!-- Search box containing all the project !-->
+        <section class="projects-search-container">
+            <div class="projects-search-inner">
+                <div class="search-result-header">
+                    <h3>Results</h3>
+                    <button class="btn-icon" id="close-search-results" type="button" onclick="event.preventDefault()"><i class="fa-solid fa-xmark "></i></button>
+                </div>
+                <ul class="ul-projects-search-collection" id="projectSearchResultContainer">
+                    @*Here go all the projects the search yielded, this is done with javascript.*@
+                </ul>
+            </div>
+        </section>
+    </section>
+
+    <!-- Container with all the projects the user has been assigned to. -->
+    <section class="assigned-projects-list">
+        @foreach (var project in @Model ?? Enumerable.Empty<Project>())
+        {
+            <section class="assigned-project-item" data-project-id="@project.ProjectId">
+                <figure>
+                    <img src="@(project.GetProjectBannerImageFullLink(LandscapeImageSize.MD))" alt="Project Banner image">
+                    <figcaption>@project.ExternalName</figcaption>
+                </figure>
+                <input type="text" name="AssignedProjectIds" class="hidden" value="@project.ProjectId">
+                <button class="button-delete-icon" type="button" data-project-id="@project.ProjectId">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </section>
+        }
+    </section>
+
+</article>
+
+<script src="~/dist/projectsSearch.entry.js" defer></script>

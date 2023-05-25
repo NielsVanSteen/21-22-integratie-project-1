@@ -1,0 +1,58 @@
+﻿@model System.Collections.Generic.IEnumerable<Domain.DocReview.DocReviewHistory>
+
+@using Domain.Comment
+@using Domain.DocReview
+@using UI.MVC.Extensions
+
+<article class="generic-history-wrapper comment-history-wrapper">
+
+    <article class="generic-history-container">
+
+        @foreach (var history in Model ?? Enumerable.Empty<DocReviewHistory>())
+        {
+            <!-- Single history item wrapper. -->
+            <article class="generic-history-item-wrapper">
+                <section class="generic-history-item-container">
+
+                    <div class="generic-history-item-inner">
+
+                        <!-- History item title. -->
+                        <div class="generic-history-item-title-container">
+                            <h3>@history.DocReviewStatus.ToString() DocReview</h3>
+                        </div>
+
+                        <!-- History item date. -->
+                        <div class="generic-history-item-date">
+                            <p>@history.EditedOn.GetDateWithAbbreviatedMonth()</p>
+                            <p class="date-time">@history.EditedOn.GetTime12HourClock()</p>
+                        </div>
+
+                        <!-- History item link. -->
+                        <div class="generic-history-item-detail">
+                            <a class="btn-link" target="_blank" asp-action="DocReview" asp-controller="Project" asp-route-id="@history.DocReview?.DocReviewId">View DocReview</a>
+                        </div>
+
+                        <!-- History item editor. -->
+                        <div class="generic-history-item-editor">
+                            <p>@history.Editor.GetFullName()</p>
+                        </div>
+
+                    </div>
+
+                </section>
+            </article>
+        }
+        
+        @if(Model == null || !Model.Any())
+        {
+            <p class="alert alert-info">
+                There is no doc-review activity yet!<br/>
+                <a asp-action="Write" asp-controller="DocReview" class="link-danger">Create</a> a doc-review now.
+            </p>
+        }
+
+
+    </article>
+
+
+</article>

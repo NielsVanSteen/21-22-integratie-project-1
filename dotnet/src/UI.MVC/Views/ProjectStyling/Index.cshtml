@@ -1,0 +1,93 @@
+﻿@using UI.MVC.Models.Shared
+@using UI.MVC.Identity
+@using BL.Project
+@using Google.Api.Gax.ResourceNames
+@using UI.MVC.Models.ProjectStyling
+
+@model int
+
+@inject IProjectManager _projectManager;
+
+@{
+    Layout = "_BackEndNavigation";
+
+    var name = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+    var project = _projectManager.GetProjectByExternalName(name);
+
+    var globalStyles = ViewBag.GlobalStyles;
+    var projectStyles = ViewBag.ProjectStyles;
+
+    var pageTitle = new PageTitleModel
+    {
+        Title = "Global Styles",
+        Description = $"Choose a predefined style that suites {name} perfectly."
+    };
+
+    var pageTitle2 = new PageTitleModel
+    {
+        Title = "Custom Styles",
+        Description = @"You can also create your own style! Note: You can only have 1 custom style, creating a new one will override the old one! 
+            Also in the ideal situation your own style should be a monotone color, with 4 different shades, going from light to dark (left to right, top to bottom).
+            The first input is the display name, e.g./ 'ocean breeze' the 2nd input the generic name e.g., (blue)."
+    };
+
+    var breadCrumbs = new BreadcrumbsModel()
+    {
+        BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+        {
+            new Tuple<string, string, string, string, string>("fa-solid fa-house", @project.ExternalName, "ProjectManage", "Index", @project.ExternalName).ToValueTuple(),
+            new Tuple<string, string, string, string, string>("fa-solid fa-palette", "Styling", "ProjectStyling", "Index", @project.ExternalName).ToValueTuple(),
+        },
+        ActiveItemIndex = 2
+    };
+
+}
+
+<!-- Entire page wrapper -->
+<article class="container">
+
+    <!-- Breadcrumbs navigation. -->
+    <partial name="_Breadcrumbs" model="@breadCrumbs"/>
+
+    <!-- Page content. -->
+    <article class="project-styling-wrapper">
+
+        <!-- Global styles -->
+        @{
+            var themeStyleModel1 = new StyleModel()
+            {
+                ActiveStyleId = @Model,
+                Styles = globalStyles,
+                PageTitleModel = pageTitle,
+                IsGlobalStyle = true
+            };
+        }
+        <partial name="ThemeStyle" model="@themeStyleModel1"/>
+        
+         <div class="save-container">
+            <button class="btn btn-success btn-save-style">Save</button>
+        </div>
+
+        <!-- Project styles -->
+        @{
+            var themeStyleModel2 = new StyleModel()
+            {
+                ActiveStyleId = @Model,
+                Styles = projectStyles,
+                PageTitleModel = pageTitle2,
+                IsGlobalStyle = false
+            };
+        }
+        <partial name="ThemeStyle" model="@themeStyleModel2"/>
+
+        <div class="save-container">
+            <button class="btn btn-success btn-create-style">Create Style</button>
+        </div>
+
+        <div class="status-message-container"></div>
+
+    </article>
+
+</article>
+
+<script src="~/dist/projectStyling.entry.js" defer></script>

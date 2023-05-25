@@ -1,0 +1,633 @@
+﻿// ==================================
+// Doc-review WRITE page (backoffice)
+// ==================================
+
+// The entire doc-review page wrapper element.
+.write-docreview-wrapper {
+  form {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+  }
+}
+
+// A default simple input.
+.main-simple-normal-input {
+  position: relative;
+  margin-top: 2rem;
+  border: 1px solid var(--light-grey);
+  border-radius: 0;
+  height: 38px;
+
+  input[type=text] {
+    border: none;
+    height: 36px;
+  }
+
+  label {
+    top: 0;
+    left: 0;
+  }
+}
+
+// container elements containing a ckeditor textarea.
+.ckeditor-container {
+  position: relative;
+  margin-top: 2rem;
+
+  .cke-2 {
+    position: relative;
+    z-index: 10;
+  }
+
+  label {
+    top: 0;
+    left: 0;
+  }
+}
+
+// Label in a badge form.
+.label-badge {
+  background-color: var(--light-green);
+  color: var(--white);
+  padding: .3rem;
+  font-size: .85rem;
+  position: absolute;
+  top: .5rem;
+  border-radius: .3rem;
+}
+
+// Image banner chooser.
+.write-doc-review-upper-part-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
+
+  .image-preview-container {
+    margin-top: 3rem;
+  }
+}
+
+.doc-review-write-description-container {
+  margin-top: 65px;
+
+  #Description {
+    border: 1px solid var(--light-grey);
+    width: 100%;
+    resize: none;
+    height: 290px;
+  }
+}
+
+
+// The wrapper element that shows the normal doc-review options and the emoji options next to each other.
+.docreview-settings-wrapper {
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
+
+// ==============
+// Emoji selector
+// ==============
+
+// The entire emoji selector wrapper.
+.emoji-preview-wrapper {
+  background-color: var(--lighter-grey);
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  max-width: 40vw;
+  height: 6rem;
+
+  // The container only containing selected emoji's
+  .emoji-preview-container {
+    display: flex;
+    padding-left: 6rem;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 100%;
+    position: relative;
+    column-gap: .5rem;
+    overflow-x: scroll;
+    overflow-y: hidden;
+
+    // Single selected emoji.
+    .emoji-preview-item {
+      position: relative;
+
+      input {
+        display: none;
+      }
+
+      p {
+        font-size: 3.6rem;
+      }
+
+      button {
+        position: absolute;
+        top: .5rem;
+        right: .5rem;
+      }
+    }
+  }
+
+  // The wrapper to add emoji's.
+  .emoji-add-container {
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--lighter-grey);
+    z-index: 50;
+    position: absolute;
+
+    .emoji-add-inner-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    i, svg {
+      font-size: 1.4rem;
+      transition: background-color 300ms ease;
+
+      &:hover {
+        background-color: var(--normal-green);
+      }
+    }
+
+    .all-available-emoji-container {
+      border-radius: .5rem;
+      display: none;
+      background-color: var(--light-green);
+      z-index: 200;
+      position: absolute;
+      bottom: calc(100% + 1rem);
+      box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.75);
+      left: 0;
+      height: 150px;
+      top: 100%;
+      overflow-y: scroll;
+      width: 300px;
+
+      i, svg {
+        z-index: 5;
+        position: absolute;
+        top: .2rem;
+        background-color: var(--normal-green);
+        font-size: .8rem;
+        right: .2rem;
+
+        &:hover {
+          background-color: var(--dark-green);
+        }
+      }
+
+      button {
+        span {
+          font-size: 2rem;
+        }
+      }
+    }
+  }
+}
+
+
+// ============================
+// Explorer window generic type
+// ============================
+.explorer-style-header {
+  background-color: var(--lighter-grey);
+  border: 1px solid var(--light-grey);
+  border-right: none;
+  position: absolute;
+  display: flex;
+  left: -1px;
+  column-gap: 1rem;
+  z-index: 0;
+  flex-direction: row;
+  align-items: center;
+  padding-left: .5rem;
+  width: 130px;
+  height: 40px;
+  top: -40px;
+
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    z-index: -1;
+    left: 107px;
+    top: 13px;
+    width: 55px;
+    height: 40px;
+    transform: rotate(45deg);
+    border-top: 1px solid var(--light-grey);
+    background-color: var(--lighter-grey);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 68px;
+    height: 1px;
+    bottom: -1px;
+    left: 100px;
+    background-color: var(--light-grey);
+  }
+
+  p {
+    font-weight: bold;
+    color: var(--darker-grey);
+  }
+
+  i, svg {
+    position: relative;
+    z-index: 2;
+    background-color: var(--normal-green);
+  }
+}
+
+.explorer-style-body {
+  position: relative;
+  z-index: 10;
+
+  figure {
+    margin-bottom: 0;
+  }
+}
+
+
+// ====================
+// File explorer window
+// ====================
+.images-explorer-container {
+  border: 1px solid var(--light-grey);
+  position: relative;
+  margin-top: 3rem;
+  box-sizing: border-box;
+
+  .images-explorer-body {
+    position: relative;
+    z-index: 5;
+    background-color: var(--white);
+    padding: 1rem;
+    display: flex;
+    max-height: 400px;
+    overflow-y: scroll;
+    flex-direction: row;
+    align-items: flex-start;
+    column-gap: 1rem;
+    row-gap: 1rem;
+    flex-wrap: wrap;
+
+    .explorer-image-item-container {
+      border: 1px solid var(--light-grey);
+      position: relative;
+
+      figure {
+        width: 200px;
+        height: calc(200px / 16 * 9);
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+
+        button {
+          position: absolute;
+          top: .5rem;
+
+          &.btn-use-image {
+            right: .5rem;
+          }
+
+          &.btn-copy-image {
+            left: .5rem;
+          }
+
+          i, svg {
+            box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.75);
+            background-color: var(--dark-grey);
+          }
+        }
+      }
+    }
+  }
+}
+
+
+// ===================================
+// Doc-review view page (front office)
+// ===================================
+.doc-review-detail-wrapper {
+  margin-top: -25px;
+}
+
+// The banner image.
+.doc-review-banner-image-container {
+  width: 100%;
+  position: relative;
+  height: 600px;
+  overflow: hidden;
+
+  > img {
+    height: 100%;
+    position: fixed;
+    object-fit: cover;
+    min-width: 100%;
+    max-width: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+
+// The actual doc-review content.
+.doc-review-content-wrapper {
+  background-color: white;
+  z-index: 100;
+  position: relative;
+
+  // doc-review heading.
+  .doc-review-content-heading {
+    padding-bottom: 1rem;
+
+    h2 {
+      font-family: var(--main-font-serif);
+      color: var(--dark-green);
+      font-weight: 500;
+      font-size: 3rem;
+    }
+
+    // Doc-review written by.
+    .written-by-container {
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      column-gap: .5rem;
+
+      p {
+        font-family: var(--main-font-serif);
+      }
+
+      p:first-child {
+        color: var(--dark-grey);
+      }
+
+      p:last-child {
+        color: var(--light-green);
+        font-weight: bold;
+        font-family: var(--main-font-serif);
+      }
+    }
+  }
+}
+
+
+.cke-editor-formatted-content {
+  margin-bottom: 3rem;
+
+  p, em {
+    padding: .5rem 0;
+    text-align: justify;
+    font-family: var(--main-font-serif);
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  th, td {
+    border: 1px solid black;
+  }
+
+  img {
+    width: auto;
+    max-width: 100%;
+    padding: 1rem 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--main-font-serif);
+    color: var(--dark-green);
+    font-weight: bold;
+    margin-top: 1.4rem;
+    font-size: 1.4rem;
+    margin-bottom: 0;
+  }
+
+  h3, h4 {
+    color: var(--normal-green);
+    font-size: 1.25em;
+  }
+
+  h5, h6 {
+    color: var(--light-green);
+    font-size: 1.15rem;
+  }
+
+  a {
+    color: var(--normal-green);
+    font-family: var(--main-font-serif);
+    font-weight: bold;
+
+    :hover {
+      color: var(--light-green);
+    }
+  }
+
+  b, strong {
+    font-weight: bolder;
+    font-family: var(--main-font-sans-serif);
+  }
+
+  i, cite {
+    font-weight: bold;
+    font-family: var(--main-font-serif);
+    color: rgb(102, 102, 102);
+    position: relative;
+  }
+
+  cite {
+    padding: 0 .5em;
+
+    &::before, &::after {
+      position: absolute;
+      content: '"';
+      display: block;
+      font-size: 1.4em;
+      color: var(--normal-green);
+      font-family: 'IM Fell Double Pica SC', serif;
+    }
+
+    &::before {
+      top: -0.3em;
+      left: 0.25em;
+      transform: rotateY(180deg);;
+    }
+
+    &::after {
+      top: calc(100% - 0.7em);
+      right: 0.1em;
+    }
+  }
+}
+
+// Cke-editor content.
+.doc-review-description-container p {
+  font-weight: 800;
+  font-family: var(--main-font-sans-serif);
+}
+
+
+// ==================
+// Import Google Docs
+// ==================
+
+.import-help-wrapper {
+  
+  counter-reset: info-counter;
+  display: flex;
+  flex-direction: column;
+  row-gap: 2rem;
+
+  .import-help-item-container {
+    border: 1px solid var(--lighter-grey);
+    padding: .5rem;
+    p {
+      border-bottom: 2px solid var(--normal-green);
+      color: var(--darkest-grey);
+      width: fit-content;
+      padding-left: 1.5rem;
+      max-width: 100%;
+      margin-bottom: .5rem;
+      position: relative;
+      &::before {
+        position: absolute;
+        left: 0;
+        color: var(--white);
+        background-color: var(--normal-green);
+        border-radius: 50%;
+        width: 1.2rem;
+        height: 1.2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: center;
+        font-size: .8rem;
+        counter-increment: info-counter;
+        content: counter(info-counter);
+      }
+    }
+    .img-info {
+      max-height: 100px;
+      max-width: 100%;
+    }
+    
+    button {
+      margin-top: 1rem;
+    }
+  }
+}
+
+
+
+
+
+// =============
+// Media Queries
+// =============
+
+
+// banner-image container max view-height decrease.
+@media only screen and (max-width: 1600px) {
+  .doc-review-banner-image-container {
+    height: 500px;
+  }
+}
+
+
+@media only screen and (max-width: 1100px) {
+  .write-doc-review-upper-part-container {
+    grid-template-columns: 1fr;
+
+    .image-preview-container {
+      grid-column: 1/2;
+      grid-row: 2/3;
+    }
+  }
+}
+
+@media screen and (max-width: 1250px) {
+  // Place the doc-review settings underneath eachother.
+  .docreview-settings-wrapper {
+    grid-template-columns: 100%;
+  }
+  .emoji-preview-wrapper {
+    max-width: 85vw;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .emoji-preview-wrapper {
+    max-width: 80vw;
+  }
+  // banner-image container max view-height decrease.
+  .doc-review-banner-image-container {
+    height: 400px;
+  }
+
+
+  .cke-editor-formatted-content {
+    img {
+      width: auto;
+      max-width: 100%;
+
+      &:nth-child(odd),
+      &:nth-child(even) {
+        float: none;
+        padding: .5rem 0;
+      }
+    }
+  }
+}
+
+// banner-image container max view-height decrease.
+@media only screen and (max-width: 650px) {
+  .doc-review-banner-image-container {
+    height: 300px;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .emoji-preview-wrapper {
+    max-width: 60vw;
+  }
+  .doc-review-banner-image-container {
+    height: 40vh;
+  }
+}
+
+/*
+
+.doc-review-detail-wrapper {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.doc-review-actual-text-container {
+  -webkit-touch-callout: default; 
+  -webkit-user-select: text; 
+  -moz-user-select: text; 
+  -ms-user-select: text; 
+  user-select: text;
+}
+*/

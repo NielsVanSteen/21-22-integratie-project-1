@@ -1,0 +1,103 @@
+﻿@using Domain.Comment
+@using UI.MVC.Models.Shared.PopUp
+@using UI.MVC.Extensions
+@model System.Collections.Generic.IEnumerable<Domain.Comment.CommentHistory>
+
+<article class="generic-history-wrapper comment-history-wrapper">
+
+    <article class="generic-history-container">
+
+        @foreach (var history in Model ?? Enumerable.Empty<CommentHistory>())
+        {
+            <!-- Single history item wrapper. -->
+            <article class="generic-history-item-wrapper">
+                <section class="generic-history-item-container">
+
+                    <div class="generic-history-item-inner">
+
+                        <!-- History item title. -->
+                        <div class="generic-history-item-title-container">
+                            <h3>@history.CommentStatus.ToText() Comment</h3>
+                        </div>
+
+                        <!-- History item date. -->
+                        <div class="generic-history-item-date">
+                            <p>@history.EditedOn.GetDateWithAbbreviatedMonth()</p>
+                            <p class="date-time">@history.EditedOn.GetTime12HourClock()</p>
+                        </div>
+
+                        <!-- History item link. -->
+                        <div class="generic-history-item-detail">
+                            <button class="btn-link view-comment" data-comments-id=@history.ReactionGroup.CommentId>View Comment</button>
+                        </div>
+
+                        <!-- History item editor. -->
+                        <div class="generic-history-item-editor">
+                            <p>@history.EditedBy.GetFullName()</p>
+                        </div>
+
+                    </div>
+
+                </section>
+            </article>
+        }
+
+        @if (Model == null || !Model.Any())
+        {
+            <p class="alert alert-info">
+                There is no comment activity yet.
+            </p>
+        }
+
+
+    </article>
+
+
+</article>
+
+@{
+    var commentPopUpModel = new PopUpModel
+    {
+        PopUpContainerClass = "article-popup-view-comment",
+        PopUpTitle = "View comment",
+        PopUpBody = @"
+            <section class=""single-comment comment-container comment-user-page-container"" data-comment-id=""@Model.CommentId"">
+                <!-- Profile picture. -->
+                <div class=""comment-row comment-row-user-page"">
+                    <figure>
+                        <img id=""view-comment-profilePicture"" src="""" alt=""PF"">
+                    </figure>
+
+                    <!-- Name and date. -->
+                    <div class=""comment-writer-date-wrapper"">
+                        <h2 id=""view-comment-fullname""></h2>
+                        <p id=""view-comment-date"" class=""comment-date""></p>
+                    </div>
+                </div>
+                <section class=""comment-quote-container"">
+                    <p>
+                        Commented on
+                        <span id=""view-comment-quote""></span>
+                    </p>
+                </section>
+                <section class=""comment-text-container"">
+                    <p id=""view-comment-comment-text"" class=""comment-text""></p>
+                </section>
+                <div>
+                    <section class=""comment-emoji-wrapper"">
+                        <ul id=""view-comment-comment-emoji"" class=""emojis-list"">
+                        </ul>
+                    </section>
+                </div>
+            </section>
+            ",
+        ButtonPrimaryClass = "btn-ok-view-comment",
+        ButtonPrimaryText = "CLOSE",
+        ButtonPrimaryBootstrapType = "btn-success",
+        IsConfirmPopup = false
+        
+    };
+}
+
+<partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@commentPopUpModel"/>
+<script src="~/dist/projectManager.entry.js"></script>

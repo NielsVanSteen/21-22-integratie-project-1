@@ -1,0 +1,17 @@
+﻿@using identity.Models
+@using UI.MVC.Models.Account
+@using UI.MVC.Models.Shared
+@model UI.MVC.Models.Shared.ConfirmStatusMessageModel
+
+@if (@Model?.Type != null && @Model.Title != null && @Model.Description != null)
+{
+    var type = @Model.Type;
+    var typeClass = ConfirmStatusMessageModel.NotificationType.TypeClasses[(byte) type];
+    
+    <div class="alert alert-@typeClass alert-dismissible fade show" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <strong>@Model.Title</strong>
+        @Model.Description
+    </div>
+}
+<script src="~/dist/bootstrap_js.entry.js" defer></script>

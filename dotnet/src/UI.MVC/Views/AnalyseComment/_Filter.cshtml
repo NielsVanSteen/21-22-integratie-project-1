@@ -1,0 +1,139 @@
+﻿@using Domain.Comment
+@using UI.MVC.Identity
+@using BL.Comment
+@using BL.DocReview
+@using BL.Project
+@using Domain.Util
+@using SortOrder = Domain.Util.SortOrder
+
+@inject IProjectManager _projectManager;
+@inject IProjectTagManager _projectTagManager;
+@inject IDocReviewManager _docReviewManager;
+
+@model UI.MVC.Models.AnalyseComments.AnalyseCommentsFilterModel
+
+@{
+    var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+    var project = _projectManager.GetProjectByExternalName(projectName);
+
+    var tags = _projectTagManager.GetProjectTagsByProject(project);
+    var docReviews = _docReviewManager.GetDocReviewsByProject(project.ProjectId);
+}
+
+<article class="filter-container">
+    <div class="filter-inner-container">
+        <h2>Filter Comments</h2>
+
+        <!-- Filter on name. -->
+        <section class="filter-category-container">
+            <h3>Search Comments</h3>
+            <div class="input-main-wrapper">
+                <div class="input-main-container">
+                    <input class="main-input filter-input" asp-for="SearchText" onkeyup="this.setAttribute('value', this.value);" id="filterName">
+                    <label class="main-label" asp-for="SearchText"></label>
+                    <div class="description">
+                        <p>Searches the comment text, user's first & lastname.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="filter-category-container">
+            @{
+                var statuses = new List<CommentStatus>();
+                if (Model?.ParseCommentStatus() != null)
+                    statuses = new List<CommentStatus>(Model?.ParseCommentStatus());
+            }
+
+            <h3>Comment Status</h3>
+            <div class="form-check">
+                <input class="form-check-input filter-input check-box-comment-status" type="checkbox" @(!statuses.Any() ? "checked" : "") value="all" name="CommentStatus">
+                <label class="form-check-label">All</label>
+            </div>
+
+            @foreach (CommentStatus commentStatus in Enum.GetValues(typeof(CommentStatus)))
+            {
+                <div class="form-check">
+                    <input class="form-check-input filter-input check-box-comment-status" type="checkbox" value="@commentStatus.ToString()" name="CommentStatus" @(statuses.Contains(commentStatus) ? "checked" : "")>
+                    <label class="form-check-label">@(commentStatus.ToString())</label>
+                </div>
+            }
+        </section>
+
+        <section class="filter-category-container">
+            @{
+                var list = new List<int>();
+                if (Model?.ParseDocReviews() != null)
+                    list = new List<int>(Model?.ParseDocReviews());
+            }
+
+            <h3>Doc-reviews</h3>
+            <div class="form-check">
+                <input class="form-check-input filter-input check-box-doc-reviews" type="checkbox" @(!list.Any() ? "checked" : "") value="all" name="DocReviews">
+                <label class="form-check-label">All</label>
+            </div>
+
+            @foreach (var docReview in docReviews)
+            {
+                <div class="form-check">
+                    <input class="form-check-input filter-input check-box-doc-reviews" type="checkbox" value="@docReview.DocReviewId" name="DocReviews" @(list.Contains(docReview.DocReviewId) ? "checked" : "")>
+                    <label class="form-check-label">@docReview.Name</label>
+                </div>
+            }
+        </section>
+
+        <section class="filter-category-container">
+            @{
+                var list2 = new List<int>();
+                if (Model?.ParseProjectTags() != null)
+                    list2 = new List<int>(Model?.ParseProjectTags());
+            }
+
+            <h3>Comment Tags</h3>
+            <div class="form-check">
+                <input class="form-check-input filter-input check-box-project-tags" type="checkbox" @(!list2.Any() ? "checked" : "") value="all" name="ProjectTags">
+                <label class="form-check-label">All</label>
+            </div>
+
+            @foreach (var tag in tags)
+            {
+                <div class="form-check">
+                    <input class="form-check-input filter-input check-box-project-tags" type="checkbox" value="@tag.ProjectTagId" name="ProjectTags" @(list2.Contains(tag.ProjectTagId) ? "checked" : "")>
+                    <label class="form-check-label">@tag.Name</label>
+                </div>
+            }
+        </section>
+
+        <!-- Sort. -->
+        <section class="filter-category-container">
+            <h3>Sort Comments</h3>
+            <select class="form-select filter-input" aria-label="Default select example" id="sort"
+                    asp-for="@Model.SortOn" asp-items="Html.GetEnumSelectList<SortOn>()" required>
+            </select>
+            <select class="form-select filter-input" aria-label="Default select example" id="sortOrder"
+                    asp-for="@Model.SortOrder" asp-items="Html.GetEnumSelectList<SortOrder>()" required>
+            </select>
+        </section>
+
+        <section class="filter-category-container">
+            <h3>Export comments</h3>
+            <ul>
+                <li>
+                    <button class="btn btn-success btn-export-csv" type="button">.csv</button>
+                </li>
+                <li>
+                    <button class="btn btn-success btn-export-json" type="button">.json</button>
+                </li>
+                <li>
+                    <button class="btn btn-success btn-export-xml" type="button">.xml</button>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Apply filter. -->
+        <div class="button-apply-filter-container">
+            <button class="btn btn-success btn-apply-filter" id="buttonApplyFilter">Apply Filters</button>
+        </div>
+
+    </div>
+</article>

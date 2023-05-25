@@ -1,0 +1,100 @@
+@model System.Collections.Generic.IEnumerable<Domain.User.User>
+
+@using UI.MVC.Identity
+@using UI.MVC.Models.Shared.PopUp
+@using Microsoft.AspNetCore.Identity
+@using Domain.User
+@using UI.MVC.Models.Shared
+@using BL.Project
+
+@inject UserManager<User> _userManager;
+@inject IProjectManager _projectManager;
+
+@{
+    Layout = "_BackEndNavigation";
+    
+    var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+    var project = _projectManager.GetProjectByExternalName(projectName);
+}
+
+<article class="article-moderators-wrapper container">
+
+    <!-- Breadcrumbs. -->
+    @{
+        var breadCrumbs = new BreadcrumbsModel()
+        {
+            BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+            {
+                new Tuple<string, string, string, string, string>("fa-solid fa-house", @project.ExternalName, "ProjectManage", "Index", @project.ExternalName).ToValueTuple(),
+                new Tuple<string, string, string, string, string>("fa-solid fa-list-check", "Activity", "ProjectManager", "Index", @project.ExternalName).ToValueTuple()
+            },
+            ActiveItemIndex = 2
+        };
+    }
+    <partial name="_Breadcrumbs" model="@breadCrumbs"/>
+
+    <!-- Page Title -->
+    <article class="project-page-header-container project-page-header-container-small-vertical">
+        <div class="page-title-wrapper">
+            <h2>Project Activity</h2>
+            <div class="description">
+                <p>View the project activity per project-manager.</p>
+            </div>
+        </div>
+        <a class="default-link" asp-action="AllActivity" asp-controller="ProjectManager">Project-wide activity</a>
+    </article>
+
+
+    <!-- Container list showing all the moderators. -->
+    <article class="moderators-overview-container">
+
+        @if (Model.Any())
+        {
+            <!-- The heading (Not shown on mobile. -->
+            <section class="moderator-list-heading">
+                <p>Name</p>
+                <p>Role</p>
+                <p class="moderator-list-heading-activity">Activity</p>
+            </section>
+
+            <!-- List all the users. -->
+            @foreach (Domain.User.User user in @Model)
+            {
+                <!-- A Single moderator list item. -->
+                <section class="moderator-list-item-container" data-moderator-id="@user.Id">
+
+                    <!-- Profile picture and name -->
+                    <div>
+                        <figure class="moderator-profile-picture">
+                            @if (user.HasProfilePicture)
+                            {
+                                <img src="@(ApplicationConstants.CloudStorageBasicUrl + user.Id)" alt="Profile Picture">
+                            }
+                            else
+                            {
+                                <img src="~/images/icons/profile.png" alt="Profile Picture">
+                            }
+                            <figcaption>@user.Firstname @user.Lastname</figcaption>
+                        </figure>
+                    </div>
+
+                    <!-- The role. -->
+                    <div class="moderator-role">
+                        <p class="project-manager">Project Manager</p>
+                    </div>
+
+                    <div class="moderator-activity">
+                        <a class="btn btn-success" asp-action="Detail" asp-route-id="@user.Id">Activity</a>
+                    </div>
+
+                </section>
+            }
+        }
+        else
+        {
+            <p class="alert alert-info">There are nog project-managers for this project yet.</p>
+        }
+
+    </article>
+
+</article>

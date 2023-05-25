@@ -1,0 +1,88 @@
+﻿// The create button.
+.timeline-phase-create-container {
+  margin-bottom: 2rem;
+
+  .button-save-container {
+    width: 100%;
+    text-align: right;
+  }
+}
+
+// The edit & delete icon. 
+.timeline-phase-container {
+  position: relative;
+
+  .timeline-phase-options-container {
+    position: absolute;
+    top: .5rem;
+    right: .5rem;
+    z-index: 10;
+    display: flex;
+    column-gap: .5rem;
+  }
+}
+
+// Timeline.
+
+.timeline-phases-edits-wrapper {
+
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+  padding-left: 2.5rem;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10px;
+    height: 100%;
+    width: 4px;
+    background-color: var(--dark-grey);
+  }
+
+  .timeline-phase-edit-container {
+    background-color: var(--lighter-grey);
+    position: relative;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      display: block;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: var(--light-green);
+      left: calc(-2.5rem + 2px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    &::after {
+       content: '';
+      position: absolute;
+      display: block;
+      width: 24px;
+      height: 24px;
+      background-color: var(--lighter-grey);
+      left: -12px;
+      top: 50%;
+      transform: translateY(-50%) rotate(45deg);
+    }
+  }
+}
+
+// =============
+// Media queries
+// =============
+
+@media only screen and (max-width: 500px) {
+.timeline-phase-container {
+  .timeline-phase-options-container {
+    top: .3rem;
+    right: .3rem;
+    flex-direction: column;
+    column-gap: .5rem;
+  }
+}
+}

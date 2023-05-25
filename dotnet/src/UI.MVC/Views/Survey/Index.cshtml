@@ -1,0 +1,66 @@
+﻿@using UI.MVC.Models.Shared
+@{
+    Layout = "_BackEndNavigation";
+
+    var project = ViewBag.Project;
+
+    var pageTitleModel = new PageTitleModel()
+    {
+        Title = "Survey Statistics",
+        Description = "View all survey statistics for the current project."
+    };
+
+    var breadCrumbs = new BreadcrumbsModel()
+    {
+        BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+        {
+            new Tuple<string, string, string, string, string>("fa-solid fa-house", @project.ExternalName, "ProjectManage", "Index", @project.ExternalName).ToValueTuple(),
+            new Tuple<string, string, string, string, string>("fa-solid fa-square-poll-vertical", "Survey Statistics", "Survey", "Index", @project.ExternalName).ToValueTuple(),
+        },
+        ActiveItemIndex = 2
+    };
+}
+
+<article class="article-survey-statistics-wrapper container">
+
+    <partial name="_Breadcrumbs" model="@breadCrumbs"/>
+
+    <partial name="_PageTitle" model="@pageTitleModel"/>
+
+    <!-- The container element for all the statistics.  -->
+    <article class="survey-statistics-content-container project-statistics-overview-container">
+
+        @* 
+        Is loaded with the data from the server.
+        
+        
+        <section class="survey-statistics-item-container project-statistics-item">
+            <div class="title-container">
+                <div class="title-inner">
+                    <h3>Survey 1</h3>
+                    <div class="description-container">
+                        <p class="survey-description">
+                            This is a survey description.
+                        </p>
+                    </div>
+                </div>
+                <p>Multiple choice</p>
+            </div>
+            
+            <button class="btn-icon btn-show-highlighted-text">
+                <i class="fa-solid fa-align-left"></i>
+                <div class="highlighted-text-container">
+                    <p>Dit is een stuk tekst uit de doc-review</p>
+                </div>
+            </button>
+            
+            <div class="statistics-chart-container">
+                <canvas id="surveyChart1"></canvas>
+            </div>
+        </section>*@
+
+    </article>
+
+</article>
+
+<script src="~/dist/survey.entry.js" defer></script>

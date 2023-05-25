@@ -1,0 +1,81 @@
+﻿@using Domain.User
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore.Query.Internal
+@using UI.MVC.Identity
+@using UI.MVC.Models.Shared
+@using BL.Project
+@using BL.User
+
+@model UI.MVC.Models.Account.RegisterModel
+
+@inject IUserManager _userService;
+@inject IUserPropertyManager _userPropertyService;
+@inject IProjectManager _projectManager;
+
+@*
+    Partial view containing all the input fields for a registration form.
+*@
+
+<!-- Container for possible error messages. -->
+@if (ViewContext.ViewData.ModelState.ErrorCount > 0)
+{
+    <div asp-validation-summary="All" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- Container display basic registration information. Is the same for all projects. -->
+<div class="registration-input-container input-basic-information-container">
+
+    <h2>Basis informatie</h2>
+
+    <div class="input-main-wrapper">
+        <div class="input-main-container">
+            <input class="main-input" asp-for="Firstname" onkeyup="this.setAttribute('value', this.value);" required>
+            <label class="main-label main-label-required" asp-for="Firstname"></label>
+        </div>
+        <span asp-validation-for="Firstname" class="text-danger"></span>
+    </div>
+
+    <div class="input-main-wrapper">
+        <div class="input-main-container">
+            <input asp-for="Lastname" class="main-input" onkeyup="this.setAttribute('value', this.value);" required>
+            <label class="main-label main-label-required" asp-for="Lastname" type="text"></label>
+        </div>
+        <span asp-validation-for="Lastname" class="text-danger"></span>
+    </div>
+
+    <div class="input-main-wrapper">
+        <div class="input-main-container">
+            <input asp-for="Email" class="main-input" onkeyup="this.setAttribute('value', this.value);" required>
+            <label class="main-label main-label-required" asp-for="Email" type="email"></label>
+        </div>
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="input-main-wrapper">
+        <div class="input-main-container">
+            <input asp-for="Password" class="main-input" onkeyup="this.setAttribute('value', this.value);" type="password" required>
+            <label class="main-label main-label-required" asp-for="Password"></label>
+        </div>
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div class="input-main-wrapper">
+        <div class="input-main-container">
+            <input asp-for="ConfirmPassword" class="main-input" onkeyup="this.setAttribute('value', this.value);" type="password" required>
+            <label class="main-label main-label-required" asp-for="ConfirmPassword"></label>
+        </div>
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+
+</div>
+
+@* Extra user information. *@
+@{
+    // Get the UserPropertyNames and Values. and render the partial view display inputs for this extra information.
+    var projectName = ApplicationConstants.GetProjectName(Context.GetRouteData());
+    var project = _projectManager.GetProjectByExternalName(projectName);
+    var extraUserInfoModel = new ExtraUserInfoModel ( _userPropertyService.GetUserPropertyNamesByProject(project), Model?.UserPropertyValues);
+}
+<partial name="~/Views/AccountManage/_ExtraUserInfo.cshtml" model="@extraUserInfoModel"/>

@@ -1,0 +1,119 @@
+﻿@using Domain.Comment
+@using UI.MVC.Extensions
+@using BL.Comment
+@using BL.DocReview
+@using Domain.User
+@using Microsoft.AspNetCore.Identity
+@using UI.MVC.CloudStorage
+@using UI.MVC.Models.Shared.PopUp
+@model Domain.DocReview.DocReview
+
+@inject IEmojiManager _emojiManager;
+@inject UserManager<User> _userManager;
+@inject ICommentManager _commentManager;
+
+@{
+    var allEmojis = _emojiManager.GetEmojisOfDocReview(@Model.DocReviewId).ToList();
+
+    // Making a distinction between main and sub-comments.
+    var mainComments = (ViewBag.Comments as IEnumerable<ReactionGroup> ?? Array.Empty<ReactionGroup>()).ToList();
+}
+
+
+<div class="error-message-box"></div>
+
+<!-- Comments.  -->
+<article class="comment-section comment-section-wrapper" id="commentSection">
+    @foreach (var comment in mainComments)
+    {
+        <section class="comment-block comment-wrapper comment-user-page-block-wrapper" data-comment-id="@comment.CommentId">
+            <partial name="_CommentOverview" model="@comment"/>
+            <section class="sub-comment-wrapper">
+
+                <div class="sub-comment-block" name="subCommentBlock" data-comment-id="@comment.CommentId">
+
+                    @{
+                        // Get only the sub-comments that should be visible for a regular user (i.e. have the published status, and are not deleted). 
+                        var subComments = _commentManager.GetSubCommentsByComment(comment, new List<CommentStatus>() { CommentStatus.Published },
+                            new List<CommentStatus>() { CommentStatus.Removed }, true, true, true, true, true).ToList();
+                    }
+
+                    @foreach (ReactionGroup subComment in subComments)
+                    {
+                        <partial name="_CommentOverview" model="@subComment"/>
+                    }
+                </div>
+
+                <!-- Write sub-comment. -->
+                @if (comment.PlacedOnReactionGroupId == null && comment.DocReview.DocReviewSettings.IsSubCommentingAllowed)
+                {
+                    <div class="sub-comment-container">
+                        <div class="row">
+                            <figure class="sub-comment-profile-picture-figure">
+                                <img src="@_userManager.GetUserAsync(User).Result.GetUserProfilePictureImageLink(SquareImageSize.MD)" alt="">
+                            </figure>
+                            <div class="sub-comment-text-container">
+                                <textarea class="sub-comment-text" data-comment-id="@comment.CommentId" placeholder="Reageer"></textarea>
+                            </div>
+                        </div>
+                        <div class="sub-comment-actions-container">
+                            <button class="sub-comment-cancel btn-sub-comment-action btn btn-secondary btn-sm" data-comment-id="@comment.CommentId">Annuleer</button>
+                            <button class="sub-comment-post btn-sub-comment-action btn btn-success btn-sm" data-comment-id="@comment.CommentId">Reageer</button>
+                        </div>
+                    </div>
+                }
+
+            </section>
+        </section>
+    }
+</article>
+
+<!-- Write a main comment. -->
+<article class="write-comment">
+    @if (Model.DocReviewSettings.IsCommentingAllowed)
+    {
+        <section class="post-comment write-main-comment-container">
+            <div class="row">
+                <figure class="sub-comment-profile-picture-figure">
+                    <img src="@_userManager.GetUserAsync(User).Result.GetUserProfilePictureImageLink(SquareImageSize.MD)" alt="">
+                </figure>
+                <div class="sub-comment-text-container">
+                    <textarea id="commentText" placeholder="Reageer"></textarea>
+                </div>
+            </div>
+            <div class="write-comment-actions-container">
+                <button id="SelectText" class="btn btn-secondary btn-sm">Selecteer Text</button>
+                <!--<button id="cancelComment">Annuleer</button>-->
+                <button id="placeComment" class="btn btn-success btn-sm">Reageer</button>
+            </div>
+            <p id="selectedText"></p>
+        </section>
+    }
+</article>
+@if (mainComments.Any())
+{
+    <article class="load-more d-flex justify-content-center align-items-center">
+        <button class="load-more-button btn btn-success btn-sm" id="loadMoreButton">Laad Meer</button>
+    </article>
+}
+
+@{
+    var body = "<div><ul class='emoji-list'>";
+
+    allEmojis.ToList().ForEach(emoji => body += $@" <li class='shown-emoji'><button class='add-emoji-button btn-icon global-emoji-button' data-emoji-id='{emoji.EmojiId}'>&#{emoji.Code};</button></li>");
+
+    body += "</ul></div>";
+
+    var popupModel = new PopUpModel()
+    {
+        PopUpContainerClass = "article-popup-react-emoji",
+        PopUpTitle = "Selecteer Emoji",
+        PopUpBody = body,
+        ButtonPrimaryClass = "btn-confirm-react-emoji",
+        ButtonPrimaryText = "Close",
+        ButtonPrimaryBootstrapType = "btn-success",
+        IsConfirmPopup = false
+    };
+}
+
+<partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@popupModel"/>

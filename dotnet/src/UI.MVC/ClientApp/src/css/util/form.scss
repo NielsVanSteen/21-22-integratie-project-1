@@ -1,0 +1,482 @@
+﻿.input-main-container {
+  position: relative;
+  margin-bottom: 0em;
+  margin-top: 2.5rem;
+}
+
+.main-label {
+  position: absolute;
+  top: 50%;
+  color: var(--darker-grey);
+  left: 0.5rem;
+  transform: translateY(-50%);
+  transition: font-size 300ms ease 0ms, transform 300ms ease 0ms, margin 300ms ease 0ms, left 300ms ease 0ms;
+}
+
+.main-input {
+  border: none;
+  border-bottom: 2px solid var(--normal-green);
+  background-color: var(--lightest-grey);
+  padding: .7em .3em .3em .5em;
+  border-radius: 3px;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.main-input:focus ~ .main-label,
+.input-type-date ~ .main-label,
+.main-input[value]:not([value=""]) ~ .main-label,
+.main-input:valid ~ .main-label {
+  //font-size: .65em;
+  transform: translateY(calc(-100% - 1.1rem));
+  margin-top: -2px;
+  left: 0;
+}
+
+.login-remember-me {
+  padding: 1rem 0;
+}
+
+/*input container*/
+.input-main-sub-container {
+  width: auto;
+  height: 100%;
+  overflow: hidden;
+}
+
+/*Description container.*/
+.input-description {
+  width: 2.6rem;
+  height: 2.5rem;
+  position: relative;
+  float: right;
+  margin-left: 1rem;
+  background-color: var(--light-green);
+  border: 1px solid var(--light-green);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.input-description-question-mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  color: var(--white);
+  font-weight: 600;
+  font-size: 1.5rem;
+  transform: translate(-50%, -50%);
+}
+
+.input-description .input-description {
+  position: absolute;
+  width: max-content;
+  max-width: 300px;
+  background-color: lightgrey;
+  right: 0;
+  top: calc(-100% - 0.5rem);
+  border: none;
+  font-size: 0.75rem;
+  padding: .5rem;
+  height: auto;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 300ms ease, visibility 300ms ease;
+}
+
+.input-description .input-description::after {
+  content: '';
+  position: absolute;
+  display: block;
+  width: 14px;
+  height: 14px;
+  bottom: -7px;
+  right: 1rem;
+  background-color: lightgrey;
+  transform: rotate(45deg);
+}
+
+.input-description:hover .input-description {
+  opacity: 1;
+  visibility: visible;
+}
+
+.main-input {
+  height: 2.5rem;
+}
+
+label {
+  position: relative;
+  pointer-events: none;
+}
+
+.main-label-required::after {
+  content: "*";
+  position: absolute;
+  display: block;
+  color: red;
+  font-size: 1rem;
+  right: -0.7rem;
+  top: 50%;
+  transform: translateY(calc(-50% + 0rem));
+  font-weight: bold;
+}
+
+ul {
+  margin-bottom: 0;
+}
+
+
+// ==============
+// Error messages
+// ==============
+.error-messages-container {
+  margin-top: 1rem;
+}
+
+
+// ==================
+// bootstrap checkbox
+// ==================
+
+.form-check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  padding: .3rem 0;
+
+  label {
+    margin-left: .5rem;
+  }
+
+  span {
+    margin-left: 2rem;
+  }
+
+  // Description question mark.
+  .description-container {
+    margin-left: .5rem;
+    position: relative;
+
+    p {
+      display: none;
+      position: absolute;
+      top: calc(100% + 1rem);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      color: var(--white);
+      background-color: var(--normal-grey);
+      font-size: .8rem;
+      border-radius: .3rem;
+      z-index: 100;
+      padding: .3rem;
+
+      &::before {
+        content: '';
+        position: absolute;
+        display: block;
+        background-color: var(--normal-grey);
+        width: 12px;
+        height: 12px;
+        top: -6px;
+        left: calc(50% + 2px);
+        transform: rotate(45deg);
+      }
+    }
+
+    &:hover {
+      p {
+        display: block;
+      }
+    }
+
+    &::after {
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .8rem;
+      content: '?';
+      position: absolute;
+      display: block;
+      width: 1.2rem;
+      text-align: center;
+      height: 1.2rem;
+      font-weight: bold;
+      border-radius: 50%;
+      color: var(--white);
+      background-color: var(--dark-green);
+    }
+  }
+}
+
+.form-check-input[type="checkbox"],
+.form-check-input[type="radio"] {
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-left: 0;
+  float: none;
+}
+
+// Change the checkbox color to the theme color.
+.form-check-input:checked[type="checkbox"],
+.form-check-input:checked[type="radio"] {
+  background-color: var(--light-green);
+  border-color: var(--light-green);
+}
+
+.form-check-input:focus[type="checkbox"],
+.form-check-input:checked[type="radio"] {
+  outline: none;
+  box-shadow: none;
+}
+
+
+// ================
+// Form File Upload
+// ================
+
+.input-file-upload {
+  margin: 2rem 0;
+
+  input[type=file] {
+    display: none;
+  }
+
+  .description-wrapper {
+    position: relative;
+    z-index: 5;
+  }
+
+  figure {
+    width: 300px;
+    height: 300px;
+    position: relative;
+    background-color: var(--lighter-grey);
+
+    img {
+      display: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    &.file-upload-landscape {
+      width: calc(300px / 9 * 16);
+    }
+
+    i, svg {
+      font-size: 1.2rem;
+      position: absolute;
+      top: .5rem;
+
+      &.fa-image {
+        left: .5rem;
+      }
+
+      &.fa-trash-can {
+        color: var(--bs-danger);
+        right: .5rem;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .input-file-upload {
+    figure {
+      width: 240px;
+      height: 240px;
+
+      &.file-upload-landscape {
+        width: 240px;
+        height: calc(240px / 16 * 9);
+      }
+    }
+  }
+  .create-project-images {
+    .description-wrapper {
+      max-width: 240px !important;
+    }
+  }
+}
+
+
+// ===========================
+// Select with a question mark
+// ===========================
+
+// Div displaying the question mark.
+.project-list-select-container input {
+  height: 2.5rem;
+}
+
+.project-list-select-description-container {
+  height: 2.5rem;
+  width: 2.5rem;
+  border: 1px solid var(--light-grey);
+  position: relative;
+
+  p {
+    display: none;
+    background-color: var(--dark-grey);
+    font-size: .8rem;
+    width: 190px;
+    padding: .3rem;
+    color: var(--white);
+    border-radius: .5rem;
+    position: absolute;
+    z-index: 10;
+    top: calc(3rem);
+    right: 0;
+
+    &::after {
+      content: '';
+      position: absolute;
+      display: block;
+      background-color: var(--dark-grey);
+      width: 12px;
+      height: 12px;
+      right: .5rem;
+      top: -4px;
+      transform: rotate(45deg);
+    }
+  }
+
+  &::after {
+    content: '?';
+    color: var(--dark-grey);
+    font-weight: bold;
+    position: absolute;
+    display: block;
+    top: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &:hover {
+    p {
+      display: block;
+    }
+  }
+}
+
+
+// ================
+// Secondary select
+// ================
+
+.secondary-form-input-container {
+  position: relative;
+  margin-bottom: 1rem;
+  margin-top: 3rem;
+
+  input {
+    border: 1px solid var(--darker-grey);
+    height: 2.5rem;
+    padding: .5rem;
+  }
+
+  label {
+    top: 50%;
+    left: .5rem;
+    transform: translateY(-50%);
+    position: absolute;
+    transition: top 300ms ease, left 300ms ease;
+    pointer-events: none;
+    color: var(--darker-grey);
+  }
+
+  input, textarea {
+    width: 100%;
+  }
+
+  textarea {
+    resize: vertical;
+    padding: .5rem;
+  }
+
+  input:focus, textarea:focus {
+    outline: 0;
+  }
+
+  input:focus ~ label, textarea:focus ~ label, input:valid ~ label, textarea:valid ~ label {
+    top: -1.05rem;
+    left: 0;
+  }
+}
+
+
+// =======
+// Buttons
+// =======
+
+// This is the wrapper-button for clickable icons. Since the event listeners added in font-awesome icons are wonky. Node.js? Webpack? no clue.
+// On buttons they seem to always work thus the icons will be wrapped inside a button. and the button will be invisible.
+.btn-icon {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+// Button that looks like a standard link.
+.btn-link {
+  color: var(--darker-grey);
+  border: none;
+  background-color: transparent;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+    color: var(--normal-green);
+  }
+}
+
+// ================================
+// button icon link with hover text
+// ================================
+.btn-link-hover-container {
+  position: relative;
+  margin-left: .5rem;
+  z-index: 100;
+
+  p {
+    position: absolute;
+    display: none;
+    color: var(--white);
+    top: 100%;
+    text-transform: capitalize;
+    padding: .3rem;
+    border-radius: .3rem;
+    right: 0;
+    max-width: 250px;
+    background-color: var(--dark-grey);
+    width: max-content;
+    font-size: 0.8rem;
+
+    &::before {
+      width: 12px;
+      top: -6px;
+      right: .5rem;
+      transform: rotate(45deg);
+      height: 12px;
+      background-color: inherit;
+      content: '';
+      display: block;
+      position: absolute;
+    }
+  }
+
+  &:hover p {
+    display: block;
+  }
+}
+
+.btn-margin-bottom {
+  margin-bottom: 3rem;
+}
+
+
+

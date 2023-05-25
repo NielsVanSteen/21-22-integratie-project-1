@@ -1,0 +1,97 @@
+﻿@using Domain.User
+@using Microsoft.AspNetCore.Identity
+@using UI.MVC.Identity
+@using BL.User
+@using BL.Project
+@using UI.MVC.Attributes
+@using UI.MVC.Models.Shared
+@using UI.MVC.Models.Shared.PopUp
+
+@model UI.MVC.Models.AccountManage.ChangeProfileSettingsModel
+
+@inject UserManager<User> _userManager;
+@inject IUserManager _userService;
+@inject IUserPropertyManager _userPropertyService;
+@inject IProjectManager _projectManager;
+
+@{
+    Layout = "~/Views/AccountManage/_ProfilePagesLayout.cshtml";
+}
+
+<form id="profile-form" asp-controller="AccountManage" asp-action="Profile" method="post" enctype="multipart/form-data">
+
+    <header class="profile-subpage-header">
+        <h2 class="account-subpage-title">Account instellingen</h2>
+        <button id="update-profile-button" type="submit" class="btn btn-success btn-profile-safe">Save</button>
+    </header>
+
+    <div class="profile-inner">
+
+        <!-- Section containing the basic information. -->
+        <section class="profile-information-inner-container profile-inner-basic-info-container">
+            <h2>Basis informatie</h2>
+
+            <div class="input-main-wrapper">
+                <div class="input-main-container">
+                    <input class="main-input" asp-for="Firstname" type="text" onkeyup="this.setAttribute('value', this.value);" required>
+                    <label class="main-label main-label-required" asp-for="Firstname"></label>
+                </div>
+                <span asp-validation-for="Firstname" class="text-danger"></span>
+            </div>
+
+            <div class="input-main-wrapper">
+                <div class="input-main-container">
+                    <input asp-for="Lastname" class="main-input" onkeyup="this.setAttribute('value', this.value);" required>
+                    <label class="main-label main-label-required" asp-for="Lastname" type="text"></label>
+                </div>
+                <span asp-validation-for="Lastname" class="text-danger"></span>
+            </div>
+
+            <div class="input-main-wrapper">
+                <div class="input-main-container">
+                    <input asp-for="PhoneNumber" class="main-input" onkeyup="this.setAttribute('value', this.value);">
+                    <label class="main-label" asp-for="PhoneNumber" type="email"></label>
+                </div>
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+
+        </section>
+
+        <hr>
+
+        <!-- Section containing extra information. -->
+        <section class="profile-information-inner-container">
+
+            @{
+                // Get the UserPropertyNames and Values. and render the partial view display inputs for this extra information.
+                var project = _projectManager.GetProjectByExternalName(ApplicationConstants.GetProjectName(Context.GetRouteData()));
+                var user = _userService.GetUser((await _userManager.GetUserAsync(User)).Id, false, true);
+                var extraUserInfoModel = new ExtraUserInfoModel(_userPropertyService.GetUserPropertyNamesByProject(project), user.UserPropertyValues);
+            }
+            <partial name="_ExtraUserInfo" model="@extraUserInfoModel"/>
+
+
+            @*Bootstrap alert-box possibly containing a message.*@
+            <div class="profile-confirm-message-container">
+
+                <!-- Container for possible error messages. -->
+                @if (ViewContext.ViewData.ModelState.ErrorCount > 0)
+                {
+                    <div asp-validation-summary="All" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                else
+                {
+                    <partial name="~/Views/Shared/_AccountConfirmation.cshtml" model="ViewBag.AccountConfirmation"/>
+                }
+
+            </div>
+
+        </section>
+    </div>
+
+</form>
+
+<!-- Bootstrap javascript. -->
+<script src="~/dist/bootstrap_js.entry.js" defer></script>

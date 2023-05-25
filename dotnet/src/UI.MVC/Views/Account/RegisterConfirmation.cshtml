@@ -1,0 +1,35 @@
+﻿@using UI.MVC.Identity
+@using UI.MVC.Models.Shared
+@{
+    Layout = "_BackEndNavigation";
+    ViewData["Title"] = "Register confirmation";
+
+    var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+
+    var pageTitle = new PageTitleModel()
+    {
+        Title = "Registratie voltooien",
+        Description = "De registratie is bijna afgerond! Wij hebben u een e-mail gestuurd om uw e-mail te bevestigen!"
+    };
+
+    var breadCrumbs = new BreadcrumbsModel()
+    {
+        BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+        {
+            new Tuple<string, string, string, string, string>("fa-solid fa-house", @projectName, "Project", "Index", @projectName).ToValueTuple(),
+            new Tuple<string, string, string, string, string>("fa-solid fa-envelope", "Registratie", "Account", "RegisterConfirmatin", @projectName).ToValueTuple(),
+        },
+        ActiveItemIndex = 2
+    };
+}
+
+<article class="container">
+     <partial name="_Breadcrumbs" model="@breadCrumbs"/>
+
+     <partial name="_PageTitle" model="@pageTitle"/>
+     
+     <p class="alert alert-info">
+         <strong>Bevestig uw e-mail!</strong> Wij hebben een bevestings mail gestuurd naar uw e-mail, zodra u uw e-mail bevestigd heeft kunt u aanmelden!
+     </p>
+    
+</article>

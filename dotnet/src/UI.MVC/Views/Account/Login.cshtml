@@ -1,0 +1,111 @@
+﻿@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Identity
+@using Domain.User
+@using UI.MVC.Identity
+@using BL.Project
+@using UI.MVC.CloudStorage
+@using UI.MVC.Extensions
+@model UI.MVC.Models.Account.LoginModel
+
+@inject SignInManager<User> _signInManager
+@inject IProjectManager _projectService;
+
+@{
+    Layout = "_Layout";
+
+    var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+    var project = _projectService.GetProjectByExternalName(projectName);
+
+}
+
+<article class="login-wrapper">
+
+    <section class="login-section-wrapper login-section-image-wrapper">
+        @if (project != null)
+        {
+            <img class="login-project-banner-image" src="@project.GetProjectBannerImageFullLink(LandscapeImageSize.LG)" alt="@project.ExternalName">
+        }
+    </section>
+
+    <!-- Section containing all the inputs. -->
+    <section class="login-section-wrapper login-section-login-wrapper">
+        <h1>@projectName</h1>
+
+        <div class="login-container">
+            <h2>Log in</h2>
+
+            <form asp-controller="Account" asp-action="Login" method="post" enctype="multipart/form-data">
+
+                <div class="input-main-wrapper">
+                    <div class="input-main-container">
+                        <input class="main-input" asp-for="Email" onkeyup="this.setAttribute('value', this.value);" required>
+                        <label class="main-label" asp-for="Email"></label>
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="input-main-wrapper">
+                    <div class="input-main-container">
+                        <input class="main-input" asp-for="Password" onkeyup="this.setAttribute('value', this.value);" required="">
+                        <label class="main-label" asp-for="Password"></label>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <!-- Container for possible error messages. -->
+                @if (ViewContext.ViewData.ModelState.ErrorCount > 0)
+                {
+                    <div asp-validation-summary="All" class="alert alert-danger alert-dismissible fade show alert-error-margin-top" role="alert">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <div class="login-remember-me">
+                    <input type="checkbox" asp-for="RememberMe"/>
+                    <label asp-for="RememberMe"></label>
+                </div>
+
+                <div class="login-submit-container">
+                    <button type="submit" class="btn btn-success btn-wide  btn-login">Log in</button>
+                </div>
+
+            </form>
+
+            <!-- External provider buttons.  -->
+            <div class="external-providers-wrapper">
+                @{
+                    List<AuthenticationScheme> externalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+                    if ((externalLogins?.Count ?? 0) != 0)
+                    {
+                        <form asp-controller="Account" asp-action="AuthenticateExternalProvider" method="post" enctype="multipart/form-data">
+                            <div class="external-providers-container">
+                                @foreach (var provider in externalLogins)
+                                {
+                                    <button type="submit" class="btn-external-provider btn-external-provider-@provider.DisplayName.ToLower()" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                }
+                            </div>
+                        </form>
+                    }
+                }
+            </div>
+
+            <!-- Container for extra options. -->
+            <div class="login-extra-options-container">
+                <a id="forgot-password" asp-controller="Account" asp-action="ForgotPassword">Wachtwoord vergeten?</a>
+
+                <a asp-controller="Account" asp-action="Register">Registreer als een nieuwe gebruiker.</a>
+
+                <a id="resend-confirmation" asp-controller="Account" asp-action="ResendEmailConfirmation">Stuur bevestigings e-mail opnieuw.</a>
+            </div>
+
+        </div>
+
+    </section>
+
+</article>
+
+@section Scripts
+{
+    <script src="~/dist/bootstrap_js.entry.js" defer></script>
+}

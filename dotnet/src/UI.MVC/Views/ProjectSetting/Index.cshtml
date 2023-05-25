@@ -1,0 +1,110 @@
+﻿@model UI.MVC.Models.ProjectSetting.ConfirmStringModel
+
+@using Domain.User
+@using Domain.Project
+@using UI.MVC.Extensions
+@using UI.MVC.Models.Shared
+
+@{
+    User user = ViewBag.User;
+    Project project = ViewBag.project;
+    Layout = "_BackEndNavigation";
+}
+
+<article class="container project-settings-wrapper">
+
+    <!-- Breadcrumbs. -->
+    @{
+        var breadCrumbs = new BreadcrumbsModel()
+        {
+            BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+            {
+                new Tuple<string, string, string, string, string>("fa-solid fa-house", @project.ExternalName, "ProjectManage", "Index", @project.ExternalName).ToValueTuple(),
+                new Tuple<string, string, string, string, string>("fa-solid fa-gear", "Settings", "ProjectSetting", "Index", @project.ExternalName).ToValueTuple(),
+            },
+            ActiveItemIndex = 2
+        };
+    }
+    <partial name="_Breadcrumbs" model="@breadCrumbs"/>
+
+    <!-- Page Title ProjectHistory -->
+    <partial name="~/Views/Shared/_PageTitle.cshtml" model="@(new PageTitleModel {Title = "Project Settings", Description = $"The settings page for {project.ExternalName}"})"/>
+
+    <!--Page title DocReviewHistory. -->
+    <partial name="~/Views/Shared/_PageTitle.cshtml" model="@(new PageTitleModel {Title = "Statements", Description = "The privacy and accessibility statement that will be shown in the footer."})"/>
+
+    <!-- Accessibility & Privacy Statement. -->
+    <section class="project-settings-statements">
+        <div class="secondary-form-input-container">
+            <textarea name="privacy" id="privacy-statement" class="txt-project-introduction" required></textarea>
+            <label for="privacy-statement">Privacy statement</label>
+        </div>
+
+        <div class="secondary-form-input-container">
+            <textarea name="accessibility" id="accessibility-statement" class="txt-project-introduction" required></textarea>
+            <label for="accessibility-statement">Accessibility statement</label>
+        </div>
+    </section>
+
+    <div class="status-messages-container"></div>
+
+    <button type="button" id="add-statements" class="btn btn-success btn-margin-bottom">Save statements</button>
+
+    <partial name="_EditProjectFooterLogos.cshtml" model="project.FooterLogos"/>
+
+    <!--Page title DocReviewHistory. -->
+    <partial name="~/Views/Shared/_PageTitle.cshtml" model="@(new PageTitleModel {Title = "Project Settings", Description = "Publish, Create or Edit the project."})"/>
+
+    <div class="display-row">
+
+        <div class="display-col">
+            <!-- Publish project container. -->
+            <section class="project-publish project-setting-item">
+                <h3>Publish project</h3>
+                @if (project.GetLatestProjectHistory().ProjectStatus == ProjectStatus.Created)
+                {
+                    <button id="publish" type="button" class="btn btn-success">Publish project</button>
+                }
+                else
+                {
+                    <button id="publish" type="button" class="btn btn-success" disabled>Publish project</button>
+                }
+                <div id="publish-error" class="text-danger mt-2"></div>
+            </section>
+
+            <!-- Archive project container. -->
+            <section class="project-archive project-setting-item">
+                <h3>Archive project</h3>
+                <div>
+                    @if (project.GetLatestProjectHistory().ProjectStatus == ProjectStatus.Published)
+                    {
+                        <button type="button" id="archive" class="btn btn-success">Archive project</button>
+                    }
+                    else
+                    {
+                        <button type="button" id="archive" class="btn btn-success" disabled>Archive project</button>
+                    }
+                </div>
+                <div id="archive-error" class="text-danger mt-2"></div>
+            </section>
+
+        </div>
+
+        <!-- Delete project container -->
+        <section class="project-delete project-setting-item">
+            <h3>Delete project</h3>
+            <form asp-controller="ProjectSetting" asp-action="Index" method="POST" class="form-vertical">
+                <label asp-for="ConfirmString">type "Confirm" to confirm the deletion of the project</label>
+                <input id="confirm-delete" class="form-control" asp-for="ConfirmString">
+                <span asp-validation-for="ConfirmString" class="text-danger"></span>
+                <input type="submit" value="Delete Project" class="btn btn-success">
+            </form>
+        </section>
+
+    </div>
+
+    <div class="index-error-messages-container"></div>
+
+</article>
+
+<script src="~/dist/projectSetting.entry.js" defer></script>

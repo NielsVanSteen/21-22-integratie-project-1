@@ -1,0 +1,35 @@
+﻿@using UI.MVC.Extensions
+@using Domain.Project
+@model System.Collections.Generic.IEnumerable<Domain.Project.ProjectHistory>
+
+<!-- Wrapper element for the project history. -->
+<article class="project-history-wrapper">
+
+    <div class="project-history-inner-wrapper">
+
+        <!-- Container of all the items. -->
+        <section class="project-history-items-container">
+
+            @foreach (var history in Model ?? Enumerable.Empty<ProjectHistory>())
+            {
+                <!-- A single project history item. -->
+                <section class="project-history-item">
+
+                    <div class="project-history-item-text">
+                        <p class="name">@history.EditedBy.GetFullName()</p>
+                        <p class="info">@history.ProjectStatus.ToString() @history.Project.ExternalName</p>
+                    </div>
+
+                    <div class="project-history-date">
+                        <p class="date-day-month">@history.EditedOn.GetDayAndMonthAbbreviation()</p>
+                        <p class="date-year">@history.EditedOn.Year</p>
+                    </div>
+
+                </section>
+            }
+
+        </section>
+
+        <hr class="project-history-time-line">
+    </div>
+</article>

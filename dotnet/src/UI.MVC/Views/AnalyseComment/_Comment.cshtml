@@ -1,0 +1,134 @@
+﻿@using System.Text
+@using BL.Comment
+@using BL.Project
+@using Domain.Comment
+@using Domain.DocReview
+@using Domain.Project
+@using Domain.User
+@using Microsoft.AspNetCore.Identity
+@using UI.MVC.CloudStorage
+@using UI.MVC.Extensions
+@using UI.MVC.Identity
+@model Domain.Comment.ReactionGroup
+@inject ICommentManager _commentService;
+@inject IProjectManager _projectManager;
+@inject UserManager<User> _userManager;
+@inject IProjectTagManager _projectTagManager;
+
+@{
+    // variables that we need to print an entire comment.
+    CommentStatus currentStatus = Model.GetCurrentCommentStatus();
+    // Fill a list with all the tags a project can have.
+
+    var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+    var project = _projectManager.GetProjectByExternalName(projectName);
+    var tags = _projectTagManager.GetProjectTagsByProject(project).ToList();
+
+}
+
+<section class="comment-container comment-analyse-container" data-comment-id="@Model.CommentId">
+
+    <!-- Profile picture. -->
+    <div class="comment-row">
+        <figure>
+            <img src="@Model.User.GetUserProfilePictureImageLink(SquareImageSize.MD)" alt="PF">
+        </figure>
+
+        <!-- Name and date. -->
+        <div class="comment-writer-date-wrapper">
+            <h2>@_userManager.GetFullName(@Model.User)</h2>
+            <p class="badge badge-comment-status comment-status" data-comment-id="@Model.CommentId">@currentStatus</p>
+        </div>
+    </div>
+
+
+    <!-- Actions -->
+    <section class="comment-actions-wrapper comment-hover-wrapper">
+        <div class="icon-container">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+        </div>
+        <div class="comment-actions-container comment-hover-active-container" data-comment-id="@Model.CommentId">
+            <button class="delete-comment btn btn-success" type="button" data-comment-id="@Model.CommentId">Delete</button>
+            @if ((!Model.DocReview.DocReviewSettings.IsPostModerated) && (!Model.IsPublished()))
+            {
+                <button class="publish-comment btn btn-success" type="button" data-comment-id="@Model.CommentId">Publish</button>
+            }
+            else
+            {
+                <button class="save-comment btn btn-success" type="button" data-comment-id="@Model.CommentId">Save</button>
+            }
+        </div>
+    </section>
+
+    <!-- Comment tags. -->
+    <section class="comment-tags-wrapper comment-hover-wrapper">
+        <div class="icon-container">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+        </div>
+        <div class="comment-tags-container comment-hover-active-container">
+            <ul class="comment-tags" data-comment-id="@Model.CommentId">
+                @foreach (var tag in Model.CommentTags)
+                {
+                    // Print the tag and remove it from the projectTags list.
+                    <li class="tag" data-comment-id="@Model.CommentId" data-tag-id="@tag.ProjectTagId">
+                        <p>@tag.ProjectTag.Name </p>
+                        <button class="delete-tag btn-icon" data-comment-id="@Model.CommentId" data-tag-id="@tag.ProjectTagId">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </li>
+                    tags.Remove(tag.ProjectTag);
+                }
+            </ul>
+            <div class="add-tags">
+                <ul>
+                    <li class="full-select" id="endButton" data-comment-id="@Model.CommentId">
+                        <select class="tag-selector form-select d-inline-block" data-comment-id="@Model.CommentId">
+                            @if (tags.Count > 0)
+                            {
+                                @foreach (var tag in tags)
+                                {
+                                    <!option value="@tag.ProjectTagId" data-name="@tag.Name">@tag.Name</!option>
+                                }
+                            }
+                        </select>
+                        <button class="add-tag btn btn-success btn-sm" type="button" data-comment-id="@Model.CommentId"><i class="fa-solid fa-plus"></i></button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+
+    @if (!string.IsNullOrEmpty(Model.GetQuote()))
+    {
+        <!-- Comment quote. -->
+        <section class="comment-quote-container">
+            <p>
+                Commented on
+                <span>'@Model.GetQuote(16)</span>
+            </p>
+        </section>
+    }
+
+    <!-- Comment text. -->
+    <section class="comment-text-container">
+        <textarea class="text-area" rows="1" data-comment-id="@Model.CommentId">@Model.CommentText</textarea>
+    </section>
+
+    <!-- Comment emoji wrapper. -->
+    @{
+        var user = await _userManager.GetUserAsync(User);
+        var emojis = _commentService.GetEmojisOfComment(@Model.CommentId, user).ToList();
+    }
+    @if (emojis.Any())
+    {
+        <section class="comment-emoji-wrapper">
+            <ul>
+                @foreach (var kv in emojis)
+                {
+                    <li>@Html.Raw("&#" + kv.EmojiCode + ";") @kv.Count.FormatNumber()</li>
+                }
+            </ul>
+        </section>
+    }
+</section>

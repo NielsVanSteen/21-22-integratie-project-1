@@ -1,0 +1,33 @@
+﻿@using UI.MVC.Identity
+@using Domain.Project
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "404 - Not Found";
+}
+<article class="error-wrapper">
+    <article class="error-inner-wrapper">
+        <section class="error-container">
+            <div class="error-inner-container">
+                <div class="error-text-container">
+                    <h1>403</h1>
+                    <p>Forbidden</p>
+                </div>
+            </div>
+        </section>
+    </article>
+</article>
+
+<article class="error-information-container">
+    <h2>Toegang geweigerd!</h2>
+    <p>U Heeft geen toegang tot deze pagina!</p>
+</article>
+
+
+<!-- Dont' change this. This is our watermark. -->
+<div class="footer-powered-by">
+    <p>Powered By</p>
+    <div class="footer-powered-by-inner">
+        <img src="~/images/logo.svg" alt="Groenpunt logo" class="main-footer-logo">
+        <h3>@ApplicationConstants.CompanyName</h3>
+    </div>
+</div>

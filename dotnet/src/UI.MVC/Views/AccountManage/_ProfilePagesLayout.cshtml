@@ -1,0 +1,136 @@
+﻿@using Domain.User
+@using Microsoft.AspNetCore.Identity
+@using UI.MVC.CloudStorage
+@using UI.MVC.Extensions
+@using UI.MVC.Identity
+@using UI.MVC.Models.Shared.PopUp
+@inject UserManager<User> _userManager;
+
+@{
+    Layout = "_BackEndNavigation";
+
+    var user = await _userManager.GetUserAsync(User);
+
+    string controller = (ViewContext.RouteData.Values["Controller"] ?? "").ToString();
+    string action = (ViewContext.RouteData.Values["Action"] ?? "").ToString();
+}
+
+<!-- Profile pages landing page. -->
+<article class="article-profile-landing-page">
+    <div class="inner content-width">
+        <h2>Hallo @user.Firstname</h2>
+        <p>Dit is de profiel pagina. Hierop kunt u uw persoonlijke informatie raadplegen en wijzigen.</p>
+    </div>
+</article>
+
+<!-- Entire profile wrapper. (had grid layout for the profile navigation and the edit profile information. -->
+<article class="profile-information-wrapper">
+
+    <div class="inner content-width">
+
+        <!-- The container holding the inputs to edit the information. -->
+        <article class="profile-information-container profile-information-edit-container">
+            @RenderBody()
+        </article>
+
+        <!-- Profile pages navigation. -->
+        <article class="profile-information-container profile-information-navigation-container">
+            <figure class="profile-information-picture-container">
+
+                <img src="@user.GetUserProfilePictureImageLink(SquareImageSize.MD)" alt="PF" class="profile-picture">
+
+                <div class="image-upload-container">
+                    <button class="btn-icon btn-open-profile-popup">
+                        <i class="fa-solid fa-image show-change-profile-picture"></i>
+                    </button>
+                </div>
+
+            </figure>
+            <h2>@(user.Firstname + " " + user.Lastname)</h2>
+
+            <nav class="profile-pages-navigation">
+                <ul>
+                    <li>
+                        <a class="basic-link @((controller == "AccountManage" && action == "Profile") ? "active" : "")" asp-controller="AccountManage" asp-action="Profile">Profiel</a>
+                    </li>
+                    <li>
+                        <a class="basic-link @((controller == "AccountManage" && action == "ChangePassword") ? "active" : "")" asp-controller="AccountManage" asp-action="ChangePassword">Wachtwoord</a>
+                    </li>
+                    <li>
+                        <a class="basic-link @((controller == "AccountManage" && action == "ExternalLogins") ? "active" : "")" asp-controller="AccountManage" asp-action="ExternalLogins">Externe Logins</a>
+                    </li>
+                    @if (user.Id != Domain.User.User.RootUserId)
+                    {
+                        <li>
+                            <a class="basic-link">
+                                <button class="btn-icon btn-delete-profile @((controller == "AccountManage" && action == "ExternalLogins") ? "active" : "")" type="button">Verwijder Profiel</button>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </article>
+
+    </div>
+
+</article>
+
+@{
+    var deleteModel = new PopUpModel()
+    {
+        PopUpContainerClass = "article-delete-profile",
+        PopUpTitle = "Profiel verwijderen?",
+        PopUpBody = @"<p class='alert alert-warning'>Weet u zeker dat u uw profiel wilt verwijderen? Dit is permantent!</p>",
+        ButtonPrimaryClass = "button-delete-profile",
+        ButtonPrimaryText = "Verwijder",
+        ButtonPrimaryBootstrapType = "btn-danger"
+    };
+
+    var uploadImageModel = new PopUpModel
+    {
+        PopUpContainerClass = "article-change-profile-picture",
+        PopUpTitle = "Change Profile picture?",
+        PopUpBody = @" 
+                <div class='pupup-change-profile-picture-body-inner'>
+                    <div class='item'>
+                        <h3>Kies foto</h3>
+                        <div>
+                            <button class='btn-icon btn-toggle-input-file' type='button' onclick='event.preventDefault()'>
+                                <i class='fa-solid fa-image' id='set-profile-picture'></i>
+                            </button>
+                            <input type='file' id='profilePictureInput' name='profilePicture'>
+                        </div>
+                        <div>
+                            <button type='button' class='btn-icon' onclick='event.preventDefault()' id='delete-profile-picture'>
+                                <i class='fa-solid fa-trash-can'></i>
+                            </button>
+                        </div>
+                        <section>
+                            <p class='alert alert-info'>
+                                Zodra u een profiel foto instelt zal de standaard foto verdwijnen en uw profiel foto zichtbaar zijn voor elke gebruikers.<br/>
+                                U kunt uw profiel foto instellen door op het icoontje van de afbeelding te drukken.<br/>
+                                U kunt uw profiel foto ook op elk moment terug verwijderen door op het vuilbakje te drukken.
+                            </p>
+                            <p class='alert alert-info'>
+                                De maximale grootte voor een foto is 5MB. De toegestande extensies zijn: .jpg, .jpeg, .png, .gif, .svg
+                            </p>
+                            <span class='text-danger' asp-validation-summary='All' id='profilePictureValidation'></span>
+                        </section>
+                    </div>
+                    <figure class='item profile-picture-preview-figure'>
+                        <img id='change-profile-picture-preview' src='' alt='profiel foto'>
+                    </figure>
+                </div>",
+        ButtonPrimaryClass = "button-save-profile-picture",
+        ButtonPrimaryText = "Opslaan",
+        ButtonPrimaryBootstrapType = "btn-success"
+    };
+}
+
+@if (user.Id != Domain.User.User.RootUserId)
+{
+    <partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@deleteModel"/>
+}
+<partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@uploadImageModel"/>
+
+<script src="~/dist/accountManage.entry.js" defer></script>

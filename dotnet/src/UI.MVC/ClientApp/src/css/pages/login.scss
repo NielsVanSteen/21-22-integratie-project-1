@@ -1,0 +1,51 @@
+﻿// Login wrapper. Spans the entire login page.
+.login-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+
+  display: grid;
+  grid-template-columns: 1fr 400px;
+}
+
+// The banner image spanning the entire page on the login screen.
+.login-project-banner-image {
+  height: 100%;
+  object-fit: cover;
+  min-width: 100%;
+  position: relative;
+  left: 50%;
+  top: 50%;
+  max-width: 100%;
+  transform: translate(-50%, -50%);
+}
+
+
+.login-section-login-wrapper {
+  padding: 2em;
+  margin-top: 50px;
+  box-shadow: 0px 0px 5px -2px rgba(0,0,0,0.75);
+  
+  h1 {
+    padding-bottom: 2rem;
+    font-weight: 400;
+    color: var(--normal-green);
+    text-transform: uppercase;
+  }
+
+  h2 {
+    color: var(--orange);
+    padding-bottom: .5rem;
+  }
+}
+
+/* Container showing the extra options on the login page. (forgot password, ... */
+.login-extra-options-container {
+  display: flex;
+  flex-direction: column;
+  padding-top: 2rem;
+}
+

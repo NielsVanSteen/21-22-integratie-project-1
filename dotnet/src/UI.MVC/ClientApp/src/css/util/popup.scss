@@ -1,0 +1,71 @@
+﻿.popup-background-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 10000000000;
+  visibility: hidden;
+  transition: opacity 300ms ease;
+  opacity: 0;
+  overflow: hidden;
+}
+
+
+// Entire popup 'wrapper'.
+.article-popup {
+  background-color: var(--white);
+  position: fixed;
+  z-index: 10000;
+  left: -10000px; // move the popup away while it's not visible.
+  width: 1000px;
+  border-radius: .5rem;
+  max-width: 75%;
+  transform: translateX(calc(-50% + 35px)); // 35px the half of the backend navigation (when on small screen).
+  // transition: top 400ms ease, opacity 500ms ease; -> is added with js -> it won't transition on page load that way.
+  visibility: hidden;
+  top: 0; // is 100px when visible.
+  opacity: 0; // is 1 when visible.
+  box-shadow: 0px 0px 16px -6px rgba(0,0,0,0.75);
+
+  .article-popup-inner {
+    position: relative;
+    overflow-y: scroll;
+    max-height: calc(90vh - 100px);
+  }
+
+  // Header of the popup, this contains the title and a button to close the popup.
+  .popup-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: .5rem 2rem;
+    border-bottom: 1px solid var(--lighter-grey);
+    h2 {
+      font-size: 1.25rem;
+      font-family: var(--main-font-sans-serif);
+    }
+    i, svg {
+      font-size: 1.25rem;
+      margin-top: .25rem;
+      cursor: pointer;
+      color: var(--dark-green);
+    }
+  }
+
+  // The main body of the popup. (contains the actual content).
+  .popup-body {
+    padding: 1rem 2rem;
+  }
+
+  // The main footer of the popup (contains the submit/cancel buttons).
+  .popup-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    column-gap: 1rem;
+    padding: 0 2rem 2rem 2rem;
+  }
+}

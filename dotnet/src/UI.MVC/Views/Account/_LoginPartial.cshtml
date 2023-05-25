@@ -1,0 +1,68 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Domain.User
+@using Microsoft.AspNetCore.Authorization
+@using UI.MVC.CloudStorage
+@using UI.MVC.Extensions
+@using UI.MVC.Identity
+
+@inject SignInManager<User> _signInManager
+@inject UserManager<User> _userManager
+@inject IAuthorizationService _authorizationService;
+
+@{
+    var user = await _userManager.GetUserAsync(User);
+}
+
+<div class="navbar-nav navbar-right">
+    @if (_signInManager.IsSignedIn(User))
+    {
+        var applicationUser = await _userManager.GetUserAsync(User);
+        string displayName = applicationUser == null ? "Unkown User" : applicationUser?.Firstname + " " + applicationUser?.Lastname;
+
+
+        <div class="navigation-profile-container">
+            <div class="navigation-profile-info">
+
+                <img src="@user.GetUserProfilePictureImageLink(SquareImageSize.SM)" alt="" class="header-profile-icon">
+
+                <p class="profile-icon-name">@displayName</p>
+            </div>
+            <div class="navigation-profile-dropdown-container">
+                <ul>
+                    <li class="navigation-main-li">
+                        @{
+                            string routeProject = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+                            if ((await _authorizationService.AuthorizeAsync(User, ApplicationConstants.IsModerator)).Succeeded)
+                                routeProject = ApplicationConstants.BackEndUrlName.ToLower();
+                        }
+                        <a class="navigation-main-a" asp-controller="AccountManage" asp-action="Profile" asp-route-project="@routeProject">Profiel</a>
+                    </li>
+                    @if (user.IsModerator())
+                    {
+                        <li class="nav-item">
+                            <a class="navigation-main-a" asp-controller="ProjectModeration" asp-action="Index" asp-route-project="@ApplicationConstants.BackEndUrlName">Back office</a>
+                        </li>
+                    }
+                    <li class="nav-item">
+                        <form class="form-inline" asp-controller="Account" asp-action="Logout" method="post" enctype="multipart/form-data">
+                            <button id="logout" type="submit">Afmelden</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    }
+    else
+    {
+        <ul class="navigation-main-ul">
+            <li class="navigation-main-li">
+                <a class="navigation-main-a" asp-controller="Account" asp-action="Login">Log in</a>
+            </li>
+            <li class="navigation-main-li">
+                <a class="navigation-main-a navigation-main-a-background" asp-controller="Account" asp-action="Register">Register</a>
+            </li>
+        </ul>
+    }
+
+
+</div>

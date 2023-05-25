@@ -1,0 +1,82 @@
+﻿@using Domain.Comment
+@using UI.MVC.Models.Shared
+@using BL.Project
+@using UI.MVC.Identity
+@using BL.DocReview
+@using BL.Comment
+@model UI.MVC.Models.AnalyseComments.AnalyseCommentsFilterModel
+
+@inject IProjectManager _projectManager;
+@inject IProjectTagManager _projectTagManager;
+@inject IDocReviewManager _docReviewManager;
+@inject ICommentManager _commentManager;
+
+@{
+    ViewBag.Title = "Analyse Comments";
+    Layout = "_BackEndNavigation";
+
+    var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+    var project = _projectManager.GetProjectByExternalName(projectName);
+}
+
+<article class="analyse-comments-wrapper container">
+
+    <!-- BreadCrumbs. -->
+    @{
+        var breadCrumbs = new BreadcrumbsModel()
+        {
+            BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+            {
+                new Tuple<string, string, string, string, string>("fa-solid fa-house", @project.ExternalName, "ProjectManage", "Index", @project.ExternalName).ToValueTuple(),
+                new Tuple<string, string, string, string, string>("fa-solid fa-comments", "Analyse Comments", "AnalyseComment", "Index", @project.ExternalName).ToValueTuple()
+            },
+            ActiveItemIndex = 2
+        };
+    }
+    <partial name="_Breadcrumbs" model="@breadCrumbs"/>
+    
+
+    <form asp-action="Index" asp-controller="AnalyseComment" method="POST" id="formFilter">
+
+        <article class="analyse-comments-content project-moderation-wrapper">
+
+            <!-- Comments.  -->
+            <article class="comment-section-wrapper">
+
+                <!-- The page size. -->
+                <div class="pagination-show-entries-amount-container d-flex align-items-center">
+                    <p>Show</p>
+                    <input id="entriesPageInput" asp-for="PageSize" min="0" max="@PaginationNavigationModel.MaxSize" step="1" onchange='document.querySelector("#formFilter").submit()'>
+                    <p>entries.</p>
+                </div>
+                
+                <div class="error-message-box"></div>
+
+                <!-- Loop over all the comments -->
+                @foreach (var comment in (ViewBag.Comments as IEnumerable<ReactionGroup> ?? Array.Empty<ReactionGroup>()).ToList())
+                {
+                    <section class="comment-wrapper">
+                        <partial name="_Comment" model="@comment"/>
+                    </section>
+                }
+
+                <!-- Pagination. -->
+                <partial name="_PaginationNavigation" model="@ViewBag.PaginationModel"/>
+            </article> <!-- Comments. -->
+
+            <!--- Filter -->
+            <div class="filter-container">
+                <partial name="_Filter" model="@Model"/>
+                <a href="" class="download-link d-none"></a>
+                <input type="hidden" id="currentPageInput" asp-for="PageNumber">
+                <input type="hidden" id="hasFilterChanged" asp-for="HasFilterChanged" value="@ViewBag.HasFilterChanged">
+            </div>
+
+        </article> <!-- Content. -->
+
+    </form>
+
+</article>
+
+<script src="~/dist/exportComments.entry.js"></script>
+<script src="~/dist/analyseComments.entry.js"></script>

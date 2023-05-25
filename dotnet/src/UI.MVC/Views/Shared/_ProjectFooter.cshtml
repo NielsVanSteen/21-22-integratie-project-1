@@ -1,0 +1,53 @@
+﻿@using UI.MVC.CloudStorage
+@using UI.MVC.Extensions
+@using UI.MVC.Identity
+@model Domain.Project.Project
+
+@{
+    var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+    var isSpecificProject = !String.Equals(ApplicationConstants.BackEndUrlName, projectName, StringComparison.CurrentCultureIgnoreCase);
+}
+
+<article class="footer-container container">
+    <section class="footer-inner-container">
+
+
+        @if (isSpecificProject)
+        {
+            <div class="footer-inner">
+
+                <section class="footer-statement footer-privacy-statement">
+                    <h3>Privacy Statement</h3>
+                    <div class="statement-container">
+                        @(Model.PrivacyStatement ?? "Here Goes the privacy statement")
+                    </div>
+                </section>
+
+                <section class="footer-statement footer-privacy-statement">
+                    <h3>Accessibility Statement</h3>
+                    <div class="statement-container">
+                        @(Model.AccessibilityStatement ?? "Here Goes the accessibility statement")
+                    </div>
+                </section>
+            </div>
+
+            <div class="footer-logos-container">
+                @foreach (var logo in @Model.FooterLogos)
+                {
+                    <figure class="footer-logo-figure">
+                        <img src="@logo.GetFooterLogoFullLink(@Model, SquareImageSize.MD)" alt="Footer logo">
+                    </figure>
+                }
+            </div>
+        }
+
+        <!-- Our watermark. -->
+        <div class="footer-powered-by">
+            <p>Powered By</p>
+            <div class="footer-powered-by-inner">
+                <img src="~/images/logo.svg" alt="Groenpunt" class="main-footer-logo">
+                <h3>Groenpunt</h3>
+            </div>
+        </div>
+    </section>
+</article>

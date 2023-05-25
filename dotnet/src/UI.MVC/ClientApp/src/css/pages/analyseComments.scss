@@ -1,0 +1,498 @@
+﻿.comment-analyse-container {
+  border-bottom: 1px solid var(--lighter-grey);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.comment-container {
+  position: relative;
+
+  .comment-row-user-page {
+    &::before {
+      content: '';
+      display: block;
+      position: absolute;
+      left: calc(-40px + .25rem);
+      top: calc(30px);
+      width: calc(60px + .25rem);
+      height: 2px;
+      background-color: var(--lighter-grey);
+    }
+  }
+
+  // 'header' row of the comment containing the profile picture, name & status.
+  .comment-row {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    padding: 0;
+    column-gap: .5rem;
+
+    // Profile picture.
+    figure {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 1px solid var(--lighter-grey);
+      position: relative;
+      background-color: var(--white);
+      overflow: hidden;
+      margin: 0;
+      padding-left: 0;
+      padding-right: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .comment-writer-date-wrapper {
+      h2 {
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+
+      .comment-date {
+        font-size: .8rem;
+        font-weight: normal;
+        color: var(--dark-grey);
+      }
+
+      .badge-comment-status {
+        background-color: var(--light-grey);
+        filter: brightness(1.15);
+      }
+    }
+
+  }
+
+  // Quote.
+  .comment-quote-container {
+    padding-left: calc(60px + .5rem);
+    padding-bottom: .5rem;
+
+    p {
+      font-weight: bold;
+      color: var(--dark-grey);
+
+      span {
+        font-weight: normal;
+        color: dodgerblue;
+      }
+    }
+  }
+
+  // Comment text container.
+  .comment-text-container {
+    padding-left: calc(60px + .5rem);
+
+    span {
+      display: inline-block;
+      color: dodgerblue;
+    }
+
+    p {
+      display: inline-block;
+    }
+
+    .edited-by {
+      font-size: .8rem;
+      color: var(--dark-grey);
+    }
+
+    .comment-text {
+      text-align: justify;
+    }
+
+    textarea {
+      //border: 1px solid var(--lighter-grey);
+      border: none;
+      display: inline-block;
+      width: 100%;
+      max-height: 200px;
+      height: auto;
+      resize: none;
+    }
+  }
+
+  .comment-emoji-wrapper {
+    padding: .5rem 0;
+
+    ul {
+      list-style-type: none;
+      padding-left: calc(60px + .5rem);
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      column-gap: .5rem;
+
+      .li-more-emoji {
+        button {
+          font-size: .8rem;
+        }
+
+        i, svg {
+          font-size: .8rem;
+          padding: 0;
+          color: var(--light-grey);
+        }
+      }
+    }
+  }
+}
+
+.emoji-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: .5rem;
+  row-gap: .5rem;
+
+  li {
+    display: inline-block;
+    font-size: 2rem;
+  }
+}
+
+.shown-emoji {
+  border: 1px solid var(--lighter-grey);
+  border-radius: .5rem;
+  padding: 0 .25rem;
+  background-color: var(--lightest-grey);
+  font-size: .8rem;
+  color: var(--darker-grey);
+
+  &.marked-emoji {
+    border: 1px solid #9dccff;
+    background-color: #e6f1ff;
+    color: #0068ff;
+  }
+}
+
+
+// Actions.
+.comment-hover-wrapper {
+  background-color: var(--white);
+  position: absolute;
+  top: 3rem;
+  right: 0;
+
+  &.comment-actions-user-page-wrapper {
+    top: 1rem;
+  }
+
+  // Content.
+  .comment-hover-active-container {
+    display: none;
+    border-radius: .5rem;
+    background-color: var(--lighter-grey);
+    padding: .5rem;
+    max-width: 200px;
+
+    &:hover {
+      display: block;
+    }
+
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+      display: flex;
+      flex-direction: column;
+      row-gap: .4rem;
+
+      li {
+        display: flex;
+        column-gap: 1rem;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+  }
+
+  // Icon.
+  .icon-container {
+    display: flex;
+    text-align: center;
+    justify-content: flex-end;
+
+    i, svg {
+      color: var(--white);
+      padding: .15rem .5rem;
+      background-color: var(--light-grey);
+    }
+
+    &:hover ~ .comment-hover-active-container {
+      display: block;
+      position: relative;
+      z-index: 10;
+    }
+  }
+
+}
+
+.comment-actions-wrapper {
+  right: 2rem;
+  z-index: 10;
+
+  .comment-actions-container {
+    display: none;
+  }
+}
+
+.comment-wrapper {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0rem;
+
+  .sub-comment-wrapper {
+    margin-left: calc(60px + .5rem);
+    display: flex;
+    flex-direction: column;
+    row-gap: 0rem;
+  }
+}
+
+
+// ==============================
+// Write a main comment container
+// ==============================
+.write-main-comment-container {
+  background-color: var(--white);
+  padding: 1rem .5rem 1rem 0;
+  width: 100%;
+  margin-top: .5rem;
+
+  .row {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    grid-template-rows: 60px;
+    padding-left: 1rem;
+    grid-column-gap: .5rem;
+
+    figure {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--lighter-grey);
+      padding: 0;
+      padding-left: 0;
+      padding-right: 0;
+      margin: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    > div {
+      width: 100%;
+      height: 100%;
+      padding: 0 .6rem 0 0;
+
+      textarea {
+        width: 100%;
+        height: 100%;
+        border: 1px solid var(--lighter-grey);
+        border-radius: .5rem;
+        padding: .5rem;
+        resize: none;
+      }
+    }
+  }
+
+  .write-comment-actions-container {
+    display: flex;
+    padding-top: .5rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    row-gap: .5rem;
+    column-gap: .5rem;
+  }
+}
+
+
+// ===========================
+// Write sub-comment container
+// ===========================
+
+.sub-comment-container {
+  .row {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    position: relative;
+
+    &::before {
+      content: '';
+      display: block;
+      position: absolute;
+      left: calc(-30px + .25rem);
+      top: calc(30px);
+      width: calc(60px + .25rem);
+      height: 2px;
+      background-color: var(--lighter-grey);
+    }
+
+    figure {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+      padding-left: 0;
+      padding-right: 0;
+      border: 1px solid var(--lighter-grey);
+      background-color: var(--white);
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .sub-comment-text-container {
+      textarea {
+        width: 99%;
+        resize: none;
+        border-radius: .5rem;
+        border: 1px solid var(--lighter-grey);
+        padding: .5rem;
+      }
+    }
+  }
+
+  .sub-comment-actions-container {
+    display: flex;
+    //padding-left: calc(60px + .5rem);
+    flex-wrap: wrap;
+    row-gap: .5rem;
+    column-gap: .5rem;
+    justify-content: flex-end;
+  }
+
+}
+
+// The entire comment wrapper for 1 comment with all the sub-comments.
+.comment-user-page-block-wrapper {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 2px;
+    background-color: var(--lighter-grey);
+    height: calc(100% - 75px);
+    left: 30px;
+    top: 0;
+    z-index: -1;
+  }
+}
+
+
+// =============
+// Media Queries
+// =============
+
+@media only screen and (max-width: 1400px) {
+
+  // The image of the comment and sub-comments, and the horizontal before line.
+  .comment-container {
+    .comment-row-user-page {
+      &::before {
+        left: calc(-30px + .25rem);
+        top: calc(20px);
+      }
+    }
+
+    .comment-row {
+      figure {
+        width: 40px;
+        padding-left: 0;
+        padding-right: 0;
+        height: 40px;
+      }
+    }
+  }
+
+  // The vertical before line for the main comment and it's sub comments.
+  .comment-user-page-block-wrapper {
+    &::before {
+      left: 20px;
+    }
+
+    // The comment and sub-comment left margin.
+    .comment-quote-container {
+      padding-left: calc(40px + .5rem);
+    }
+
+    .comment-text-container {
+      padding-left: calc(40px + .5rem);
+    }
+
+    .comment-emoji-wrapper {
+      ul {
+        padding-left: calc(40px + .5rem);
+      }
+    }
+  }
+
+  // Less indent on the sub comments.
+  .comment-wrapper {
+    .sub-comment-wrapper {
+      margin-left: calc(40px + .5rem);
+    }
+  }
+
+  // Write sub comment.
+  .sub-comment-container {
+    .row {
+      grid-template-columns: 40px 1fr;
+      grid-column-gap: 1rem;
+
+      &::before {
+        left: calc(-20px + .25rem);
+        top: calc(23px);
+        width: calc(40px + .25rem);
+      }
+
+      figure {
+        padding: 0;
+        padding-left: 0;
+        padding-right: 0;
+        margin: 0 0 0 .5rem;
+        width: 40px;
+        height: 40px;
+      }
+
+      .sub-comment-text-container {
+        padding: 0;
+        margin: 0;
+      }
+    }
+  }
+
+  .write-main-comment-container {
+    .row {
+      grid-template-columns: 40px 1fr;
+      grid-template-rows: 40px;
+
+      figure {
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+  }
+}
+
+

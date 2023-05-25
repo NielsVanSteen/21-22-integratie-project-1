@@ -1,0 +1,79 @@
+﻿@using UI.MVC.Models.Shared.PopUp
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div>
+    <button type="button" class="import-tutorial btn btn-secondary btn-sm">Import Google-docs</button>
+    <button type="button" class="import-pdf-popup-btn btn btn-secondary btn-sm">Import PDF</button>
+    <div class="upload-status-container"></div>
+
+</div>
+
+@{
+    var importPdfModel = new PopUpModel()
+    {
+        PopUpContainerClass = "article-popup-import-pdf",
+        PopUpTitle = "Import PDF",
+        PopUpBody = @" 
+    
+            <div class='import-pdf-form mb-3'>
+                  <label for='pdf' class='form-label'>Upload PDF</label>
+                  <input class='form-control' type='file' name='pdf' id='pdf'>
+            </div>
+            <button id='upload-pdf' type='button' class='btn btn-success btn-sm'>Upload</button>
+            <p class='text-danger upload-pdf-error-message-container'></p>
+        ",
+        ButtonPrimaryClass = "btn-close-popup-pdf",
+        ButtonPrimaryText = "Close",
+        ButtonPrimaryBootstrapType = "btn-success",
+        IsConfirmPopup = false
+    };
+    
+    var helpModel = new PopUpModel
+    {
+        PopUpContainerClass = "article-popup-import-help",
+        PopUpTitle = "Import Google Docs",
+        PopUpBody = @"<section class='import-popup-wrapper'> 
+            <div class='import-help-wrapper'>
+                
+                <div class='import-help-item-container'>
+                    <p>Click the share button on the top right</p>
+                    <img class='img-info' src='https://storage.googleapis.com/docreview-bpart-groenpunt/import-help/ShareButton.png' alt='shareButton'>
+                </div>      
+
+                <div class='import-help-item-container'>
+                    <p>Here you can see it's probably not shared with anyone</p>
+                    <img class='img-info' src='https://storage.googleapis.com/docreview-bpart-groenpunt/import-help/GetLink.png' alt='GetLink'>
+                </div>       
+
+                <div class='import-help-item-container'>
+                    <p>Change restricted to anyone with link</p>   
+                    <img class='img-info' src='https://storage.googleapis.com/docreview-bpart-groenpunt/import-help/anyoneWithLink.png' alt='anyoneWithLink'> 
+                </div>           
+
+                <div class='import-help-item-container'>
+                    <p>Get the fileId which is located between the d/ and the /edit and input it in the textfield on this page</p>
+                    <img class='img-info' src='https://storage.googleapis.com/docreview-bpart-groenpunt/import-help/getFileId.png' alt='getFileid'>
+                </div>  
+
+                 <div class='import-help-item-container'>
+                    <p>Finally paste the id below and click import!</p>
+                    <input name='FileId' id='fileId' class='form-control' placeholder='File Id'>
+                    <button id='import-google-docs' type='button' class='btn btn-success btn-sm'>Import</button>
+                    <span class='text-danger import-error-message-container'></span>
+                </div>               
+
+            </div>       
+ 
+           </section>",
+        ButtonPrimaryClass = "btn-confirm-import-help",
+        ButtonPrimaryText = "Close",
+        ButtonPrimaryBootstrapType = "btn-success",
+        IsConfirmPopup = false
+    };
+
+}
+
+<partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@helpModel"/>
+<partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@importPdfModel"/>
+
+<script src="~/dist/projectImport.entry.js"></script>

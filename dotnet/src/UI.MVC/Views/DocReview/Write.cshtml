@@ -1,0 +1,311 @@
+﻿@using UI.MVC.Extensions
+@using System.Web
+@using BL.Project
+@using Domain.DocReview
+@using Google.Cloud.Storage.V1
+@using UI.MVC.Attributes
+@using UI.MVC.CloudStorage
+@using UI.MVC.Identity
+@using UI.MVC.Models.DocReview
+@using UI.MVC.Models.Shared
+@using UI.MVC.Models.Shared.PopUp
+@model UI.MVC.Models.DocReview.WriteDocReviewModel
+
+@inject ICloudStorage _cloudStorage;
+@inject IProjectManager _projectManager;
+
+@{
+    Layout = "_BackEndNavigation";
+
+    var projectName = ApplicationConstants.GetProjectName(ViewContext.RouteData);
+    var project = _projectManager.GetProjectByExternalName(projectName);
+    var storageObjects = _cloudStorage.GetFilesByPrefix(project.GetAllDocReviewImagesPrefixByProject());
+}
+
+<article class="write-docreview-wrapper container">
+
+<!-- Breadcurmbs. -->
+@{
+    var breadCrumbs = new BreadcrumbsModel()
+    {
+        BreadcrumbItems = new List<(string IconClass, string Name, string Controller, string Action, string ExternalProjectName)>
+        {
+            new Tuple<string, string, string, string, string>("fa-solid fa-house", @project.ExternalName, "ProjectManage", "Index", @project.ExternalName).ToValueTuple(),
+            new Tuple<string, string, string, string, string>("fa-solid fa-file", "Doc-review write", "DocReview", "Write", @project.ExternalName).ToValueTuple()
+        },
+        ActiveItemIndex = 2
+    };
+}
+<partial name="_Breadcrumbs" model="@breadCrumbs"/>
+
+<form asp-controller="DocReview" asp-action="Write" method="POST" enctype="multipart/form-data">
+
+<!-- Page title -->
+<article class="project-page-header-container">
+    <div class="page-title-wrapper">
+        <h2>Write DocReview</h2>
+        <div class="description">
+            <p>Write a DocReview</p>
+        </div>
+    </div>
+</article>
+
+<section class="write-doc-review-upper-part-container">
+
+    <!-- DocReview title. -->
+    <div class="main-input-simple-container main-simple-normal-input">
+        <div class="explorer-style-header">
+            <label asp-for="Name"></label>
+        </div>
+        <div class="explorer-style-body">
+            <input asp-for="Name" class="form-control"/>
+            <span asp-validation-for="Name" class="text-danger" id="span-name"></span>
+        </div>
+    </div>
+
+    <!-- DocReview banner image. -->
+    <div class="image-preview-container" id="bannerImageContainer">
+        <div class="explorer-style-header">
+            <label asp-for="BannerImage"></label>
+        </div>
+        <div class="explorer-style-body">
+            <figure class="image-preview-figure">
+                <img clas="image-preview" src="" alt="banner image" id="bannerImagePreview">
+                <i class="fa-solid fa-image label-badge" id="set-banner-image" onclick="document.querySelector('#bannerImageFile').click();"></i>
+            </figure>
+            <div>
+                <input asp-for="BannerImage" type="file" id="bannerImageFile" name="BannerImage" value="@Model?.BannerImage">
+                <span asp-validation-for="BannerImage" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- DocReview Description. -->
+    <div class="main-input-simple-container ckeditor-container doc-review-write-description-container">
+        <div class="explorer-style-header">
+            <label asp-for="Description"></label>
+        </div>
+        <div class="explorer-style-body">
+            <textarea name="Description" id="Description">@Model?.Description</textarea>
+            <span asp-validation-for="Description" class="text-danger" id="span-description"></span>
+        </div>
+    </div>
+
+</section>
+
+<div class="import-container">
+    <partial name="_ImportDocReview"/>
+</div>
+
+<!-- DocReview content. -->
+<div class="form-group ckeditor-container">
+    <div class="explorer-style-header">
+        <label asp-for="DocReviewText"></label>
+    </div>
+    <div class="explorer-style-body doc-review-content-wrapper">
+        <textarea name="DocReviewText" id="DocReviewText" cols="30" rows="10">@Model?.DocReviewText</textarea>
+        <span asp-validation-for="DocReviewText" class="text-danger" id="span-docreview-text"></span>
+    </div>
+</div>
+
+<!-- The image explorer and upload part. -->
+<article class="docreview-image-upload-wrapper">
+
+    <!-- Explorer window with all the images. -->
+    <section class="images-explorer-container">
+        <div class="explorer-style-header">
+            <p>Images</p>
+            <button class="btn-icon" type="button" id="buttonShowUploadPopup">
+                <i class="fas fa-upload"></i>
+            </button>
+        </div>
+
+        <!-- The explorer window body containing all the images. -->
+        <section class="images-explorer-body explorer-style-body">
+
+            @if (!storageObjects.Any())
+            {
+                <h3 id="no-images-error" class="text-danger">There are no images yet!</h3>
+            }
+
+            @foreach (var storageObject in storageObjects)
+            {
+                var src = ApplicationConstants.CloudStorageBasicUrl + storageObject.Name;
+                <!--A single image. -->
+                <div class="explorer-image-item-container">
+                    <figure>
+                        <img src="@src" alt="">
+                        <button class="btn-icon btn-copy-image" type="button" onclick="event.preventDefault();" data-img-src="@src">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                        <button class="btn-icon btn-use-image" type="button" onclick="event.preventDefault();" data-img-src="@src">
+                            <i class="fa-solid fa-file-import"></i>
+                        </button>
+                    </figure>
+                </div>
+            }
+        </section>
+    </section>
+</article>
+
+<article class="docreview-settings-wrapper">
+
+    <!-- DocReview Settings. -->
+    <section class="docreview-settings-container">
+        <h3>Settings</h3>
+
+        <!-- Is Commenting allowed. -->
+        <div class="form-check">
+            <input class="form-check-input" asp-for="IsCommentingAllowed" name="IsCommentingAllowed" id="IsCommentingAllowed">
+            <label class="form-check-label" for="IsCommentingAllowed" asp-for="IsCommentingAllowed"></label>
+            <div class="description-container">
+                <p>Are users allowed to comment on a doc-review?</p>
+            </div>
+            <span asp-validation-for="IsCommentingAllowed" class="text-danger"></span>
+        </div>
+
+        <!-- Is sub commenting allowed. -->
+        <div class="form-check">
+            <input class="form-check-input" asp-for="IsSubCommentingAllowed" name="IsSubCommentingAllowed" id="IsSubCommentingAllowed">
+            <label class="form-check-label" for="IsSubCommentingAllowed" asp-for="IsSubCommentingAllowed"></label>
+            <div class="description-container">
+                <p>Are users allowed to comment on another comment on a doc-review? Note: When commenting is disabled so is sub-commenting.</p>
+            </div>
+            <span asp-validation-for="IsSubCommentingAllowed" class="text-danger"></span>
+        </div>
+
+        <!-- Is login required. -->
+        <div class="form-check">
+            <input class="form-check-input" asp-for="IsLogInRequired" name="IsLogInRequired" id="IsLogInRequired">
+            <label class="form-check-label" for="IsLogInRequired" asp-for="IsLogInRequired"></label>
+            <div class="description-container">
+                <p>Do users need to login before they are allowed the view the doc-review?</p>
+            </div>
+            <span asp-validation-for="IsLogInRequired" class="text-danger"></span>
+        </div>
+
+        <!-- Post moderation. -->
+        <div class="form-check">
+            <input class="form-check-input" asp-for="IsPostModerated" name="IsPostModerated" id="IsPostModerated">
+            <label class="form-check-label" for="IsPostModerated" asp-for="IsPostModerated"></label>
+            <div class="description-container">
+                <p>
+                    Pre-moderation: comments are only visible after project-managers publish them.<br/>
+                    Post-moderation: comments are instantly visible.
+                </p>
+            </div>
+            <span asp-validation-for="IsPostModerated" class="text-danger"></span>
+        </div>
+
+    </section>
+
+    <!-- Allowed Emoji's. -->
+    <section class="docreview-emoji-container">
+        <h3>Emoji Options</h3>
+
+        <!-- Allow emoji's. -->
+        <div class="form-check">
+            <input class="form-check-input" asp-for="AreEmojisAllowed" checked name="AreEmojisAllowed" id="AreEmojiOnCommentsAllowed">
+            <label class="form-check-label" for="IsLogInRequired" asp-for="AreEmojisAllowed"></label>
+            <div class="description-container">
+                <p>
+                    Are users allowed to use emoji's? Note: when enabled a set of emoji's needs to be defined.
+                </p>
+            </div>
+            <span asp-validation-for="AreEmojisAllowed" class="text-danger"></span>
+        </div>
+
+        <!-- The container that shows all the emoji's. And the add section. -->
+        <section class="emoji-preview-wrapper">
+
+            <article class="emoji-add-container">
+                <div class="emoji-add-inner-container">
+                    <div class="emoji-add-button-container">
+                        <button class="btn-icon btn-toggle-available-emoji" type="button" onclick="event.preventDefault()">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+
+                    <section class="all-available-emoji-container">
+                        <button class="btn-icon btn-toggle-available-emoji" type="button" onclick="event.preventDefault()">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                        @*Use ViewBag.*@
+                        @foreach (var emoji in Model.AvailableEmojis ?? Enumerable.Empty<Emoji>())
+                        {
+                            <button type="button" onclick="event.preventDefault()" data-emoji-code="@emoji.Code" data-emoji-id="@emoji.EmojiId" class="btn-icon btn-available-emoji">
+                                <span>@Html.Raw(emoji.GetCode())</span>
+                            </button>
+                        }
+                    </section>
+                </div>
+            </article>
+
+            <!-- Section that only contains the added emoji's. -->
+            <section class="emoji-preview-container" id="emojiPreviewContainer">
+                <!-- Content added with javascript. -->
+            </section> <!-- Emoji preview container. -->
+
+        </section> <!-- Emoji preview wrapper. -->
+
+    </section> <!-- Entire emoji settings. -->
+
+</article>
+
+<!-- Possible error messages. -->
+<partial name="~/Views/Shared/_AccountConfirmation.cshtml" model="ViewBag.AccountConfirmation"/>
+
+<div class="btn-submit-container">
+    <input type="submit" value="Create" class="btn btn-success">
+</div>
+
+</form>
+
+</article>
+
+
+@{
+    var uploadImageModel = new PopUpModel
+    {
+        PopUpContainerClass = "article-popup-upload-image",
+        PopUpTitle = "Upload Image?",
+        PopUpBody = " " +
+                    "<p class='alert alert-info'>After uploading the image it will be visible in the explorer window. And is available to use in a doc-review.</p>" +
+                    $"<p class='alert alert-warning'>Maximum file size is {MaxFileSizeAttribute.DefaultMaxFileSizeInBytes / 1000 / 1000}MB and the allowed extension include {AllowedExtensionsAttribute.GetErrorMessage()}</p>" +
+                    "<input type='file' id='uploadDocReviewImageInput'>" +
+                    "<p class='text-danger upload-image-error-message-container'></p>",
+        ButtonPrimaryClass = "btn-confirm-upload-image",
+        ButtonPrimaryText = "Upload",
+        ButtonPrimaryBootstrapType = "btn-success"
+    };
+
+    var textCopiedModel = new PopUpModel
+    {
+        PopUpContainerClass = "article-popup-text-copied",
+        PopUpTitle = "Copied Text!",
+        PopUpBody = "<p class='alert alert-success'>The image link has been copied to your clipboard!</p>",
+        ButtonPrimaryClass = "btn-confirm-text-copied",
+        ButtonPrimaryText = "Ok",
+        ButtonPrimaryBootstrapType = "btn-success",
+        IsConfirmPopup = false
+    };
+}
+<partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@uploadImageModel"/>
+<partial name="~/Views/Shared/_PopUpWindow.cshtml" model="@textCopiedModel"/>
+
+<script src="https://cdn.ckeditor.com/4.18.0/standard/ckeditor.js"></script>
+<script src="~/dist/docReviewWrite.entry.js" defer></script>
+
+<script >
+    window.addEventListener("load", replaceTextAreas)
+    
+    function replaceTextAreas(){
+            // CKEDITOR.replace('Description');
+            CKEDITOR.replace('DocReviewText');
+            CKEDITOR.editorConfig = function(config) {
+                config.resize_enabled = false;
+                config.removePlugins = 'resize';
+            };
+        }
+        
+</script>

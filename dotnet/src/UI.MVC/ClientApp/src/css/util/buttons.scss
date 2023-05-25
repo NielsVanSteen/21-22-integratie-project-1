@@ -1,0 +1,107 @@
+﻿// Bootstrap's success-button.
+.btn-success {
+  background-color: var(--light-green);
+  border-color: var(--light-green);
+  
+  &:hover {
+    background-color: var(--normal-green);
+    border-color: var(--normal-green);
+  }
+  
+  &:focus {
+    background-color: var(--dark-green);
+    border-color: var(--dark-green);
+    outline: none;
+    box-shadow: none;
+  }
+  
+  
+  &:active, &:visited {
+    background-color: var(--light-green) !important;
+    border-color: var(--light-green) !important;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.login-submit-container {
+  margin-bottom: 1rem;
+}
+.btn-wide {
+  padding: .5rem;
+  width: calc(50% - 1rem);
+}
+
+.external-providers-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 2rem;
+}
+
+// Facebook button.
+.btn-external-provider-facebook {
+  background-image: url(../../../wwwroot/images/icons/facebook.jpg); // This file is imported into site.scss making the url valid!
+  background-repeat: no-repeat;
+  background-position: .5rem calc(50%);
+  border: none;
+  background-size: 25px 25px;
+  padding: .5rem .5rem .5rem calc(.5rem + 25px);
+  vertical-align: middle;
+
+  border-radius: 5px;
+  background-color: #4267B2;
+  color: white;
+  box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.75);
+}
+
+// Google Button.
+.btn-external-provider-google {
+  background-image: url(../../../wwwroot/images/icons/google.png); // This file is imported into site.scss making the url valid!
+  background-repeat: no-repeat;
+  background-position: .5rem calc(50%);
+  border: none;
+  background-size: 25px 25px;
+  padding: .5rem .5rem .5rem calc(.5rem + 25px);
+  vertical-align: middle;
+
+  border-radius: 5px;
+  background-color: white;
+  color: grey;
+  box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.75);
+}
+
+
+
+.btn-register {
+  margin-top: 2rem;
+}
+.btn-login {
+  margin-top: .5rem;
+}
